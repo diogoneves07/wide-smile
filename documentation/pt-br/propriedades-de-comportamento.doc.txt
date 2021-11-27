@@ -1,0 +1,509 @@
+## Propriedades de comportamento
+
+Abaixo esta todas as propriedades disponíveis para definir o comportamento da animação.
+
+### Propriedade targets
+
+Define os alvos da animação.
+
+#### Type
+
+*`Array`* | 
+ *`CSS selector`* |  *`DOM Node`* | *`object`*
+  *`(CSS selector |  DOM Node  | object)[]`*  
+  | *`DOM Node`* | *`NodeList`*  | . Leitura e gravação.
+
+
+#### Descrição
+
+Podemos utilizar qualquer seletor CSS elemento do DOM, ou objeto JavaScript, e até  mescla estes em um *`array`*.
+
+#### Exemplo de código - Usando a propriedade
+```javascript
+const performer = wS('span' /* = targets */, 3,'easeOutInSine');
+
+      performer('width', 300);
+     
+      performer('height', 300, {
+        targets: ['span', 'div'],
+      });
+
+```
+
+### Propriedade progress
+
+Obtém o valor atual em relação ao andamento da animação.
+
+#### Type
+
+*`function`*. Leitura e gravação
+
+#### Descrição
+
+A função *`callback`* definida como o valor desta propriedade será chamada a cada mudança no progresso da animação, ela também recebe um argumento:
+
+`progress`
+
+: O andamento da animação(um valor de `0%` a `100%`.
+
+	Type
+	: *`number`* 
+ 
+#### Exemplo de código - Usando a propriedade
+
+```javascript
+const performer = wS('span', 3,'easeOutInSine');
+
+   performer('height', 300, {
+      progress: (p) => {
+	      console.log(p);
+      },
+   });
+```
+
+### Propriedade dir
+
+Define como a animação deve ser reproduzida.
+
+#### Type
+
+*`string`*. Leitura e gravação.
+
+#### Descrição
+
+A lista abaixo informa os valores possíveis.
+
+`normal`
+:  Todas as iterações da animação são reproduzidas na direção da forma como foram especificadas.
+
+`reverse`
+: Todas as iterações da animação são reproduzidas na direção inversa da forma como foram especificadas.
+
+`alternate`
+: As iterações ímpares são reproduzidas na direção `normal` e as pares são reproduzidas em uma direção `reverse`.
+
+`alternate-reverse`
+: As iterações ímpares são reproduzidas na direção `reverse` e as pares são reproduzidas em uma direção `normal`.
+
+
+#### Nota
+
+ No momento da declaração da animação,  ao usar esta propriedade com um dos valores: `alternate` ou  `alternate-reverse` e não definir um valor para a propriedade `loop`, a propriedade `loop` será definida automaticamente: `2`, ou seja, fará a animação ter duas interações.
+
+
+#### Valor padrão
+
+ O valor padrão é: `normal`
+
+#### Exemplo de código - Usando a propriedade
+```javascript
+const performer = wS('span' /* = targets */, 3,'easeOutInSine');
+      performer('width', 300);
+    
+      performer('height', 300, {
+        dir: 'alternate',
+      });
+```
+
+### Propriedade loop
+
+Define a quantidade de vezes que os ciclo  da animação devem ser executados.
+
+#### Type
+
+*`number`* | *`true`* | *`string`* . Leitura e gravação.
+
+#### Descrição
+
+Podemos utilizar o valor *`true`* para que o ciclo da animação seja executado infinitamente.
+
+#### Valor padrão
+
+ O valor padrão é: `1`.
+ 
+#### Exemplo de código - Usando a propriedade
+
+```javascript
+const performer = wS('span', 3,'easeOutInSine');
+
+      performer('width', 300);
+    
+      performer('height', 300, {
+        loop: true,
+      });
+```
+
+### Propriedade dur
+
+Define o tempo que uma animação leva para completar um ciclo.
+
+#### Type
+
+*`number`* | *`string`*. Leitura e gravação.
+
+#### Descrição
+
+O valor numérico é entendido como segundos, ou seja `2` é `2s`.
+
+#### Valor padrão
+
+ O valor padrão é:  `1`.
+ 
+#### Exemplo de código - Usando a propriedade
+
+```javascript
+const performer = wS(
+  'span',
+  3 /* =  dur */,
+  'easeOutInSine'
+);
+   performer('width', 300);
+   
+   performer('height', 300, {
+      dur: 5,
+   });
+```
+### Propriedade delay
+
+Define um intervalo no início de cada ciclo da animação e somente após esse intervalo a animação começa a executar o ciclo.
+
+#### Type
+
+*`number`* | *`string`*. Leitura e gravação.
+
+#### Descrição
+
+O valor numérico é entendido como segundos, ou seja `2` é `2s`.
+
+#### Valor padrão
+
+ O valor padrão é:  `0`.
+ 
+#### Exemplo de código  - Usando a propriedade
+
+```javascript
+const performer = wS('span', 3,'easeOutInSine');
+
+   performer('height', 300, {
+      delay: 2,
+   });
+```
+
+### Propriedade endDelay
+
+Define um intervalo no final de cada ciclo da animação e somente após esse intervalo a animação começa a executar o próximo ciclo.
+
+#### Type
+
+*`number`* | *`string`*. Leitura e gravação.
+
+#### Descrição
+
+O valor numérico é entendido como segundos, ou seja `1` é `1s`.
+
+
+#### Valor padrão
+
+ O valor padrão é:  `0`.
+ 
+#### Exemplo de código  - Usando a propriedade
+
+```javascript
+const performer = wS('span', 3,'easeOutInSine');
+
+   performer('height', 300, {
+      endDelay: 2,
+   });
+```
+
+### Propriedade autoDestroy
+
+Define se animação deve ser destruída após sua conclusão.
+
+#### Type
+
+*`boolean`*. Leitura e gravação.
+
+#### Valor padrão
+
+ O valor padrão é:  `false`.
+ 
+#### Exemplo de código - Usando a propriedade
+
+```javascript
+const performer = wS('span', 3,'easeOutInSine');
+
+   performer('height', 300, {
+      autoDestroy: true,
+   });
+```
+
+### Propriedade autoPlay
+
+Define se a animação deve iniciar automaticamente.
+
+#### Type
+
+*`boolean`*. Leitura e gravação.
+
+#### Valor padrão
+
+ O valor padrão é:  `true`.
+ 
+#### Exemplo de código - Usando a propriedade
+
+```javascript
+const performer = wS('span', 3,'easeOutInSine');
+
+   performer('height', 300, {
+      autoDestroy: false,
+   });
+```
+
+### Propriedade pauseDocHidden
+
+Define se a animação deve ser pausada quando o documento não estiver visível.
+
+#### Type
+
+*`boolean`*. Leitura e gravação.
+
+#### Valor padrão
+
+ O valor padrão é:  `true`.
+ 
+#### Exemplo de código - Usando a propriedade
+
+```javascript
+const performer = wS('span', 3,'easeOutInSine');
+
+   performer('height', 300, {
+      pauseDocHidden: false,
+   });
+```
+
+### Propriedade drive
+
+Define o deslocamento da animação.
+
+#### Type
+
+*`Array`* | *`string`* | *`function`*  . Leitura e gravação.
+
+#### Descrição
+
+Com esta propriedade podemos controlar nossas animações com maestria e facilidade. 
+
+Na lista abaixo esta os valores disponíveis ao utilizar a propriedade com um valor do tipo *`string`*, todos estes valores são redefinidos a cada novo ciclo da animação.
+
+*`string`* 
+: `normal`
+
+: Faz com a propriedade respeite o deslocamento definido na propriedade `dir`.
+
+: Partindo sempre da chave inicial, é sorteado uma chave que foi definida nos quadros-chave da animação, a chave sorteada será o progresso máximo a ser alcançado pelo atual ciclo da animação.
+
+: `random-offset`
+
+: Partindo sempre da chave inicial, é sorteado um deslocamento de `0` a `100`, o valor sorteado será o progresso máximo a ser alcançado pelo atual ciclo da animação.
+
+: `fluid-random-keys`
+
+: Partindo sempre do progresso alcançado no ciclo anterior, é sorteado uma chave que foi definida nos quadros-chave da animação,  a chave sorteada será o progresso máximo a ser alcançado pelo atual ciclo da animação.
+
+: `fluid-random-offset`
+
+: Partindo sempre do progresso alcançado no ciclo anterior, é sorteado um deslocamento de `0` a `100` ,  o valor sorteado será o progresso máximo a ser alcançado pelo atual ciclo da animação.
+
+
+#### Exemplo de código  1
+
+```javascript
+const performer = wS('span', 3,'easeOutInSine');
+
+   performer('height', 300, {
+      drive: 'fluid-random-offset',
+   });
+```
+
+Outro tipo que podemos  passar é um *`Array`*,  especificando claramente como queremos que a animação se desloque.
+
+#### Exemplo de código  2
+
+```javascript
+const performer = wS('span', 3,'easeOutInSine');
+
+   performer('height', 300, {
+      drive: [100,15,75, 0]
+   });
+```
+No exemplo acima, estaríamos definindo que nossa animação teria quatro interações, a na primeira  se deslocaria entre `0` e `100`, ou seja, animando por um ciclo completo. Já na segunda interação ela partiria do valor alcançado na interação anterior: `100`, para o próximo valor no *`Array`*: `15` , realizando então uma animação de reversão. Esta lógica permanece durante o ciclos da animação.
+
+#### Exemplo de código  3
+
+```javascript
+const performer = wS('span', 3,'easeOutInSine');
+performer('height', 300, {
+  drive: [
+    [/* Inicio: */ 50, /* Fim: */ 100],
+    15,
+    [/* Inicio: */ 20, /* Fim: */ 100],
+    0,
+  ],
+});
+```
+No exemplo acima, vemos que Também podemos definir o ponto de inicio e fim das interações.
+
+Caso definirmos a quantidade de interações maior que a quantidade de valores no  *`Array`*,  ao chegar ao último valor a contagem recomeçar, ou seja, parti do primeiro valor do *`Array`*.
+
+Podemos passar no último valor do  *`Array`*, o valor do tipo *`string`* (que já vimos acima), com isso passamos o controle de deslocamento da animação de volta para biblioteca.
+
+#### Exemplo de código  4
+
+```javascript
+const performer = wS('span', 3,'easeOutInSine');
+
+   performer('height', 300, {
+      drive: [100,15,75, 0, 'fluid-random-offset']
+   });
+```
+
+Pode ser útil fazer com que cada alvo da animação tenha o valor a ser alcançado pelo ciclo atual, determinado individualmente, para isso podemos passar uma função simples:
+
+#### Parâmetros recebidos
+
+`target`
+
+:  O alvo da animação.
+
+	Type
+	: *`object`*
+
+`index`
+
+: A posição do alvo na lista.
+
+	Type
+	: *`number`* 
+	
+`length`
+
+: O comprimento da lista.
+
+	Type
+	: *`number`* 
+
+
+#### Exemplo de código  5
+
+```javascript
+const performer = wS('span', 3,'easeOutInSine');
+
+   performer('height', 300, {
+      drive: () => 'fluid-random-offset',
+   });
+```
+
+#### Nota
+ No momento da declaração da animação,  ao usar esta propriedade com um valor diferente de `normal` e não definir um valor para a propriedade `loop`, a propriedade `loop` será definida automaticamente da seguinte forma:
+
+*`Array`*: 
+
+ Com o comprimento do *`Array`* passado.
+
+*`string`*:
+
+Será definida com o valor `Infinity`.
+
+Caso passe um   *`Array`* e seu último valor seja uma *`string`* o valor da propriedade *`loop`* será definido como `Infinity`.
+
+> No caso de definir o valor desta propriedade com um função a regra acima vale para o valor retornado da função.
+
+#### Valor padrão
+
+ O valor padrão é:  `normal`.
+
+
+### Propriedade easing
+
+Define como a animação irá progredir em um ciclo de sua duração.
+
+#### Type
+
+*`string`* | *`function`*. Leitura e gravação.
+
+#### Descrição
+
+Esta propriedade recebe o nome dado a uma função de easing ou uma função easing que recebe os seguintes parâmetros:
+
+`time`
+
+: *`number`*  . O tempo relacionado a animação(um valor de `0` a `1`).
+
+`target`
+
+: *`object`* . O alvo a ser atingindo.
+
+`index`
+
+: *`number`* . A posição do alvo no *`array`* de alvos.
+
+`length`
+
+: *`number`* . O comprimento do *`array`* de alvos.
+ 
+#### Exemplo de código 1 
+
+```javascript
+const performer = wS(
+  'span',
+  3,
+  'easeOutInSine' /* = easing */
+);
+   performer('width', 300);
+   
+   performer('height', 300, {
+      easing: 'linear',
+   });
+```
+
+#### Exemplo de código 2
+
+```javascript
+wS('span', 2)('height', 250, {
+  easing: (t, _el, i, total) => {
+    return Math.sin(t * (i + 1)) ** total;
+  },
+});
+```
+
+#### Valor padrão
+
+ O valor padrão é:  `linear`.
+
+### Propriedade round
+
+Arredonda os valores das propriedades.
+
+#### Type
+
+*`number`* . Leitura e gravação.
+
+#### Descrição
+
+Ao valores das propriedades são arredondados de acordo com o valor definido para esta propriedade. 
+
+#### Exemplo de código 
+
+```javascript
+const performer = wS(
+  'span',
+  3,
+  'easeOutInSine'
+);
+   performer('height', 300, {
+      round: 1,
+   });
+```
+
+O código acima faria com que a animação da propriedade `CSS height` só permitisse valores inteiros.

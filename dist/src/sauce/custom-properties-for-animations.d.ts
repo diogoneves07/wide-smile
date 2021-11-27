@@ -1,0 +1,10 @@
+import CreateSpecialPropertyCallbackfn from '../contracts/create-special-property-callbackfn';
+import CreateObserverPropertyCallbackfn from '../contracts/create-observer-property-callbackfn';
+declare type CustomProperties = 'special' | 'observed';
+export declare const CUSTOM_SPECIAL_PROPERTIES: Record<string, CreateSpecialPropertyCallbackfn>;
+export declare const OBSERVER_PROPERTIES: Record<string, CreateObserverPropertyCallbackfn>;
+export declare function createCustomProperty(propertyOrProperties: string | Record<string, CreateSpecialPropertyCallbackfn | CreateObserverPropertyCallbackfn>, callbackfn: CreateSpecialPropertyCallbackfn | CreateObserverPropertyCallbackfn | undefined, type: CustomProperties): void;
+export declare function removeCustomProperty(names: string[], type: CustomProperties): void;
+export declare function getCustomProperty(name: string, type: 'special'): CreateSpecialPropertyCallbackfn;
+export declare function getCustomProperty(name: string, type: 'observed'): CreateObserverPropertyCallbackfn;
+export {};

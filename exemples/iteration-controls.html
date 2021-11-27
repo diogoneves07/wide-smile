@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Iteration controls</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="./index.css" />
+
+    <script src="../wide-smile.min.js"></script>
+    <style>
+      #buttons-container {
+        float: left;
+        position: fixed;
+        bottom: 0;
+        background-color: #000;
+        opacity: 0.8;
+        border-top: 1px solid #c1c1c1;
+        height: 60px;
+        width: 100%;
+      }
+      #buttons-container button {
+        padding: 5px 10px;
+        font-size: 18px;
+        margin: 10px;
+        width: 90px;
+        color: rgb(139, 139, 11);
+        cursor: pointer;
+        border-radius: 0;
+        border-bottom: 4px solid #818181;
+      }
+      div {
+        border-radius: 0% 10% 60%;
+      }
+    </style>
+  </head>
+  <body>
+    <div></div>
+    <div></div>
+
+    <section id="buttons-container">
+      <button>revert()</button>
+      <button>go()</button>
+      <button>back()</button>
+      <button>jump()</button>
+      <button>speed()</button>
+      <button>dirTo()</button>
+    </section>
+
+    <script>
+      var animation = wS(
+        'div',
+        2.5,
+        Infinity,
+        'alternate'
+      )({
+        left: [-400, 300],
+        top: [200, 300],
+      });
+      var buttons = document.getElementsByTagName('button');
+      window.addEventListener('click', function (e) {
+        var v;
+        animation.pause();
+        switch (e.target) {
+          case buttons[0]:
+            animation.revert();
+            break;
+          case buttons[1]:
+            v = prompt('Pass a number between 0 and 1. Example: 0.5');
+            if (v) animation.go(Number(v));
+            break;
+          case buttons[2]:
+            v = prompt('Pass a number between 0 and 1. Example: 0.5');
+            if (v) animation.back(Number(v));
+            break;
+          case buttons[3]:
+            v = prompt('Pass a number between 0 and 1. Example: 0.5');
+            if (v) animation.jump(Number(v));
+            break;
+          case buttons[4]:
+            v = prompt('Pass a number. Example: -0.5');
+            if (v) animation.speed(Number(v));
+            break;
+          case buttons[5]:
+            v = prompt(
+              'Pass a string example: "normal" | "reverse" | "alternate" | "alternate-reverse" '
+            );
+            if (v) animation.dirTo(v);
+            break;
+          default:
+            break;
+        }
+        animation.resume();
+      });
+    </script>
+  </body>
+</html>

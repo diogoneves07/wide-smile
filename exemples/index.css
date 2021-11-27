@@ -1,0 +1,25 @@
+body,
+html {
+  margin: 0;
+  padding: 0;
+  float: left;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+body {
+  background-color: #000;
+  text-align: center;
+  align-items: center;
+  vertical-align: center;
+}
+div {
+  display: inline-block;
+  position: relative;
+  width: 110px;
+  height: 100px;
+  background-color: rgb(87, 87, 87);
+  margin: 50px;
+  border-radius: 100%;
+  top: 80px;
+}

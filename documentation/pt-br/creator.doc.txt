@@ -1,0 +1,575 @@
+## Creator Functions
+
+São funções que contêm propriedades e métodos e tem como principal objetivo criar **Performers**, definir padrões e criar outros **Creators**. Também são capazes de aplicar métodos em todos os **Performers** que forem criados por eles e por consequência mudam o comportamento das animações.  
+
+### Parâmetro formal
+
+`options`
+
+:  Um objeto de propriedades relacionadas a animação como por exemplo: duração, alvos, direção e outras.
+
+	Type
+	: *`object`* 
+	
+	Uso
+	: Obrigatório
+
+
+>  As propriedades disponíveis são detalhadas logo abaixo, você pode clicar aqui para ver
+
+#### Exemplo de código
+
+```javascript
+	wS({
+		targets:'div', 
+		dur:2
+	});
+```
+
+### Parâmetros Atalho
+
+Podemos passar múltiplos argumentos em que cada um será aplicado as determinadas propriedades de acordo com as regras abaixo:
+
+- O primeiro argumento deve ser sempre um valor destinado a propriedade `targets`.
+
+ A partir do primeiro argumento podemos passar valores de forma não ordenada pela sua posição, mas sim pelo seu tipo: 
+ 
+ - Os argumentos do tipo *`string`* são aplicados da seguinte forma: caso o valor seja compatível a propriedade `dir` então ele será aplicado a ela, se não, será aplicado a propriedade  `easing`.
+ 
+- O primeiro argumento do tipo *`number`* é aplicado a propriedade `dur` e o segundo a propriedade `loop`. 
+
+- O argumento do tipo *`function`* é aplicado a propriedade `easing`. 
+
+> Caso use o atalho e passe um valor destinado a propriedade `loop`, em que a intenção será fazer com que a animação seja executada infinitamente não use *`true`*,  use  *`Infinity`*.
+
+- O primeiro argumento do tipo *`boolean`* é aplicado a propriedade `autoPlay`.
+
+- Podemos também passar um objeto de opções, junto ao outros argumentos.
+
+#### Exemplo de código 1
+
+```javascript
+  wS( 
+     'div' /** = targets */,
+      2 /** = dur */,
+     'easeOutInSine' /** = easing */
+	);
+```
+
+#### Exemplo de código 2
+
+```javascript
+  wS( 
+     'div' /** = targets */,
+      2 /** = dur */,
+     'easeOutInSine' /** = easing */,
+     {
+       drive: 'fluid-random-offset'
+     }
+	);
+```
+
+>  Pode ser confuso em um primeiro momento, mas ao começar a construir animações verá que faz sentido.
+
+
+#### Descrição
+
+Ao chamar uma função **Creator** passando como argumentos as propriedades, teremos como retorno uma função **Performer**, as animações criadas por ela herdara as propriedades e valores definidos na chamada de função  **Creator**.
+
+
+## Creators API
+
+Abaixo esta os métodos e propriedades disponíveis apenas nesta API.
+
+### Creators global 
+
+As funções **Creators** expõe um objeto que é compartilhado por todas, este objeto contém métodos e propriedades extremamente importantes.
+
+
+#### Acessando o objeto
+
+Existe duas formas de ter acesso as propriedades e métodos do objeto em questão, através da propriedade *`global`* ou pela chamada de uma função **Creator** sem a passagem de argumentos.
+
+##### Exemplo de código - Propriedade global
+
+```javascript
+const creatorsGlobalObject = wS.global;
+```
+
+##### Exemplo de código - Chamada de função sem argumentos.
+
+```javascript
+const creatorsGlobalObject = wS();
+```
+####  Método new()
+
+Cria e  retorna uma nova função **Creator**.
+
+##### Descrição
+
+Esta nova função **Creator** pode ser utilizada normalmente, além do benefício de isolar as animações criadas  por ela.
+
+##### Exemplo de código
+
+```javascript
+const myCreator = wS().new();
+```
+#### Propriedade version
+
+A versão da biblioteca que está em uso.
+
+##### Type
+
+*`string`*. Apenas leitura.
+
+
+#### Propriedade asyncLoading
+
+O modo de carregamento das animações.
+
+##### Type
+
+*`boolean`*. Leitura e gravação.
+
+##### Descrição
+
+Define se o carregamento das animações deve ocorrer de forma assíncrona.
+
+`true`
+:  As animações são carregadas de forma assíncrona, em que normalmente as mais simples são carregadas primeiro.
+
+
+`false`
+
+:  As animações são carregadas de forma síncrona, ou seja, o carregamento é feito de acordo com a ordem de chegada.
+
+
+##### Valor padrão
+
+ O valor padrão é: `false`.
+
+#### Propriedade all
+
+Um array que contém todas as funções  **Creators**.
+
+##### Type
+
+*`Array`*. Apenas leitura.
+
+##### Descrição
+
+As funções  **Creators** estão ordenadas de acordo com a ordem de suas criações.
+
+#### Propriedade specials
+
+Um objeto que contém todas as propriedades especiais.
+
+##### Type
+
+*`object`*. Apenas leitura.
+
+##### Descrição
+
+As propriedades especiais estão organizadas de modo chave e valor, onde a chave é o nome definido para a propriedade e o valor é a função disponibilizada.
+
+
+#### Propriedade observeds
+
+Um objeto que contém todas as propriedades observadas.
+
+##### Type
+
+*`object`*. Apenas leitura.
+
+##### Descrição
+
+As propriedades observadas estão organizadas de modo chave e valor, onde a chave é o nome definido para a propriedade e o valor é a função disponibilizada.
+
+#### Método newEasing()
+Cria ou sobrescreve uma função easing customizada.
+
+##### Parâmetros 
+
+`name`
+
+:  Um nome para uso da nova função easing.
+
+	Type
+	: *`string`* 
+	
+	Uso
+	: Obrigatório
+
+`callback`
+
+: A função a ser executada para calcular os valores.
+
+	Type
+	: *`function`* 
+	
+	Uso
+	: Obrigatório
+##### Descrição
+
+A função passada como `callback`  recebe alguns parâmetros:
+
+`time`
+
+: *`number`* . O tempo relacionado a animação(um valor de `0` a `1`).
+
+`target`
+
+: *`object`*. O alvo a ser atingindo.
+
+`index`
+
+: *`number`*. A posição do alvo no *`array`* de alvos.
+
+`length`
+
+: *`number`*. O comprimento do *`array`* de alvos.
+
+
+##### Exemplo de código
+
+```javascript
+// Criando a propriedade observada.
+
+wS().newEasing('myEasing', (t, _el, i, total) => {
+  return Math.sin(t * (i + 1)) ** total;
+});
+
+wS('span', 10, 'myEasing')('height', 250);
+```
+#### Método newObservedProperty()
+
+Cria ou sobrescreve uma propriedade observada. 
+
+Uma propriedade observada não é aplicada aos alvos da animação pela biblioteca e sim pela função que o autor da propriedade disponibiliza, cabe a WideSmile chamar a função no momento correto e passar argumentos que vão deixar extremamente fácil para o autor realizar a aplicação.
+
+##### Parâmetros 1
+
+`propertyName`
+
+:  O nome da nova propriedade a ser criada.
+
+	Type
+	: *`string`* 
+	
+	Uso
+	: Obrigatório
+
+`callback`
+
+: A função a ser executada sempre que a propriedade for utilizada por uma animação.
+
+	Type
+	: *`function`* 
+	
+	Uso
+	: Obrigatório
+
+```javascript
+// Criando uma propriedade observada.
+
+wS().newObservedProperty('AniText',
+	(value, percentageCompleted, target) => {
+	  const at = (value.length / 100) * percentageCompleted;
+	  target.textContent = value.substring(0, at);
+	});
+
+```
+##### Parâmetros 2
+
+`propertiesAndCallbacks`
+
+:  Um objeto com propriedades chave-valor onde a chave é o nome da nova propriedade e o valor e o `callback` a ser usado.
+
+	Type
+	: *`object`* 
+	
+	Uso
+	: Obrigatório
+	
+##### Exemplo de código
+
+```javascript
+// Criando a propriedade observada.
+wS().newObservedProperty({
+  AniText: (value, percentageCompleted, target) => {
+    const at = (value.length / 100) * percentageCompleted;
+    target.textContent = value.substring(0, at);
+  },
+  // Poderíamos continuar adicionando mais propriedades...
+});
+```
+
+##### Descrição
+
+A função passada como `callback` da propriedade especial funciona como uma fábrica ela recebe alguns parâmetros:
+
+`value`
+
+: *`any`* . O valor definido para propriedade observada.
+
+`percentageCompleted`
+: *`number`*. A porcentagem do valor definido para a propriedade observada que  que está em processo de intercalação.
+
+`target`
+
+: *`object`*. O alvo a ser atingindo.
+
+`index`
+
+: *`object`*. A posição do alvo na lista de alvos.
+##### Exemplo de código
+
+```javascript
+// Criando a propriedade observada.
+
+wS().newObservedProperty('AniText',
+(value, percentageCompleted, target) => {
+
+  // A quantidade de caracteres que já podem ser adicionados.
+  const at = (value.length / 100) * percentageCompleted;
+  
+  // Adicionando os caracteres ao alvo.
+  target.textContent = value.substring(0, at);
+});
+```
+##### Explicando o código 
+
+No exemplo a cima estamos criado uma propriedade observada, note que, a nossa função `callback` esta esperando pelo parâmetro  `value` definido como uma *`string`*. Para criar uma animação de texto utilizamos o valor do parâmetro `percentageCompleted` que é a porcentagem do valor que foi atribuído a `value` que de acordo com a biblioteca deve ser aplicado. 
+
+O simples código acima, faria com que podemos usar uma nova propriedade como qualquer outra. Esta faria a animação de inserção de textos aos alvos da animação.
+
+##### Exemplo de código - Usando a propriedade
+```javascript
+wS('span', 1, 'easeOutInSine')
+	  ([
+		  { AniText:''},
+		  { 0: 'Hello'},
+		  { 0: 'Hello Word!!!'}
+	  ]);
+```
+##### Explicando o código 
+
+O exemplo de uso da propriedade observada a cima é muito simples, mas há coisas importantes a ser explicadas. Note que neste  exemplo separarmos a animação em quadros-chave, vamos explicar o comportamento de dois parâmetros que a função  `callback` da propriedade observada recebe, são eles `value` e `percentageCompleted`. 
+
+-  Na primeira intercalação da animação o valor de `value` seria: `''` e o de `percentageCompleted`: `100`.
+
+- Agora vamos simular seus valores quando a animação estivesse `25%` concluída, o valor de `value` seria: `'Hello'` e o de `percentageCompleted`: `50`.
+
+O valor de `percentageCompleted` está relacionado ao valor atual de `value` que está em processo de intercalação e indica a porcentagem desse valor que deve ser aplicado. Com isso podemos trabalhar a aplicação da propriedade de acordo com os quadros definidos na animação.
+
+##### Returns
+
+A função  **Creator** que o invocou.
+
+#### Método deleteObservedProperty()
+
+Remove definitivamente uma ou mais propriedades observadas.
+
+##### Parâmetros
+
+`propertiesNames`
+
+:  O nome da propriedade a ser removida.
+
+	Type
+	: *`string`* 
+	
+	Uso
+	: Obrigatório
+	
+##### Exemplo de código
+
+```javascript
+wS().deleteObservedProperty('zoom');
+// or
+wS().deleteObservedProperty('zoom', 'propertyName' /*...*/);
+```
+
+##### Descrição
+
+Este método pode receber múltiplos argumentos.
+
+##### Returns
+
+A função  **Creator** que o invocou.
+
+
+#### Método newSpecialProperty()
+
+Cria ou sobrescreve uma propriedade especial. 
+
+Uma propriedade especial pode ser criada a partir da junção de outras propriedades. Podemos fazer uso dela também para executar uma lógica para calcular determinados valores.
+
+##### Parâmetros 1
+
+`propertyName`
+
+:  O nome da nova propriedade a ser criada.
+
+	Type
+	: *`string`* 
+	
+	Uso
+	: Obrigatório
+
+`callback`
+
+: A função a ser executada sempre que a propriedade for utilizada por uma animação.
+
+	Type
+	: *`function`* 
+	
+	Uso
+	: Obrigatório
+
+##### Exemplo de código
+
+```javascript
+// Criando a propriedade especial.
+wS().newSpecialProperty('Size', (value) => {
+  return {
+    width: value,
+    height: value,
+  };
+});
+```
+##### Parâmetros 2
+
+`propertiesAndCallbacks`
+
+:  Um objeto com propriedades chave-valor onde a chave é o nome da nova propriedade e o valor e o `callback` a ser usado.
+
+	Type
+	: *`object`* 
+	
+	Uso
+	: Obrigatório
+	
+##### Exemplo de código
+
+```javascript
+// Criando a propriedade especial.
+wS().newSpecialProperty({
+  Size: (value) => {
+    return {
+      width: value,
+      height: value,
+    };
+  },
+  // Poderíamos continuar adicionando mais propriedades...
+});
+```
+##### Descrição
+
+A função passada como `callback` da propriedade especial funciona como uma fábrica ela recebe alguns argumentos e deve retornar um objeto de propriedades. Abaixo esta os parâmetros que a função recebe.
+
+`value`
+
+: *`string`*. O valor definido para propriedade especial.
+
+`target`
+
+: *`object`*. O alvo a ser atingindo.
+
+`index`
+
+: *`number`*. A posição do alvo na lista de alvos.
+
+##### Exemplo de código
+
+```javascript
+// Criando a propriedade especial.
+wS().newSpecialProperty('Size', (value) => {
+  return {
+    width: value,
+    height: value,
+  };
+});
+```
+
+O simples código acima, faria com que podemos usar a nova propriedade como qualquer outra. Esta faria a animação das propriedades *`CSS width`* e *`height`* ao mesmo tempo.
+
+##### Exemplo de código - Usando a propriedade
+```javascript
+	wS('div', 2)('Size', 200);
+```
+
+##### Returns
+
+A função  **Creator** que o invocou.
+
+#### Método deleteSpecialProperty()
+
+Remove definitivamente uma ou mais propriedades especiais.
+
+##### Parâmetros
+
+`propertiesNames`
+
+:  O nome da propriedade a ser removida.
+
+	Type
+	: *`string`* 
+	
+	Uso
+	: Obrigatório
+
+##### Exemplo de código
+
+```javascript
+wS().deleteSpecialProperty('size');
+// or
+wS().deleteSpecialProperty('size', 'propertyName' /*...*/);
+```
+
+##### Descrição
+
+Este método pode receber múltiplos argumentos.
+
+##### Returns
+
+A função  **Creator** que o invocou.
+
+### Creators Individual 
+
+Os métodos e propriedades a seguir são únicos para cada **Creator**.
+
+#### Propriedade dfs
+
+Um objeto com todas as propriedades  de comportamento e seus valores padrão para as animações.
+
+##### Type
+
+*`object`*. Leitura e gravação.
+
+##### Descrição
+
+Ao criar uma função **Performer** ela herda da função **Creator** que a criou, as propriedades  que não forem definidas explicitamente para ela, estas propriedades são herdadas através desta propriedade.
+
+##### Exemplo de código
+
+```javascript
+const defaults = wS.dfs;
+```
+#### Propriedade performers
+
+Um *`Array`* com todas as funções **Performer** cridas pela função **Creator**.
+
+##### Type
+
+*`Array`*. Leitura e gravação.
+
+##### Descrição
+
+As funções  **Performers** estão ordenadas de acordo com a ordem de suas criações.
+
+##### Exemplo de código
+
+```javascript
+const performers= wS.performers;
+```
