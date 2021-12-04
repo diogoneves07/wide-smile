@@ -21,7 +21,6 @@ export default interface AnimationAuxiliaryObject {
     countDriveloop: number;
     dataLoadingState: 'loading' | 'load' | 'reload' | 'stoped';
     easing: EasingFunction;
-    progress: AnimationInstance['progress'];
     lastStartProgress: number;
     animationId: AnimationInstance['animationId'];
     animationAlreadyStarted: boolean;
@@ -32,7 +31,7 @@ export default interface AnimationAuxiliaryObject {
     };
     animationLoadingTime: number;
     remainingDelayAnimation: number;
-    animationInstance: AnimationInstance;
+    animation: AnimationInstance;
     valuesOfThePropertiesBeforeAnimating: {
         direct: Record<string, string>;
         style: Record<string, string>;

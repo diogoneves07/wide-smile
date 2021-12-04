@@ -8,6 +8,7 @@
   "umd:name": "wS",
   "types": "./dist/wide-smile.d.ts",
   "license": "MIT",
+  "description": "JavaScript animation engine",
   "keywords": [
     "wide-smile",
     "animation",
@@ -18,7 +19,15 @@
     "canvas"
   ],
   "repository": "diogoneves07/wide-smile",
-  "description": "JavaScript animation engine",
+  "files": [
+    "wide-smile.js",
+    "wide-smile.js.map",
+    "wide-smile.es.js",
+    "wide-smile.es.js.map",
+    "wide-smile.min.js",
+    "wide-smile.min.js.map",
+    "./dist/**"
+  ],
   "scripts": {
     "test": "jest",
     "build": "webpack",

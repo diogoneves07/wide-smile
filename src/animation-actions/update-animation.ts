@@ -10,14 +10,14 @@ import setAnimationProgress from '../animation-engine/set-animation-progress';
 export default function updateAnimation(
   animationAuxiliaryObject: AnimationAuxiliaryObject
 ): AnimationAuxiliaryObject {
-  const { animationInstance } = animationAuxiliaryObject;
+  const { animation } = animationAuxiliaryObject;
 
-  let progress = animationInstance.progressValue;
+  let progress = animation.progressValue;
   progress = Math.max(progress, 0);
   progress = Math.min(progress, MAX_KEYFRAME);
 
   const timeRunningIteration =
-    (Math.max(toMs(animationInstance.dur), 1) / 100) * progress;
+    (Math.max(toMs(animation.dur), 1) / 100) * progress;
 
   Object.assign(animationAuxiliaryObject, {
     startTimeOfTheIteration: getTimeNow() - timeRunningIteration,
@@ -42,14 +42,14 @@ export default function updateAnimation(
     countDriveloop: animationAuxiliaryObject.countDriveloop - 1,
   });
 
-  Object.assign(animationInstance, {
+  Object.assign(animation, {
     progress,
     max: animationProgressObject.maxProgress,
   });
 
   Object.assign(
     animationAuxiliaryObject,
-    propertiesForAnimationAuxiliaryObject(animationInstance)
+    propertiesForAnimationAuxiliaryObject(animation)
   );
 
   return animationAuxiliaryObject;

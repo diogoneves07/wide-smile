@@ -2,14 +2,10 @@ import { ListenersEventsName } from './listeners-events-name';
 export default interface AnimationsPropotype {
     /**
      * Load the animation.
-     *
-     * @argument callbackfn
-     *
-     * A function to be called when the loading process is completed.
      */
     load(): this;
     /**
-     * Start the animation.
+     * Play the animation.
      */
     play(): this;
     /**
@@ -69,7 +65,7 @@ export default interface AnimationsPropotype {
      * @param callbackfn
      * The call-back
      */
-    on(typeOfListener: ListenersEventsName, callbackfn: (this: this, typeOfListener: string, animationInstance: this) => unknown): this;
+    on(typeOfListener: ListenersEventsName, callbackfn: (this: this, typeOfListener: string, animation: this) => unknown): this;
     /**
      * Remove animation listener.
      *

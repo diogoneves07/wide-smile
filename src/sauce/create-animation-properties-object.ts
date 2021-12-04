@@ -1,5 +1,5 @@
 import hasOwnProperty from '../utilities/has-own-property';
-import AnimableProperties from '../contracts/animable-properties';
+import AllAnimableProperties from '../contracts/animable-properties';
 import isDirValue from '../animation-mount/is-dir-value';
 import ValuesToAnimateProperty from '../contracts/values-to-animate-property';
 import PropertiesToAnimateObject from '../contracts/properties-to-animate-object';
@@ -59,7 +59,7 @@ export default function createAnimationPropertiesObject(
   animate:
     | PropertiesToAnimateObject
     | Keyframes
-    | AnimableProperties
+    | AllAnimableProperties
     | ValuesToAnimateProperty[],
   parametersToAnimateOrPropertyValue?:
     | AnimationOptions
@@ -139,7 +139,6 @@ export default function createAnimationPropertiesObject(
       animationProperties.loop = true;
     }
   }
-
   if (
     animationProperties.dir &&
     animationProperties.loop === DEFAULTS_ANIMATION_PROPERTIES_VALUES.loop
@@ -148,5 +147,6 @@ export default function createAnimationPropertiesObject(
       animationProperties.loop = 2;
     }
   }
+
   return animationProperties;
 }

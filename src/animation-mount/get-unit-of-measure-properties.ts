@@ -45,7 +45,11 @@ export function getUnitOfMeasureForPropertyValue(
 
         if (!getUnit(v) && typeof parseFloat(v) === 'number') {
           if (hasOwnProperty(knownProperties, propertyName)) {
-            return v + knownProperties[propertyName];
+            return (
+              parseFloat(v) +
+              knownProperties[propertyName] +
+              (v.indexOf(',') > -1 ? ',' : '')
+            );
           }
 
           for (let index = 0; index < possibleUnitsLength; index += 1) {
@@ -63,10 +67,12 @@ export function getUnitOfMeasureForPropertyValue(
 
           DIV_ELEMENT_STYLE[propertyNameCSS] = '';
         }
+
         return value;
       })
       .join(' ');
   }
+
   return propertyValue;
 }
 export function getUnitOfMeasureForPropertiesValues<T>(

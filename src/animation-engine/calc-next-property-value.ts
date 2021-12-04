@@ -1,17 +1,21 @@
-import { isRgb } from '../based-implementations/colors';
 import AnimationAuxiliaryObject from '../contracts/animation-auxiliary-object';
-import splitCSSProperties from '../utilities-style/split-css-properties';
 import getUnit from '../utilities/get-unit';
 import { trimString } from '../utilities/handle-string';
 
-function removeSpaces(a: string[]) {
-  return a.filter((v) => v !== ' ');
-}
-function propertySupportsFloatingValue(value: string) {
-  if (isRgb(value)) {
-    return false;
+function treatSupportsFloatingValue(propertyValues: string[]) {
+  const values = propertyValues;
+  const hasRGB = values.indexOf('rgb');
+  if (hasRGB > -1) {
+    let index = hasRGB;
+    do {
+      const v = Number(trimString(values[index]));
+      if (!Number.isNaN(v)) {
+        values[index] = Math.round(v) + (getUnit(values[index]) || '');
+      }
+      index += 1;
+    } while (values[index] !== ')');
   }
-  return true;
+  return values;
 }
 export default function calcNextPropertyValue(
   propertyObject: AnimationAuxiliaryObject['animateProperties'][number],
@@ -20,20 +24,19 @@ export default function calcNextPropertyValue(
   easingFn: AnimationAuxiliaryObject['easing'],
   round: number
 ): string {
-  const startValue = propertyObject.keyframes[fromAndTo[0]] as string;
-  const endValue = propertyObject.keyframes[fromAndTo[1]] as string;
-  const splitedStartValues: (string | number)[] = removeSpaces(
-    splitCSSProperties(startValue)
-  );
+  const startValues = propertyObject.keyframes[fromAndTo[0]] as string[];
 
-  const splitedEndValues = removeSpaces(splitCSSProperties(endValue));
-  let newValue = '';
+  const endValues = propertyObject.keyframes[fromAndTo[1]] as string[];
 
-  splitedEndValues.forEach((value, index) => {
-    const startValueIndex = trimString(splitedStartValues[index] as string);
+  const newValue: string[] = [];
+
+  endValues.forEach((value, index) => {
+    const startValueIndex = startValues[index]
+      ? trimString(startValues[index] as string)
+      : '0';
     let result;
 
-    if (!Number.isNaN(parseFloat(startValueIndex))) {
+    if (!Number.isNaN(parseFloat(value))) {
       const unitOfMeasure = getUnit(value) || getUnit(startValueIndex) || '';
 
       const fromNumber = parseFloat(startValueIndex);
@@ -50,18 +53,13 @@ export default function calcNextPropertyValue(
       if (round) {
         result = Math.round(result * round) / round;
       }
-      if (
-        !propertySupportsFloatingValue(startValue) ||
-        !propertySupportsFloatingValue(endValue)
-      ) {
-        result = Math.round(result as number);
-      }
+
       result = ` ${result.toString() + unitOfMeasure}`;
     } else {
       result = value;
     }
-    newValue += `${result}`;
+    newValue.push(result);
   });
 
-  return trimString(newValue);
+  return treatSupportsFloatingValue(newValue).join('');
 }

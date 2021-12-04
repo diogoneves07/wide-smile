@@ -22,7 +22,15 @@
         .cycle(true, 'alternate')
         ._('top', 200)
         ._('backgroundColor', function () {
-          return `rgb( ${getRandomRGB()}, ${getRandomRGB()}, ${getRandomRGB()})`;
+          return (
+            'rgb( ' +
+            getRandomRGB() +
+            ', ' +
+            getRandomRGB() +
+            ', ' +
+            getRandomRGB() +
+            ')'
+          );
         })
         ._('left', 200);
     </script>

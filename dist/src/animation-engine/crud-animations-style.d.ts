@@ -7,5 +7,5 @@ export declare function applyAnimationsStyleToElement(animateProperties: Animati
  * Removes the style added by the animation.
  */
 export declare function removeAnimationStyle(requiredAnimationProperties: Pick<AnimationAuxiliaryObject, 'animationId' | 'valuesOfThePropertiesBeforeAnimating'> & {
-    animationInstance: Pick<AnimationInstance, 'removeChanges' | 'targets'>;
+    animation: Pick<AnimationInstance, 'removeChanges' | 'targets'>;
 }): void;

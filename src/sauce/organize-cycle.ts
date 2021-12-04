@@ -9,9 +9,9 @@ import PerformerFn from '../contracts/performer-fn';
 import { ANIMATION_STATES, MAX_KEYFRAME } from './constants';
 import iterationControlMethods from './iteration-control-methods';
 
-function revertAnimationProgress(animationInstance: AnimationInstance) {
+function revertAnimationProgress(animation: AnimationInstance) {
   const animationAuxiliaryObject = getAnimationAuxiliaryObject(
-    animationInstance.animationId
+    animation.animationId
   );
 
   if (animationAuxiliaryObject) {
@@ -20,25 +20,25 @@ function revertAnimationProgress(animationInstance: AnimationInstance) {
       animationAuxiliaryObject.duration,
       undefined,
       (1 / MAX_KEYFRAME) * lastStartProgress,
-      animationInstance,
+      animation,
       true // apply delay
     );
   }
 }
-function runAnimation(animationInstance: AnimationInstance) {
-  if (animationInstance.state === ANIMATION_STATES[0]) {
-    animationInstance.play();
-  } else if (animationInstance.state === ANIMATION_STATES[2]) {
-    revertAnimationProgress(animationInstance);
+function runAnimation(animation: AnimationInstance) {
+  if (animation.state === ANIMATION_STATES[0]) {
+    animation.play();
+  } else if (animation.state === ANIMATION_STATES[2]) {
+    revertAnimationProgress(animation);
   }
 }
 function runAfter(
-  animationInstance: AnimationInstance,
+  animation: AnimationInstance,
   otherAnimationInstance: AnimationInstance
 ) {
-  animationInstance.on('end', function f() {
+  animation.on('end', function f() {
     runAnimation(otherAnimationInstance);
-    animationInstance.off('end', f);
+    animation.off('end', f);
   });
 }
 
@@ -103,22 +103,22 @@ export function repeatCycleExecution(
 
 export function organizeCycleSequence(
   animationPerformer: PerformerFn,
-  animationInstance: AnimationInstance,
+  animation: AnimationInstance,
   instanceToLink?: AnimationInstance,
   typeOfLink?: 'afterAnimation' | 'together'
 ): void {
   const cycleOptions = animationPerformer.$hidden.cycleOptions;
-  if (cycleOptions && animationInstance.isInCycle) {
+  if (cycleOptions && animation.isInCycle) {
     if (!cycleOptions.animationInstancesInCycle) {
       cycleOptions.animationInstancesInCycle = [];
     }
     cycleOptions.numberOfAnimationsToComplete += 1;
-    cycleOptions.animationInstancesInCycle.unshift(animationInstance);
+    cycleOptions.animationInstancesInCycle.unshift(animation);
 
     addAnimationEventListener(
       LISTENERS_NAMES[11],
       () => repeatCycleExecution(cycleOptions),
-      animationInstance
+      animation
     );
 
     if (!cycleOptions.sequence) {
@@ -131,19 +131,19 @@ export function organizeCycleSequence(
         const bucket = cycleOptions.sequence[index];
         if (typeOfLink === 'together') {
           if (bucket.indexOf(instanceToLink) > -1) {
-            bucket.push(animationInstance);
+            bucket.push(animation);
             break;
           }
         } else if (
           typeOfLink === 'afterAnimation' &&
           bucket.indexOf(instanceToLink) > -1
         ) {
-          cycleOptions.sequence.splice(index, 0, [animationInstance]);
+          cycleOptions.sequence.splice(index, 0, [animation]);
           break;
         }
       }
     } else {
-      cycleOptions.sequence.push([animationInstance]);
+      cycleOptions.sequence.push([animation]);
     }
   }
 }

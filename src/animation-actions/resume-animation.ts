@@ -13,11 +13,9 @@ export default function resumeAnimation(
     requiredAnimationProperties.animationId
   );
   if (animationAuxiliaryObject) {
-    const u = animationAuxiliaryObject.animationInstance;
+    const u = animationAuxiliaryObject.animation;
 
-    if (
-      animationAuxiliaryObject.animationInstance.state === ANIMATION_STATES[3]
-    ) {
+    if (animationAuxiliaryObject.animation.state === ANIMATION_STATES[3]) {
       u.state = ANIMATION_STATES[1];
 
       startAnimationExecutionCycle(animationAuxiliaryObject, true);

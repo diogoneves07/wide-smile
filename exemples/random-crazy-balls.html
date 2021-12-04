@@ -24,7 +24,15 @@
       )(
         {
           backgroundColor: function () {
-            return `rgb( ${getRandomRGB()}, ${getRandomRGB()}, ${getRandomRGB()})`;
+            return (
+              'rgb( ' +
+              getRandomRGB() +
+              ', ' +
+              getRandomRGB() +
+              ', ' +
+              getRandomRGB() +
+              ')'
+            );
           },
           scale: '2',
         },

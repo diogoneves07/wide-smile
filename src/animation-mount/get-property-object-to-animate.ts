@@ -1,4 +1,5 @@
 import AnimationAuxiliaryObject from '../contracts/animation-auxiliary-object';
+import splitCSSProperties from '../utilities-style/split-css-properties';
 import customForIn from '../utilities/custom-for-in';
 import hasOwnProperty from '../utilities/has-own-property';
 import ordernateByGrowingValues from '../utilities/ordernate-by-growing-values';
@@ -25,6 +26,17 @@ export function recyclePropertyObjectToAnimate(
       POOL_PROPERTY_OBJECTS.push(o);
     });
   }
+}
+
+function removeSpaces(a: string[]) {
+  return a.filter((v) => v !== ' ');
+}
+function splitKeyframePropertyValue(keyframes: Record<string, string>) {
+  const n: Record<string, string[]> = {};
+  customForIn(keyframes, (keyframeValue, key) => {
+    n[key] = removeSpaces(splitCSSProperties(keyframeValue));
+  });
+  return n;
 }
 type PropertyObject = AnimationAuxiliaryObject['animateProperties'][number];
 export default function getPropertyObjectToAnimate(
@@ -54,7 +66,7 @@ export default function getPropertyObjectToAnimate(
       const o = (POOL_PROPERTY_OBJECTS.shift() || {}) as PropertyObject;
       o.target = target;
       o.index = index;
-      o.keyframes = kf;
+      o.keyframes = splitKeyframePropertyValue(kf);
       o.keyframesKeys = ordernateByGrowingValues(Object.keys(kf));
       o.propertyName = propertyName;
       o.type = type;

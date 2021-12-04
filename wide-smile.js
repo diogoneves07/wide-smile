@@ -1,4 +1,15 @@
-/******/ (function() { // webpackBootstrap
+/* wide-smile (C) 2021, Diogo Neves<diogoneves07 - GitHub>. Licensed under the MIT license */
+(function webpackUniversalModuleDefinition(root, factory) {
+	if(typeof exports === 'object' && typeof module === 'object')
+		module.exports = factory();
+	else if(typeof define === 'function' && define.amd)
+		define([], factory);
+	else if(typeof exports === 'object')
+		exports["wS"] = factory();
+	else
+		root["wS"] = factory();
+})(self, function() {
+return /******/ (function() { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
 /***/ "./src/animation-actions/destroy-animation.ts":
@@ -21,9 +32,9 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function removeInstance(array, animationInstance) {
+function removeInstance(array, animation) {
   return array.filter(function (i) {
-    return i !== animationInstance;
+    return i !== animation;
   });
 }
 /**
@@ -31,19 +42,19 @@ function removeInstance(array, animationInstance) {
  */
 
 
-function destroyAnimation(animationInstance) {
-  var aInstance = animationInstance;
+function destroyAnimation(animation) {
+  var aInstance = animation;
   var performerProperties = aInstance.performer.$hidden;
   var cycleOptions = performerProperties.cycleOptions;
   if (!aInstance.state) return;
   aInstance.state = _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[4];
   var animationAuxiliaryObject = (0,_animation_mount_crud_animation_objects__WEBPACK_IMPORTED_MODULE_3__.removeAnimationAuxiliaryObject)(aInstance.animationId);
-  performerProperties.animationInstances = removeInstance(performerProperties.animationInstances, animationInstance);
-  performerProperties.independentAnimations = removeInstance(performerProperties.independentAnimations, animationInstance);
+  performerProperties.animationInstances = removeInstance(performerProperties.animationInstances, animation);
+  performerProperties.independentAnimations = removeInstance(performerProperties.independentAnimations, animation);
 
   if (cycleOptions) {
     if (cycleOptions.animationInstancesInCycle) {
-      cycleOptions.animationInstancesInCycle = removeInstance(cycleOptions.animationInstancesInCycle, animationInstance);
+      cycleOptions.animationInstancesInCycle = removeInstance(cycleOptions.animationInstancesInCycle, animation);
     }
 
     if (cycleOptions.sequence) {
@@ -51,7 +62,7 @@ function destroyAnimation(animationInstance) {
       var l = sequence.length;
 
       for (var index = 0; index < l; index += 1) {
-        sequence[index] = removeInstance(sequence[index], animationInstance);
+        sequence[index] = removeInstance(sequence[index], animation);
       }
 
       cycleOptions.sequence = sequence.filter(function (a) {
@@ -92,13 +103,13 @@ function progressAnimationGoTo(animationId, newProgress, applyDelay) {
   var animationAuxiliaryObject = (0,_animation_mount_crud_animation_objects__WEBPACK_IMPORTED_MODULE_2__.getAnimationAuxiliaryObject)(animationId);
 
   if (animationAuxiliaryObject) {
-    var animationInstance = animationAuxiliaryObject.animationInstance;
+    var animation = animationAuxiliaryObject.animation;
     (0,_animation_engine_mount_animations_stack__WEBPACK_IMPORTED_MODULE_0__.removeAnimationFromStack)(animationAuxiliaryObject.animationId);
-    animationAuxiliaryObject.lastStartProgress = animationInstance.progressValue;
-    animationInstance.max = newProgress;
+    animationAuxiliaryObject.lastStartProgress = animation.progressValue;
+    animation.max = newProgress;
 
-    if (animationInstance.loop === animationInstance.count) {
-      animationInstance.count -= 1;
+    if (animation.loop === animation.count) {
+      animation.count -= 1;
     }
 
     if (applyDelay) {
@@ -134,16 +145,16 @@ __webpack_require__.r(__webpack_exports__);
  * Restart animation.
  */
 
-function restartAnimation(animationInstance) {
-  var animationAuxiliaryObject = (0,_animation_mount_crud_animation_objects__WEBPACK_IMPORTED_MODULE_3__.getAnimationAuxiliaryObject)(animationInstance.animationId);
-  var u = animationInstance;
+function restartAnimation(animation) {
+  var animationAuxiliaryObject = (0,_animation_mount_crud_animation_objects__WEBPACK_IMPORTED_MODULE_3__.getAnimationAuxiliaryObject)(animation.animationId);
+  var u = animation;
 
   if (animationAuxiliaryObject) {
     (0,_animation_engine_animation_execution_cycle__WEBPACK_IMPORTED_MODULE_2__.default)((0,_animation_mount_load_animation__WEBPACK_IMPORTED_MODULE_1__.restartAnimationProperties)((0,_animation_engine_animation_execution_cycle__WEBPACK_IMPORTED_MODULE_2__.resetIterationRelatedProperties)(animationAuxiliaryObject)));
   } else {
     u.state = _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[0];
     u.count = 0;
-    (0,_animation_mount_load_animation__WEBPACK_IMPORTED_MODULE_1__.default)(animationInstance, _animation_mount_load_animation__WEBPACK_IMPORTED_MODULE_1__.startAnimation);
+    (0,_animation_mount_load_animation__WEBPACK_IMPORTED_MODULE_1__.default)(animation, _animation_mount_load_animation__WEBPACK_IMPORTED_MODULE_1__.startAnimation);
   }
 }
 
@@ -174,9 +185,9 @@ function resumeAnimation(requiredAnimationProperties) {
   var animationAuxiliaryObject = (0,_animation_mount_crud_animation_objects__WEBPACK_IMPORTED_MODULE_2__.getAnimationAuxiliaryObject)(requiredAnimationProperties.animationId);
 
   if (animationAuxiliaryObject) {
-    var u = animationAuxiliaryObject.animationInstance;
+    var u = animationAuxiliaryObject.animation;
 
-    if (animationAuxiliaryObject.animationInstance.state === _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[3]) {
+    if (animationAuxiliaryObject.animation.state === _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[3]) {
       u.state = _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[1];
       (0,_animation_engine_animation_execution_cycle__WEBPACK_IMPORTED_MODULE_1__.default)(animationAuxiliaryObject, true);
     }
@@ -209,11 +220,11 @@ __webpack_require__.r(__webpack_exports__);
  */
 
 function updateAnimation(animationAuxiliaryObject) {
-  var animationInstance = animationAuxiliaryObject.animationInstance;
-  var progress = animationInstance.progressValue;
+  var animation = animationAuxiliaryObject.animation;
+  var progress = animation.progressValue;
   progress = Math.max(progress, 0);
   progress = Math.min(progress, _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.MAX_KEYFRAME);
-  var timeRunningIteration = Math.max((0,_utilities_index__WEBPACK_IMPORTED_MODULE_1__.toMs)(animationInstance.dur), 1) / 100 * progress;
+  var timeRunningIteration = Math.max((0,_utilities_index__WEBPACK_IMPORTED_MODULE_1__.toMs)(animation.dur), 1) / 100 * progress;
   Object.assign(animationAuxiliaryObject, {
     startTimeOfTheIteration: (0,_utilities_index__WEBPACK_IMPORTED_MODULE_1__.getTimeNow)() - timeRunningIteration,
     timeRunningIteration: timeRunningIteration,
@@ -228,11 +239,11 @@ function updateAnimation(animationAuxiliaryObject) {
     lastStartProgress: progress,
     countDriveloop: animationAuxiliaryObject.countDriveloop - 1
   });
-  Object.assign(animationInstance, {
+  Object.assign(animation, {
     progress: progress,
     max: animationProgressObject.maxProgress
   });
-  Object.assign(animationAuxiliaryObject, (0,_animation_mount_create_animation_auxiliary_object__WEBPACK_IMPORTED_MODULE_2__.propertiesForAnimationAuxiliaryObject)(animationInstance));
+  Object.assign(animationAuxiliaryObject, (0,_animation_mount_create_animation_auxiliary_object__WEBPACK_IMPORTED_MODULE_2__.propertiesForAnimationAuxiliaryObject)(animation));
   return animationAuxiliaryObject;
 }
 
@@ -286,7 +297,7 @@ var manageAnimationDelay = function () {
       ANIMATIONS_DELAY = ANIMATIONS_DELAY.filter(function (values) {
         var v = values;
         var c = (0,_utilities_index__WEBPACK_IMPORTED_MODULE_2__.getTimeNow)() - v.startTime;
-        var state = v.animationAuxiliaryObject.animationInstance.state;
+        var state = v.animationAuxiliaryObject.animation.state;
 
         if (state === _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[1]) {
           if (c >= v.delay) {
@@ -329,25 +340,25 @@ function insertAnimationInTheQueue(animationAuxiliaryObject) {
   var jumpTimeout = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : false;
   var animationLoadingTime = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
   var a = animationAuxiliaryObject;
-  var animationInstance = a.animationInstance,
+  var animation = a.animation,
       remainingDelayAnimation = a.remainingDelayAnimation;
 
   if (!a.animationAlreadyStarted) {
-    (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[8], animationInstance);
+    (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[8], animation);
   }
 
-  var delay = Math.max((0,_utilities_index__WEBPACK_IMPORTED_MODULE_2__.toMs)(animationInstance.delay) - animationLoadingTime, 0);
+  var delay = Math.max((0,_utilities_index__WEBPACK_IMPORTED_MODULE_2__.toMs)(animation.delay) - animationLoadingTime, 0);
 
   if ((delay > 0 || remainingDelayAnimation) && !jumpTimeout) {
     manageAnimationDelay(a, remainingDelayAnimation || delay, (0,_utilities_index__WEBPACK_IMPORTED_MODULE_2__.getTimeNow)(), function () {
       (0,_mount_animations_stack__WEBPACK_IMPORTED_MODULE_4__.addAnimationToStack)(a);
-      (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[10], animationInstance);
+      (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[10], animation);
     });
   } else {
     resetIterationRelatedProperties(a);
     a.remainingDelayAnimation = 0;
     (0,_mount_animations_stack__WEBPACK_IMPORTED_MODULE_4__.addAnimationToStack)(a);
-    (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[10], animationInstance);
+    (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[10], animation);
   }
 }
 /**
@@ -357,14 +368,14 @@ function insertAnimationInTheQueue(animationAuxiliaryObject) {
 
 function newIntercalation(requiredAnimationProperties) {
   var animationAuxiliaryObject = requiredAnimationProperties;
-  var animationInstance = animationAuxiliaryObject.animationInstance,
+  var animation = animationAuxiliaryObject.animation,
       iterationInterlacations = animationAuxiliaryObject.iterationInterlacations;
-  var maxProgress = animationInstance.max;
-  var progress = animationInstance.progressValue;
+  var maxProgress = animation.max;
+  var progress = animation.progressValue;
   var startTimeOfTheIteration = animationAuxiliaryObject.startTimeOfTheIteration,
       reverseExecution = animationAuxiliaryObject.reverseExecution,
       timeRunningIteration = animationAuxiliaryObject.timeRunningIteration;
-  var duration = (0,_utilities_index__WEBPACK_IMPORTED_MODULE_2__.toMs)(animationInstance.dur);
+  var duration = (0,_utilities_index__WEBPACK_IMPORTED_MODULE_2__.toMs)(animation.dur);
 
   if (duration <= 0) {
     return {
@@ -441,11 +452,11 @@ function resetIterationRelatedProperties(animationAuxiliaryObject) {
 
 function iterationCompleted(animationAuxiliaryObject) {
   var a = animationAuxiliaryObject;
-  var animationInstance = a.animationInstance;
+  var animation = a.animation;
   var backRunning = a.backRunning;
-  var maxProgress = animationInstance.max;
-  var amountOfIterations = animationInstance.loop;
-  var iterationsCompleted = animationInstance.count;
+  var maxProgress = animation.max;
+  var amountOfIterations = animation.loop;
+  var iterationsCompleted = animation.count;
   var backRunningStopped = -1;
   a.animateProperties.forEach(function (obj) {
     var o = obj;
@@ -459,40 +470,40 @@ function iterationCompleted(animationAuxiliaryObject) {
     iterationsCompleted += 1;
   }
 
-  animationInstance.count = iterationsCompleted;
+  animation.count = iterationsCompleted;
 
   if (amountOfIterations > iterationsCompleted || amountOfIterations === Infinity || amountOfIterations === true) {
     if (backRunning) {
-      backRunningStopped = animationInstance.progressValue;
+      backRunningStopped = animation.progressValue;
       backRunning = false;
-      (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[7], animationInstance);
+      (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[7], animation);
     }
 
     var animationProgressObject = (0,_set_animation_progress__WEBPACK_IMPORTED_MODULE_7__.default)(a);
     a.countDriveloop = animationProgressObject.countDriveloop;
     a.lastStartProgress = animationProgressObject.progress;
     maxProgress = animationProgressObject.maxProgress;
-    (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[7], animationInstance);
-    (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[1], animationInstance);
+    (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[7], animation);
+    (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[1], animation);
     resetIterationRelatedProperties(a);
     a.backRunning = backRunning;
-    animationInstance.max = maxProgress;
-    animationInstance.progressValue = animationProgressObject.progress;
+    animation.max = maxProgress;
+    animation.progressValue = animationProgressObject.progress;
 
     if (backRunningStopped > -1) {
       /**
        * Maintain the value of the last progress.
        */
-      animationInstance.progressValue = backRunningStopped;
+      animation.progressValue = backRunningStopped;
       performNewAnimationIntercalation(a);
     } else {
       var newIntercalationObject = newIntercalation(a);
       Object.assign(a, newIntercalationObject.toAuxiliaryObject);
-      animationInstance.progressValue = newIntercalationObject.progress;
+      animation.progressValue = newIntercalationObject.progress;
       insertAnimationInTheQueue(a);
     }
   } else {
-    (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[1], animationInstance);
+    (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[1], animation);
     completedAnimation(a);
   }
 }
@@ -504,16 +515,16 @@ function iterationCompleted(animationAuxiliaryObject) {
 function conclusionOfTheIntercalation(animationAuxiliaryObject) {
   (0,_sauce_manage_memory_collections__WEBPACK_IMPORTED_MODULE_3__.releasesGarbageFromAnimations)();
   var aAuxiliaryObject = animationAuxiliaryObject;
-  var animationInstance = aAuxiliaryObject.animationInstance;
+  var animation = aAuxiliaryObject.animation;
 
-  if (animationInstance.state === _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[1]) {
+  if (animation.state === _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[1]) {
     var reverseExecution = aAuxiliaryObject.reverseExecution;
-    var maxProgress = animationInstance.max;
-    var progress = animationInstance.progressValue;
+    var maxProgress = animation.max;
+    var progress = animation.progressValue;
 
     if (reverseExecution && progress < maxProgress || !reverseExecution && progress > maxProgress || progress === maxProgress) {
-      animationInstance.progressValue = maxProgress;
-      var endDelay = Math.max((0,_utilities_index__WEBPACK_IMPORTED_MODULE_2__.toMs)(animationInstance.endDelay));
+      animation.progressValue = maxProgress;
+      var endDelay = Math.max((0,_utilities_index__WEBPACK_IMPORTED_MODULE_2__.toMs)(animation.endDelay));
 
       if (endDelay > 0) {
         manageAnimationDelay(aAuxiliaryObject, endDelay, (0,_utilities_index__WEBPACK_IMPORTED_MODULE_2__.getTimeNow)(), iterationCompleted);
@@ -533,23 +544,23 @@ function conclusionOfTheIntercalation(animationAuxiliaryObject) {
 function performIntercalationOfTheAnimations(animationsStack) {
   (0,_utilities_index__WEBPACK_IMPORTED_MODULE_2__.customForIn)(animationsStack, function (animationAuxiliaryObject) {
     var aAuxiliaryObject = animationAuxiliaryObject;
-    var animationInstance = aAuxiliaryObject.animationInstance,
+    var animation = aAuxiliaryObject.animation,
         animateProperties = aAuxiliaryObject.animateProperties;
     var animationAlreadyStarted = aAuxiliaryObject.animationAlreadyStarted;
 
-    if (animationInstance.state === _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[1]) {
+    if (animation.state === _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[1]) {
       (0,_crud_animations_style__WEBPACK_IMPORTED_MODULE_1__.applyAnimationsStyleToElement)(animateProperties, aAuxiliaryObject);
 
       if (!animationAlreadyStarted) {
-        (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[0], animationInstance);
+        (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[0], animation);
         animationAlreadyStarted = true;
         aAuxiliaryObject.animationAlreadyStarted = true;
       }
 
-      (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[9], animationInstance);
+      (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[9], animation);
 
-      if (typeof animationInstance.progress === 'function') {
-        animationInstance.progress(animationInstance.progressValue);
+      if (typeof animation.progress === 'function') {
+        animation.progress(animation.progressValue);
       }
     }
   });
@@ -569,31 +580,27 @@ function performNewAnimationIntercalation(animationAuxiliaryObject) {
 
   var newIntercalationObject = newIntercalation(aAuxiliaryObject);
   Object.assign(aAuxiliaryObject, newIntercalationObject.toAuxiliaryObject);
-  aAuxiliaryObject.animationInstance.progressValue = newIntercalationObject.progress;
+  aAuxiliaryObject.animation.progressValue = newIntercalationObject.progress;
   (0,_mount_animations_stack__WEBPACK_IMPORTED_MODULE_4__.addAnimationToStack)(aAuxiliaryObject);
 }
 
 function completedAnimation(animationAuxiliaryObject) {
   var aAuxiliaryObject = animationAuxiliaryObject;
-  var animationInstance = animationAuxiliaryObject.animationInstance;
+  var animation = animationAuxiliaryObject.animation;
   /**
    * Check before propagating events.
    */
 
-  if (animationInstance.autoDestroy) {
+  if (animation.autoDestroy) {
     (0,_animation_mount_get_property_object_to_animate__WEBPACK_IMPORTED_MODULE_6__.recyclePropertyObjectToAnimate)(aAuxiliaryObject.animateProperties);
   }
 
-  animationInstance.state = _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[2];
-  (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[7], animationInstance);
-  (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[2], animationInstance);
+  animation.state = _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[2];
+  (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[7], animation);
+  (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[2], animation);
 
-  if (animationInstance.isInCycle) {
-    (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[11], animationInstance);
-  }
-
-  if (animationInstance.autoDestroy) {
-    animationInstance.destroy();
+  if (animation.isInCycle) {
+    (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[11], animation);
   }
 }
 
@@ -613,8 +620,8 @@ function startAnimationExecutionCycle(animationAuxiliaryObject) {
   var newIntercalationObject = newIntercalation(a);
   Object.assign(a, newIntercalationObject.toAuxiliaryObject);
   a.animationLoadingTime = 0;
-  a.animationInstance.state = _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[1];
-  a.animationInstance.progressValue = newIntercalationObject.progress;
+  a.animation.state = _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[1];
+  a.animation.progressValue = newIntercalationObject.progress;
   insertAnimationInTheQueue(a, jumpTimeout, animationLoadingTime);
 }
 
@@ -666,43 +673,44 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": function() { return /* binding */ calcNextPropertyValue; }
 /* harmony export */ });
-/* harmony import */ var _based_implementations_colors__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../based-implementations/colors */ "./src/based-implementations/colors.ts");
-/* harmony import */ var _utilities_style_split_css_properties__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utilities-style/split-css-properties */ "./src/utilities-style/split-css-properties.ts");
-/* harmony import */ var _utilities_get_unit__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utilities/get-unit */ "./src/utilities/get-unit.ts");
-/* harmony import */ var _utilities_handle_string__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utilities/handle-string */ "./src/utilities/handle-string.ts");
+/* harmony import */ var _utilities_get_unit__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utilities/get-unit */ "./src/utilities/get-unit.ts");
+/* harmony import */ var _utilities_handle_string__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utilities/handle-string */ "./src/utilities/handle-string.ts");
 
 
 
+function treatSupportsFloatingValue(propertyValues) {
+  var values = propertyValues;
+  var hasRGB = values.indexOf('rgb');
 
+  if (hasRGB > -1) {
+    var index = hasRGB;
 
-function removeSpaces(a) {
-  return a.filter(function (v) {
-    return v !== ' ';
-  });
-}
+    do {
+      var v = Number((0,_utilities_handle_string__WEBPACK_IMPORTED_MODULE_1__.trimString)(values[index]));
 
-function propertySupportsFloatingValue(value) {
-  if ((0,_based_implementations_colors__WEBPACK_IMPORTED_MODULE_0__.isRgb)(value)) {
-    return false;
+      if (!Number.isNaN(v)) {
+        values[index] = Math.round(v) + ((0,_utilities_get_unit__WEBPACK_IMPORTED_MODULE_0__.default)(values[index]) || '');
+      }
+
+      index += 1;
+    } while (values[index] !== ')');
   }
 
-  return true;
+  return values;
 }
 
 function calcNextPropertyValue(propertyObject, fromAndTo, currentPercent, easingFn, round) {
-  var startValue = propertyObject.keyframes[fromAndTo[0]];
-  var endValue = propertyObject.keyframes[fromAndTo[1]];
-  var splitedStartValues = removeSpaces((0,_utilities_style_split_css_properties__WEBPACK_IMPORTED_MODULE_1__.default)(startValue));
-  var splitedEndValues = removeSpaces((0,_utilities_style_split_css_properties__WEBPACK_IMPORTED_MODULE_1__.default)(endValue));
-  var newValue = '';
-  splitedEndValues.forEach(function (value, index) {
-    var startValueIndex = (0,_utilities_handle_string__WEBPACK_IMPORTED_MODULE_3__.trimString)(splitedStartValues[index]);
+  var startValues = propertyObject.keyframes[fromAndTo[0]];
+  var endValues = propertyObject.keyframes[fromAndTo[1]];
+  var newValue = [];
+  endValues.forEach(function (value, index) {
+    var startValueIndex = startValues[index] ? (0,_utilities_handle_string__WEBPACK_IMPORTED_MODULE_1__.trimString)(startValues[index]) : '0';
     var result;
 
-    if (!Number.isNaN(parseFloat(startValueIndex))) {
-      var unitOfMeasure = (0,_utilities_get_unit__WEBPACK_IMPORTED_MODULE_2__.default)(value) || (0,_utilities_get_unit__WEBPACK_IMPORTED_MODULE_2__.default)(startValueIndex) || '';
+    if (!Number.isNaN(parseFloat(value))) {
+      var unitOfMeasure = (0,_utilities_get_unit__WEBPACK_IMPORTED_MODULE_0__.default)(value) || (0,_utilities_get_unit__WEBPACK_IMPORTED_MODULE_0__.default)(startValueIndex) || '';
       var fromNumber = parseFloat(startValueIndex);
-      var toNumber = parseFloat((0,_utilities_handle_string__WEBPACK_IMPORTED_MODULE_3__.trimString)(value));
+      var toNumber = parseFloat((0,_utilities_handle_string__WEBPACK_IMPORTED_MODULE_1__.trimString)(value));
       result = easingFn(1 / 100 * currentPercent, propertyObject.target, propertyObject.index, propertyObject.originalArrayLength);
       result = fromNumber + result * (toNumber - fromNumber);
 
@@ -710,18 +718,14 @@ function calcNextPropertyValue(propertyObject, fromAndTo, currentPercent, easing
         result = Math.round(result * round) / round;
       }
 
-      if (!propertySupportsFloatingValue(startValue) || !propertySupportsFloatingValue(endValue)) {
-        result = Math.round(result);
-      }
-
       result = " ".concat(result.toString() + unitOfMeasure);
     } else {
       result = value;
     }
 
-    newValue += "".concat(result);
+    newValue.push(result);
   });
-  return (0,_utilities_handle_string__WEBPACK_IMPORTED_MODULE_3__.trimString)(newValue);
+  return treatSupportsFloatingValue(newValue).join('');
 }
 
 /***/ }),
@@ -839,7 +843,7 @@ function animateTargetObserved(target, propertyName, value, percentageCompleted,
 function applyAnimationsStyleToElement(animateProperties, animationAuxiliaryObject) {
   var valuesOfThePropertiesBeforeAnimating = animationAuxiliaryObject.valuesOfThePropertiesBeforeAnimating,
       reverseExecution = animationAuxiliaryObject.reverseExecution;
-  var progress = animationAuxiliaryObject.animationInstance.progressValue;
+  var progress = animationAuxiliaryObject.animation.progressValue;
   animateProperties.forEach(function (propertyObject) {
     if (!valuesOfThePropertiesBeforeAnimating[propertyObject.index]) {
       valuesOfThePropertiesBeforeAnimating[propertyObject.index] = {
@@ -892,7 +896,7 @@ function applyAnimationsStyleToElement(animateProperties, animationAuxiliaryObje
       var result = animationAuxiliaryObject.easing(1 / 100 * percentageInRelationToKey, propertyObject.target, propertyObject.index, propertyObject.originalArrayLength);
       animateTargetObserved(o.target, o.propertyName, reverseExecution ? propertyObject.keyframes[from] : propertyObject.keyframes[to], 0 + result * (100 - 0), propertyObject.index);
     } else {
-      o.newPropertyValue = (0,_calc_next_property_value__WEBPACK_IMPORTED_MODULE_4__.default)(propertyObject, [from, to], percentageInRelationToKey, animationAuxiliaryObject.easing, animationAuxiliaryObject.animationInstance.round);
+      o.newPropertyValue = (0,_calc_next_property_value__WEBPACK_IMPORTED_MODULE_4__.default)(propertyObject, [from, to], percentageInRelationToKey, animationAuxiliaryObject.easing, animationAuxiliaryObject.animation.round);
       var f;
 
       switch (o.type) {
@@ -947,14 +951,14 @@ function resetHTMLElement(target, beforeAnimating) {
 
 
 function removeAnimationStyle(requiredAnimationProperties) {
-  var animationInstance = requiredAnimationProperties.animationInstance,
+  var animation = requiredAnimationProperties.animation,
       valuesOfThePropertiesBeforeAnimating = requiredAnimationProperties.valuesOfThePropertiesBeforeAnimating;
 
-  if (!animationInstance.removeChanges) {
+  if (!animation.removeChanges) {
     return;
   }
 
-  var targets = animationInstance.targets;
+  var targets = animation.targets;
 
   var _loop = function _loop(index) {
     var targetObject = targets[index];
@@ -998,11 +1002,11 @@ var ANIMATIONS_PAUSED = [];
 function handleVisibilityChange() {
   if (document.hidden) {
     (0,_utilities_custom_for_in__WEBPACK_IMPORTED_MODULE_2__.default)((0,_animation_mount_crud_animation_objects__WEBPACK_IMPORTED_MODULE_0__.getAllAnimationAuxiliaryObjects)(), function (c) {
-      var animationInstance = c.animationInstance;
+      var animation = c.animation;
 
-      if (animationInstance.state !== _sauce_constants__WEBPACK_IMPORTED_MODULE_1__.ANIMATION_STATES[3] && animationInstance.pauseDocHidden) {
-        animationInstance.pause();
-        ANIMATIONS_PAUSED.push(animationInstance);
+      if (animation.state !== _sauce_constants__WEBPACK_IMPORTED_MODULE_1__.ANIMATION_STATES[3] && animation.pauseDocHidden) {
+        animation.pause();
+        ANIMATIONS_PAUSED.push(animation);
       }
     });
   } else {
@@ -1089,7 +1093,7 @@ function timeoutForStackMounting() {
   });
 }
 function addAnimationToStack(animationAuxiliaryObject) {
-  if (animationAuxiliaryObject !== 'open' && (!animationAuxiliaryObject || !animationAuxiliaryObject.animationInstance)) {
+  if (animationAuxiliaryObject !== 'open' && (!animationAuxiliaryObject || !animationAuxiliaryObject.animation)) {
     return false;
   }
 
@@ -1153,16 +1157,16 @@ __webpack_require__.r(__webpack_exports__);
 function setAnimationProgress(animationAuxiliaryObject) {
   var a = animationAuxiliaryObject;
   var keyframesKeys = a.keyframesKeys,
-      animationInstance = a.animationInstance;
+      animation = a.animation;
   var countDriveloop = a.countDriveloop;
-  var maxProgress = animationInstance.max;
-  var progress = animationInstance.progressValue;
-  var drive = animationInstance.drive;
+  var maxProgress = animation.max;
+  var progress = animation.progressValue;
+  var drive = animation.drive;
   var driveEasy = typeof drive === 'string' ? drive : '';
   var listOfProgress = typeof drive === 'number' ? [drive] : drive;
   var takeControlOfTheDrive = Array.isArray(listOfProgress) ? listOfProgress[countDriveloop] && typeof listOfProgress[countDriveloop] === 'string' : false;
-  var direction = animationInstance.dir;
-  var iterationsCompleted = animationInstance.count;
+  var direction = animation.dir;
+  var iterationsCompleted = animation.count;
   var progressStoppedAt = progress || 0;
 
   if (takeControlOfTheDrive) {
@@ -1245,8 +1249,8 @@ __webpack_require__.r(__webpack_exports__);
 
 var EVENTS_IN_OBSERVATION = {};
 var LISTENERS_NAMES = ['start', 'loopEnd', 'end', 'load', 'cancel', 'destroy', 'play', '$-iteration-control-methods', 'ready', 'change', 'loopStart', '$-end-animation-in-cycle', 'progressValue'];
-function addAnimationEventListener(name, callbackfn, animationInstance) {
-  var animationId = animationInstance.animationId;
+function addAnimationEventListener(name, callbackfn, animation) {
+  var animationId = animation.animationId;
 
   if (!EVENTS_IN_OBSERVATION[animationId]) {
     EVENTS_IN_OBSERVATION[animationId] = {};
@@ -1263,8 +1267,8 @@ function addAnimationEventListener(name, callbackfn, animationInstance) {
     }
   }
 }
-function removeAnimationEventListener(name, callbackfnOrIndex, animationInstance) {
-  var animationId = animationInstance.animationId;
+function removeAnimationEventListener(name, callbackfnOrIndex, animation) {
+  var animationId = animation.animationId;
 
   if (!EVENTS_IN_OBSERVATION[animationId]) {
     return;
@@ -1288,10 +1292,10 @@ function removeAnimationEventListener(name, callbackfnOrIndex, animationInstance
 function removeAllAnimationEventListeners(animationId) {
   delete EVENTS_IN_OBSERVATION[animationId];
 }
-function propagateAnimationEventListener(name, animationInstance, callbackfn) {
+function propagateAnimationEventListener(name, animation, callbackfn) {
   var eventName = (0,_utilities_handle_string__WEBPACK_IMPORTED_MODULE_1__.trimString)(name);
   var eventBucket;
-  var animationId = animationInstance.animationId;
+  var animationId = animation.animationId;
 
   if (!EVENTS_IN_OBSERVATION[animationId]) {
     return;
@@ -1313,9 +1317,9 @@ function propagateAnimationEventListener(name, animationInstance, callbackfn) {
     // Copy the array to avoid side effects of the methods.
     eventBucket.slice().forEach(function (v) {
       if (callbackfn) {
-        callbackfn(v, animationInstance);
+        callbackfn(v, animation);
       } else {
-        v.call(animationInstance.performer, animationInstance.performer);
+        v.call(animation.performer, animation.performer);
       }
     });
   }
@@ -1356,18 +1360,18 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 /**
  * Sets the value of some properties For `AnimationAuxiliaryObject` from a `AnimationInstance`.
  */
-function propertiesForAnimationAuxiliaryObject(animationInstance) {
+function propertiesForAnimationAuxiliaryObject(animation) {
   var easing;
 
-  if (typeof animationInstance.easing === 'string' && (0,_sauce_custom_easings__WEBPACK_IMPORTED_MODULE_2__.getCustomEasing)(animationInstance.easing)) {
-    easing = (0,_sauce_custom_easings__WEBPACK_IMPORTED_MODULE_2__.getCustomEasing)(animationInstance.easing);
+  if (typeof animation.easing === 'string' && (0,_sauce_custom_easings__WEBPACK_IMPORTED_MODULE_2__.getCustomEasing)(animation.easing)) {
+    easing = (0,_sauce_custom_easings__WEBPACK_IMPORTED_MODULE_2__.getCustomEasing)(animation.easing);
   } else {
-    easing = (0,_based_implementations_easings__WEBPACK_IMPORTED_MODULE_1__.parseEasings)(animationInstance.easing, (0,_utilities_index__WEBPACK_IMPORTED_MODULE_0__.toMs)(animationInstance.dur));
+    easing = (0,_based_implementations_easings__WEBPACK_IMPORTED_MODULE_1__.parseEasings)(animation.easing, (0,_utilities_index__WEBPACK_IMPORTED_MODULE_0__.toMs)(animation.dur));
   }
 
   return {
     easing: easing,
-    duration: animationInstance.dur,
+    duration: animation.dur,
     reverseExecution: function (direction) {
       switch (direction) {
         case 'reverse':
@@ -1377,17 +1381,17 @@ function propertiesForAnimationAuxiliaryObject(animationInstance) {
         default:
           return false;
       }
-    }(animationInstance.dir)
+    }(animation.dir)
   };
 }
-function CreateAnimationAuxiliaryObject(animationInstance) {
+function CreateAnimationAuxiliaryObject(animation) {
   return _objectSpread({
     animateProperties: [],
     keyframesKeys: [],
-    remainingDelayAnimation: (0,_utilities_index__WEBPACK_IMPORTED_MODULE_0__.toMs)(animationInstance.delay),
-    initialProgress: animationInstance.progressValue,
+    remainingDelayAnimation: (0,_utilities_index__WEBPACK_IMPORTED_MODULE_0__.toMs)(animation.delay),
+    initialProgress: animation.progressValue,
     lastStartProgress: 0,
-    animationId: animationInstance.animationId,
+    animationId: animation.animationId,
     countDriveloop: 0,
     dataLoadingState: 'loading',
     backRunning: false,
@@ -1401,8 +1405,8 @@ function CreateAnimationAuxiliaryObject(animationInstance) {
       leftovers: 0
     },
     animationLoadingTime: 0,
-    animationInstance: animationInstance
-  }, propertiesForAnimationAuxiliaryObject(animationInstance));
+    animation: animation
+  }, propertiesForAnimationAuxiliaryObject(animation));
 }
 
 /***/ }),
@@ -1712,9 +1716,11 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "recyclePropertyObjectToAnimate": function() { return /* binding */ recyclePropertyObjectToAnimate; },
 /* harmony export */   "default": function() { return /* binding */ getPropertyObjectToAnimate; }
 /* harmony export */ });
-/* harmony import */ var _utilities_custom_for_in__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utilities/custom-for-in */ "./src/utilities/custom-for-in.ts");
-/* harmony import */ var _utilities_has_own_property__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utilities/has-own-property */ "./src/utilities/has-own-property.ts");
-/* harmony import */ var _utilities_ordernate_by_growing_values__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utilities/ordernate-by-growing-values */ "./src/utilities/ordernate-by-growing-values.ts");
+/* harmony import */ var _utilities_style_split_css_properties__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utilities-style/split-css-properties */ "./src/utilities-style/split-css-properties.ts");
+/* harmony import */ var _utilities_custom_for_in__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../utilities/custom-for-in */ "./src/utilities/custom-for-in.ts");
+/* harmony import */ var _utilities_has_own_property__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../utilities/has-own-property */ "./src/utilities/has-own-property.ts");
+/* harmony import */ var _utilities_ordernate_by_growing_values__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../utilities/ordernate-by-growing-values */ "./src/utilities/ordernate-by-growing-values.ts");
+
 
 
 
@@ -1740,12 +1746,27 @@ function recyclePropertyObjectToAnimate(animateProperties) {
       });
     }
 }
+
+function removeSpaces(a) {
+  return a.filter(function (v) {
+    return v !== ' ';
+  });
+}
+
+function splitKeyframePropertyValue(keyframes) {
+  var n = {};
+  (0,_utilities_custom_for_in__WEBPACK_IMPORTED_MODULE_1__.default)(keyframes, function (keyframeValue, key) {
+    n[key] = removeSpaces((0,_utilities_style_split_css_properties__WEBPACK_IMPORTED_MODULE_0__.default)(keyframeValue));
+  });
+  return n;
+}
+
 function getPropertyObjectToAnimate(propertiesKeyframes, target, index, originalArrayLength, type) {
   var animateProperties = [];
-  (0,_utilities_custom_for_in__WEBPACK_IMPORTED_MODULE_0__.default)(propertiesKeyframes, function (kf, propertyName) {
+  (0,_utilities_custom_for_in__WEBPACK_IMPORTED_MODULE_1__.default)(propertiesKeyframes, function (kf, propertyName) {
     var differentValues = false;
     var lastkey = '0';
-    (0,_utilities_custom_for_in__WEBPACK_IMPORTED_MODULE_0__.default)(kf, function (value, key) {
+    (0,_utilities_custom_for_in__WEBPACK_IMPORTED_MODULE_1__.default)(kf, function (value, key) {
       differentValues = value !== kf[lastkey];
 
       if (differentValues) {
@@ -1756,12 +1777,12 @@ function getPropertyObjectToAnimate(propertiesKeyframes, target, index, original
       return false;
     });
 
-    if ((0,_utilities_has_own_property__WEBPACK_IMPORTED_MODULE_1__.default)(kf, '0') && (0,_utilities_has_own_property__WEBPACK_IMPORTED_MODULE_1__.default)(kf, '100') && differentValues) {
+    if ((0,_utilities_has_own_property__WEBPACK_IMPORTED_MODULE_2__.default)(kf, '0') && (0,_utilities_has_own_property__WEBPACK_IMPORTED_MODULE_2__.default)(kf, '100') && differentValues) {
       var o = POOL_PROPERTY_OBJECTS.shift() || {};
       o.target = target;
       o.index = index;
-      o.keyframes = kf;
-      o.keyframesKeys = (0,_utilities_ordernate_by_growing_values__WEBPACK_IMPORTED_MODULE_2__.default)(Object.keys(kf));
+      o.keyframes = splitKeyframePropertyValue(kf);
+      o.keyframesKeys = (0,_utilities_ordernate_by_growing_values__WEBPACK_IMPORTED_MODULE_3__.default)(Object.keys(kf));
       o.propertyName = propertyName;
       o.type = type;
       o.originalArrayLength = originalArrayLength;
@@ -1832,7 +1853,7 @@ function getUnitOfMeasureForPropertyValue(propertyName, propertyValue) {
 
       if (!(0,_utilities_get_unit__WEBPACK_IMPORTED_MODULE_2__.default)(v) && typeof parseFloat(v) === 'number') {
         if ((0,_utilities_has_own_property__WEBPACK_IMPORTED_MODULE_4__.default)(knownProperties, propertyName)) {
-          return v + knownProperties[propertyName];
+          return parseFloat(v) + knownProperties[propertyName] + (v.indexOf(',') > -1 ? ',' : '');
         }
 
         for (var index = 0; index < possibleUnitsLength; index += 1) {
@@ -1926,9 +1947,9 @@ __webpack_require__.r(__webpack_exports__);
 
 function forwardAnimation(animationAuxiliaryObject, animationArrivalTime, callbackLoaded) {
   var aAuxiliaryObject = animationAuxiliaryObject;
-  var animationInstance = aAuxiliaryObject.animationInstance;
+  var animation = aAuxiliaryObject.animation;
   var startAnimationLoadingTime = (0,_utilities_index__WEBPACK_IMPORTED_MODULE_4__.getTimeNow)();
-  var keyframes = (0,_flatten_keyframes__WEBPACK_IMPORTED_MODULE_8__.default)(animationInstance.keyframes, animationInstance.performer.$hidden.propertiesUsed);
+  var keyframes = (0,_flatten_keyframes__WEBPACK_IMPORTED_MODULE_8__.default)(animation.keyframes, animation.performer.$hidden.propertiesUsed);
 
   var keyframesKeys = function () {
     var keys = [];
@@ -1946,22 +1967,22 @@ function forwardAnimation(animationAuxiliaryObject, animationArrivalTime, callba
   var animationProgressObject = (0,_animation_engine_set_animation_progress__WEBPACK_IMPORTED_MODULE_1__.default)(aAuxiliaryObject);
   aAuxiliaryObject.lastStartProgress = animationProgressObject.progress;
   aAuxiliaryObject.countDriveloop = animationProgressObject.countDriveloop;
-  animationInstance.progressValue = animationProgressObject.progress;
-  animationInstance.max = animationProgressObject.maxProgress;
+  animation.progressValue = animationProgressObject.progress;
+  animation.max = animationProgressObject.maxProgress;
   (0,_load_properties_to_animate__WEBPACK_IMPORTED_MODULE_7__.default)(aAuxiliaryObject, keyframes, function (result, propertiesToAnimate) {
     var currentTime = (0,_utilities_index__WEBPACK_IMPORTED_MODULE_4__.getTimeNow)();
     var animationLoadingTime = currentTime - animationArrivalTime;
     var waitingTime = animationLoadingTime;
     var loadingTime = currentTime - startAnimationLoadingTime;
     /* console.log(
-      `AnimationWS "${animationInstance.animationId}" - Times: [ \n\r\n\r waitingTime: ${waitingTime}ms, \n\r\n\r loadingTime: ${loadingTime}ms,\n\r\n\r elementLenght: ${animationInstance.targets.length}\n\r\n\r]`
+      `AnimationWS "${animation.animationId}" - Times: [ \n\r\n\r waitingTime: ${waitingTime}ms, \n\r\n\r loadingTime: ${loadingTime}ms,\n\r\n\r elementLenght: ${animation.targets.length}\n\r\n\r]`
     ); */
 
     aAuxiliaryObject.dataLoadingState = result ? 'load' : 'stoped';
     aAuxiliaryObject.animationLoadingTime = animationLoadingTime;
     aAuxiliaryObject.animateProperties = propertiesToAnimate;
     callbackLoaded(aAuxiliaryObject);
-    (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[3], aAuxiliaryObject.animationInstance);
+    (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.propagateAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_5__.LISTENERS_NAMES[3], aAuxiliaryObject.animation);
   });
 }
 /**
@@ -1969,20 +1990,20 @@ function forwardAnimation(animationAuxiliaryObject, animationArrivalTime, callba
  */
 
 
-function LoadAnimation(animationInstance, callbackLoaded) {
-  var hasAnimationAuxiliaryObject = (0,_crud_animation_objects__WEBPACK_IMPORTED_MODULE_2__.getAnimationAuxiliaryObject)(animationInstance.animationId);
+function LoadAnimation(animation, callbackLoaded) {
+  var hasAnimationAuxiliaryObject = (0,_crud_animation_objects__WEBPACK_IMPORTED_MODULE_2__.getAnimationAuxiliaryObject)(animation.animationId);
 
-  if (animationInstance.state !== _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[0] || hasAnimationAuxiliaryObject) {
+  if (animation.state !== _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[0] || hasAnimationAuxiliaryObject) {
     if (hasAnimationAuxiliaryObject) {
       if (hasAnimationAuxiliaryObject.dataLoadingState === 'loading') {
         var setTimeoutId = setTimeout(function () {
           clearTimeout(setTimeoutId);
 
-          if (animationInstance.state !== _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[1]) {
-            LoadAnimation(animationInstance, callbackLoaded);
+          if (animation.state !== _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[1]) {
+            LoadAnimation(animation, callbackLoaded);
           }
         });
-      } else if (hasAnimationAuxiliaryObject.dataLoadingState === 'load' && hasAnimationAuxiliaryObject.animationInstance.state === _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[5]) {
+      } else if (hasAnimationAuxiliaryObject.dataLoadingState === 'load' && hasAnimationAuxiliaryObject.animation.state === _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[5]) {
         (0,_animation_engine_animation_execution_cycle__WEBPACK_IMPORTED_MODULE_6__.default)(hasAnimationAuxiliaryObject);
       } else {
         (0,_animation_engine_animation_execution_cycle__WEBPACK_IMPORTED_MODULE_6__.default)(
@@ -1995,26 +2016,26 @@ function LoadAnimation(animationInstance, callbackLoaded) {
   }
 
   var currentTime = (0,_utilities_index__WEBPACK_IMPORTED_MODULE_4__.getTimeNow)();
-  var animationAuxiliaryObject = (0,_create_animation_auxiliary_object__WEBPACK_IMPORTED_MODULE_3__.default)(animationInstance);
+  var animationAuxiliaryObject = (0,_create_animation_auxiliary_object__WEBPACK_IMPORTED_MODULE_3__.default)(animation);
   (0,_crud_animation_objects__WEBPACK_IMPORTED_MODULE_2__.addAnimationAuxiliaryObject)(animationAuxiliaryObject);
-  Object.assign(animationAuxiliaryObject.animationInstance, {
+  Object.assign(animationAuxiliaryObject.animation, {
     state: _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[6],
-    delay: animationInstance.delay
+    delay: animation.delay
   });
   forwardAnimation(animationAuxiliaryObject, currentTime, callbackLoaded);
 }
 function startAnimation(animationAuxiliaryObject) {
-  if (animationAuxiliaryObject.dataLoadingState === 'load' && animationAuxiliaryObject.animationInstance.state !== _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[3]) {
+  if (animationAuxiliaryObject.dataLoadingState === 'load' && animationAuxiliaryObject.animation.state !== _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[3]) {
     var a = animationAuxiliaryObject;
-    a.animationInstance.state = _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[1];
+    a.animation.state = _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[1];
     (0,_animation_engine_animation_execution_cycle__WEBPACK_IMPORTED_MODULE_6__.default)(animationAuxiliaryObject);
   }
 }
 function loadedAnimation(animationAuxiliaryObject) {
   var a = animationAuxiliaryObject;
 
-  if (a.dataLoadingState === 'load' && a.animationInstance.state !== _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[3]) {
-    a.animationInstance.state = _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[5];
+  if (a.dataLoadingState === 'load' && a.animation.state !== _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[3]) {
+    a.animation.state = _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[5];
   }
 }
 function restartAnimationProperties(animationAuxiliaryObject) {
@@ -2029,7 +2050,7 @@ function restartAnimationProperties(animationAuxiliaryObject) {
     countDriveloop: animationProgressObject.countDriveloop,
     progress: animationProgressObject.progress
   });
-  Object.assign(animationAuxiliaryObject.animationInstance, {
+  Object.assign(animationAuxiliaryObject.animation, {
     progress: animationProgressObject.progress,
     max: animationProgressObject.maxProgress,
     state: _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[1],
@@ -2508,10 +2529,10 @@ var loadNextAnimation = function loadNextAnimation(a) {
 };
 
 function loadPropertiesToAnimate(animationAuxiliaryObject, props, callbackLoaded) {
-  var animationInstance = animationAuxiliaryObject.animationInstance;
-  var targets = animationInstance.targets;
+  var animation = animationAuxiliaryObject.animation;
+  var targets = animation.targets;
 
-  if (animationInstance.creator.global.asyncLoading) {
+  if (animation.creator.global.asyncLoading) {
     IS_BUSY_LOADER = false;
   }
   /**
@@ -2549,7 +2570,7 @@ function loadPropertiesToAnimate(animationAuxiliaryObject, props, callbackLoaded
     var timePassed = (0,_utilities_get_time_now__WEBPACK_IMPORTED_MODULE_14__.default)() - startTime;
     count += 1;
 
-    switch (animationInstance.state) {
+    switch (animation.state) {
       case _sauce_constants__WEBPACK_IMPORTED_MODULE_2__.ANIMATION_STATES[2]:
       case _sauce_constants__WEBPACK_IMPORTED_MODULE_2__.ANIMATION_STATES[3]:
       case _sauce_constants__WEBPACK_IMPORTED_MODULE_2__.ANIMATION_STATES[4]:
@@ -2602,7 +2623,7 @@ function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "functi
 
 
 
-function isPossiblyAnArray(o) {
+function toArray(o) {
   if (!o || _typeof(o) !== 'object') {
     return false;
   }
@@ -2622,7 +2643,7 @@ function normalizePastedProperties(obj, loopObject) {
 
         if (pName) {
           if (o[n] && _typeof(propertyValue) === 'object') {
-            var v = isPossiblyAnArray(propertyValue);
+            var v = toArray(propertyValue);
 
             if (v) {
               o[n] = o[n].concat(v);
@@ -2637,7 +2658,7 @@ function normalizePastedProperties(obj, loopObject) {
       delete o[propertyName];
     }
 
-    if (loopObject && propertyValue && _typeof(propertyValue) === 'object' && !isPossiblyAnArray(propertyValue)) {
+    if (loopObject && propertyValue && _typeof(propertyValue) === 'object' && !toArray(propertyValue)) {
       normalizePastedProperties(propertyValue);
     }
   });
@@ -2657,8 +2678,8 @@ function normalizePastedProperties(obj, loopObject) {
  *
  */
 
-function normalizePastedAnimationProperties(animationInstance) {
-  var aInstance = normalizePastedProperties(animationInstance);
+function normalizePastedAnimationProperties(animation) {
+  var aInstance = normalizePastedProperties(animation);
   return aInstance;
 }
 
@@ -2696,6 +2717,12 @@ function isHsl(a) {
   return /^hsl/.test(a);
 }
 function isColor(a) {
+  var c = (0,_utilities_remove_spaces_char__WEBPACK_IMPORTED_MODULE_0__.default)(a);
+
+  if (c.split(')').length > 1) {
+    return false;
+  }
+
   return isHex(a) || isRgb(a) || isHsl(a);
 }
 function rgbToRgba(rgbValue) {
@@ -3563,13 +3590,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
  * A simple counter that helps to mark animation objects through the `animationId` property to avoid collisions and also indicates the priority of the animation instance's style insertion.
  */
 var ANIMATIONS_ID = -1;
-function AnimationConstructor(animationInstance, creator) {
+function AnimationConstructor(animation, creator) {
   var D_A_P = creator.dfs;
   ANIMATIONS_ID += 1;
-  return _objectSpread(_objectSpread(_objectSpread({}, D_A_P), animationInstance), {
+  return _objectSpread(_objectSpread(_objectSpread({}, D_A_P), animation), {
     creator: creator,
-    targets: animationInstance.targets,
-    loop: animationInstance.loop,
+    targets: animation.targets,
+    loop: animation.loop,
     count: 0,
     animationId: ANIMATIONS_ID
   });
@@ -3623,10 +3650,10 @@ function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _d
 
 
 var AnimationWS = /*#__PURE__*/function () {
-  function AnimationWS(animationInstance, creator) {
+  function AnimationWS(animation, creator) {
     _classCallCheck(this, AnimationWS);
 
-    var U_A_O = (0,_animation_mount_normalize_animation_object_properties__WEBPACK_IMPORTED_MODULE_2__.default)(animationInstance);
+    var U_A_O = (0,_animation_mount_normalize_animation_object_properties__WEBPACK_IMPORTED_MODULE_2__.default)(animation);
     Object.assign(this, (0,_animation_constructor__WEBPACK_IMPORTED_MODULE_4__.default)(U_A_O, creator));
     return this;
   }
@@ -4301,8 +4328,8 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function iterationControlMethods(realDuration, newDuration, part, animationInstance, applyDelay) {
-  var aInstance = animationInstance;
+function iterationControlMethods(realDuration, newDuration, part, animation, applyDelay) {
+  var aInstance = animation;
   var animationAuxiliaryObject = (0,_animation_mount_crud_animation_objects__WEBPACK_IMPORTED_MODULE_2__.getAnimationAuxiliaryObject)(aInstance.animationId);
   var toProgress = _constants__WEBPACK_IMPORTED_MODULE_3__.MAX_KEYFRAME / 1 * Math.min(Math.max(part, 0), 1);
 
@@ -4317,12 +4344,12 @@ function iterationControlMethods(realDuration, newDuration, part, animationInsta
     }
 
     (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_1__.addAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_1__.LISTENERS_NAMES[7], function a() {
-      if (dur === animationInstance.dur) {
+      if (dur === animation.dur) {
         aInstance.dur = realDuration;
       }
 
-      (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_1__.removeAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_1__.LISTENERS_NAMES[7], a, animationInstance);
-    }, animationInstance);
+      (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_1__.removeAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_1__.LISTENERS_NAMES[7], a, animation);
+    }, animation);
 
     if (checkDur && dur <= 0) {
       aInstance.jump(toProgress);
@@ -4353,25 +4380,25 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _organize_cycle__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./organize-cycle */ "./src/sauce/organize-cycle.ts");
 
 
-function logicToPlayAnimations(animationInstance, animationsThatPerformTogether, animationsThatWaitIterations) {
-  var performerFn = animationInstance.performer;
+function logicToPlayAnimations(animation, animationsThatPerformTogether, animationsThatWaitIterations) {
+  var performerFn = animation.performer;
 
   if ((!animationsThatPerformTogether || !animationsThatPerformTogether[0]) && (!animationsThatWaitIterations || !animationsThatWaitIterations.animations[0])) {
-    if (animationInstance.autoPlay && animationInstance.state === _constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[0]) {
-      animationInstance.play();
+    if (animation.autoPlay && animation.state === _constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[0]) {
+      animation.play();
     }
   } else {
     if (animationsThatWaitIterations && animationsThatWaitIterations.animations[0]) {
-      var waitIterations = animationsThatWaitIterations.waitIterations;
+      var amountOfIterations = animationsThatWaitIterations.amountOfIterations;
       animationsThatWaitIterations.animations.forEach(function (o) {
         var i = o;
         var count = 1;
-        animationInstance.on('loopEnd', function f() {
-          if (count >= waitIterations) {
-            animationInstance.off('loopEnd', f);
+        animation.on('loopEnd', function f() {
+          if (count >= amountOfIterations) {
+            animation.off('loopEnd', f);
 
             if (performerFn.$hidden.cycleOptions) {
-              (0,_organize_cycle__WEBPACK_IMPORTED_MODULE_1__.organizeCycleSequence)(performerFn, i, animationInstance, 'together');
+              (0,_organize_cycle__WEBPACK_IMPORTED_MODULE_1__.organizeCycleSequence)(performerFn, i, animation, 'together');
               performerFn.$hidden.animationInstances.push(i);
               i.play();
             } else {
@@ -4388,24 +4415,24 @@ function logicToPlayAnimations(animationInstance, animationsThatPerformTogether,
       var length = animationsThatPerformTogether.length;
       var count = 0;
 
-      if (animationInstance.state === _constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[0]) {
-        animationInstance.on('load', function f() {
+      if (animation.state === _constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[0]) {
+        animation.on('load', function f() {
           animationsThatPerformTogether.forEach(function (i) {
             i.on('load', function d() {
               count += 1;
 
               if (count >= length) {
-                animationInstance.on('ready', function g() {
+                animation.on('ready', function g() {
                   animationsThatPerformTogether.forEach(function (a) {
-                    (0,_organize_cycle__WEBPACK_IMPORTED_MODULE_1__.organizeCycleSequence)(performerFn, a, animationInstance, 'together');
+                    (0,_organize_cycle__WEBPACK_IMPORTED_MODULE_1__.organizeCycleSequence)(performerFn, a, animation, 'together');
                     performerFn.$hidden.animationInstances.push(a);
                     a.play();
                   });
-                  animationInstance.off('ready', g);
+                  animation.off('ready', g);
                 });
 
-                if (animationInstance.autoPlay) {
-                  animationInstance.play();
+                if (animation.autoPlay) {
+                  animation.play();
                 }
               }
 
@@ -4413,27 +4440,27 @@ function logicToPlayAnimations(animationInstance, animationsThatPerformTogether,
             });
             i.load();
           });
-          animationInstance.off('load', f);
+          animation.off('load', f);
         });
-        animationInstance.load();
+        animation.load();
       } else {
-        animationInstance.on('ready', function g() {
+        animation.on('ready', function g() {
           animationsThatPerformTogether.forEach(function (a) {
-            (0,_organize_cycle__WEBPACK_IMPORTED_MODULE_1__.organizeCycleSequence)(performerFn, a, animationInstance, 'together');
+            (0,_organize_cycle__WEBPACK_IMPORTED_MODULE_1__.organizeCycleSequence)(performerFn, a, animation, 'together');
             performerFn.$hidden.animationInstances.push(a);
             a.play();
           });
-          animationInstance.off('ready', g);
+          animation.off('ready', g);
         });
 
-        if (animationInstance.autoPlay) {
-          animationInstance.play();
+        if (animation.autoPlay) {
+          animation.play();
         }
       }
     }
 
-    if (animationInstance.autoPlay && animationInstance.state === _constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[0]) {
-      animationInstance.play();
+    if (animation.autoPlay && animation.state === _constants__WEBPACK_IMPORTED_MODULE_0__.ANIMATION_STATES[0]) {
+      animation.play();
     }
   }
 }
@@ -4538,11 +4565,6 @@ var NewPerformerFn = function NewPerformerFn(performerProperties, creator) {
   });
 
   function PerformerFnFn(animate, parametersToAnimateOrPropertyValue, parametersToAnimate) {
-    if (typeof animate === 'number') {
-      performerFn.$hidden.currentAfterIterations = animate;
-      return performerFn;
-    }
-
     var animationProperties = (0,_create_animation_properties_object__WEBPACK_IMPORTED_MODULE_2__.default)(performerFn, animate, parametersToAnimateOrPropertyValue, parametersToAnimate);
     var lastAnimationParametersAdded = (0,_organize_animation_creations__WEBPACK_IMPORTED_MODULE_1__.useAnimationObjectExpectingSideEffects)(performerFn);
     (0,_organize_animation_creations__WEBPACK_IMPORTED_MODULE_1__.useAnimationObjectExpectingSideEffects)(performerFn, animationProperties);
@@ -4579,13 +4601,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "runCallbacksAtTheRightTime": function() { return /* binding */ runCallbacksAtTheRightTime; },
 /* harmony export */   "addInStackForConstruction": function() { return /* binding */ addInStackForConstruction; }
 /* harmony export */ });
-/* harmony import */ var _utilities_has_own_property__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utilities/has-own-property */ "./src/utilities/has-own-property.ts");
-/* harmony import */ var _animation__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./animation */ "./src/sauce/animation.ts");
-/* harmony import */ var _logic_to_play_animations__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./logic-to-play-animations */ "./src/sauce/logic-to-play-animations.ts");
-/* harmony import */ var _organize_cycle__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./organize-cycle */ "./src/sauce/organize-cycle.ts");
-/* harmony import */ var _parser_string_stagger__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./parser-string-stagger */ "./src/sauce/parser-string-stagger.ts");
-function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
-
+/* harmony import */ var _animation__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./animation */ "./src/sauce/animation.ts");
+/* harmony import */ var _logic_to_play_animations__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./logic-to-play-animations */ "./src/sauce/logic-to-play-animations.ts");
+/* harmony import */ var _organize_cycle__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./organize-cycle */ "./src/sauce/organize-cycle.ts");
+/* harmony import */ var _parser_string_stagger__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./parser-string-stagger */ "./src/sauce/parser-string-stagger.ts");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -4596,9 +4615,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 
 
-
 /* eslint-disable @typescript-eslint/no-use-before-define  */
 
+var STACK_OF_ANIMATIONS_SKETCHES = [];
 var ANIMATION_OBJECT_EXPECTING_SIDE_EFFECTS = [];
 function useAnimationObjectExpectingSideEffects(animationPerformer, v) {
   if (v) {
@@ -4614,23 +4633,22 @@ function useAnimationObjectExpectingSideEffects(animationPerformer, v) {
 
   return undefined;
 }
-var STACK_OF_ANIMATIONS_SKETCHES = [];
 
-function createAnimationPropertiesFromStaggers(animationProperties) {
+function createAnimationPropertiesFromStaggers(animationOptions) {
   var animationPropertiesObjects = [];
 
-  if (animationProperties.targets) {
-    animationProperties.targets.forEach(function (targetObject) {
+  if (animationOptions.targets) {
+    animationOptions.targets.forEach(function (targetObject) {
       var target = targetObject.target,
           index = targetObject.index,
           originalArrayLength = targetObject.originalArrayLength;
       var newAnimationProperties = {};
       var checkCreateNewObject = false;
       ['delay', 'drive', 'endDelay', 'dur', 'loop'].forEach(function (propertyName) {
-        var fn = animationProperties[propertyName];
+        var fn = animationOptions[propertyName];
 
         if (typeof fn === 'string') {
-          fn = (0,_parser_string_stagger__WEBPACK_IMPORTED_MODULE_4__.default)(fn);
+          fn = (0,_parser_string_stagger__WEBPACK_IMPORTED_MODULE_3__.default)(fn);
         }
 
         if (typeof fn === 'function') {
@@ -4640,7 +4658,7 @@ function createAnimationPropertiesFromStaggers(animationProperties) {
       });
 
       if (checkCreateNewObject) {
-        animationPropertiesObjects.push(_objectSpread(_objectSpread(_objectSpread({}, animationProperties), newAnimationProperties), {}, {
+        animationPropertiesObjects.push(_objectSpread(_objectSpread(_objectSpread({}, animationOptions), newAnimationProperties), {}, {
           targets: [targetObject]
         }));
       }
@@ -4683,141 +4701,123 @@ var runCallbacksAtTheRightTime = function () {
   };
 }();
 
-function organizeAnimationsObjects() {
-  return STACK_OF_ANIMATIONS_SKETCHES.map(function (obj) {
-    var o = obj;
-    var fromStaggers = createAnimationPropertiesFromStaggers(o.animationProperties);
-
-    if (fromStaggers) {
-      o.animationProperties = fromStaggers.shift();
-
-      if (!o.playTogether) {
-        o.playTogether = [];
-      }
-
-      o.playTogether = o.playTogether.concat(fromStaggers);
-    }
-
-    return o;
-  }).map(function (o) {
-    var performerFn = o.performerFn;
-    var creator = performerFn.creator;
-    var animationObject = new _animation__WEBPACK_IMPORTED_MODULE_1__.default(o.animationProperties, creator);
-    var playTogether = o.playTogether ? o.playTogether.map(function (i) {
-      return new _animation__WEBPACK_IMPORTED_MODULE_1__.default(i, creator);
-    }) : undefined;
-    var waitIterations = o.waitIterations;
-
-    if (waitIterations) {
-      waitIterations.animations = waitIterations.animations.map(function (i) {
-        return new _animation__WEBPACK_IMPORTED_MODULE_1__.default(i, creator);
-      });
-    }
-
-    return {
-      animationObject: animationObject,
-      playAfter: o.playAfter,
-      playTogether: playTogether,
-      waitIterations: waitIterations,
-      performerFn: performerFn
-    };
-  });
-}
-
-function createAnimationsFromTheStackedSketches() {
-  var animationsObjects = organizeAnimationsObjects();
-  animationsObjects.forEach(function (o) {
-    var animationObject = o.animationObject,
-        playAfter = o.playAfter,
-        playTogether = o.playTogether,
-        waitIterations = o.waitIterations,
-        performerFn = o.performerFn;
-
-    if (_typeof(playAfter) === 'object' && !(playAfter instanceof _animation__WEBPACK_IMPORTED_MODULE_1__.default)) {
-      var index = playAfter.index;
-      var instanceLink;
-
-      if ((0,_utilities_has_own_property__WEBPACK_IMPORTED_MODULE_0__.default)(playAfter, 'deepIndex')) {
-        if (playAfter.array === 'waitIterations') {
-          var _animationsObjects$in;
-
-          instanceLink = (_animationsObjects$in = animationsObjects[index].waitIterations) === null || _animationsObjects$in === void 0 ? void 0 : _animationsObjects$in.animations[playAfter.deepIndex];
-        } else {
-          instanceLink = animationsObjects[index].playTogether[playAfter.deepIndex];
-        }
-      } else {
-        instanceLink = animationsObjects[index].animationObject;
-      }
-
-      instanceLink.on('end', function f() {
-        performerFn.$hidden.independentAnimations.push(animationObject);
-        (0,_organize_cycle__WEBPACK_IMPORTED_MODULE_3__.organizeCycleSequence)(performerFn, animationObject);
-        (0,_logic_to_play_animations__WEBPACK_IMPORTED_MODULE_2__.default)(animationObject, playTogether, waitIterations);
-        instanceLink.off('end', f);
-      });
-    } else if (playAfter instanceof _animation__WEBPACK_IMPORTED_MODULE_1__.default) {
-      playAfter.on('end', function f() {
-        performerFn.$hidden.independentAnimations.push(animationObject);
-        (0,_organize_cycle__WEBPACK_IMPORTED_MODULE_3__.organizeCycleSequence)(performerFn, animationObject);
-        (0,_logic_to_play_animations__WEBPACK_IMPORTED_MODULE_2__.default)(animationObject, playTogether, waitIterations);
-        playAfter.off('end', f);
-      });
-    } else {
-      performerFn.$hidden.animationInstances.push(animationObject);
-      performerFn.$hidden.independentAnimations.push(animationObject);
-      (0,_organize_cycle__WEBPACK_IMPORTED_MODULE_3__.organizeCycleSequence)(performerFn, animationObject);
-      (0,_logic_to_play_animations__WEBPACK_IMPORTED_MODULE_2__.default)(animationObject, playTogether, waitIterations);
-    }
-  });
-}
-
-function getInstanceLink(animationObject) {
-  var l = STACK_OF_ANIMATIONS_SKETCHES.length;
+function addToLinkedAnimationObject(organizedAnimations, animation, linkedAnimation, typeOfLink, amountOfIterations) {
+  var l = organizedAnimations.length;
 
   for (var index = 0; index < l; index += 1) {
-    var sketcheObject = STACK_OF_ANIMATIONS_SKETCHES[index];
-    var check = sketcheObject.playTogether ? sketcheObject.playTogether.indexOf(animationObject) : -1;
+    var o = organizedAnimations[index];
+    var a = typeOfLink === 'afterIterations' && o.afterIterations ? o.afterIterations.animations : o.playTogether;
 
-    if (sketcheObject.playTogether && check > -1) {
-      return {
-        index: index,
-        deepIndex: check,
-        array: 'playTogether'
-      };
+    if (linkedAnimation === o.animation) {
+      if (a) {
+        a.push(animation);
+      } else if (typeOfLink === 'afterIterations') {
+        if (!o.afterIterations) {
+          o.afterIterations = {
+            animations: [animation],
+            amountOfIterations: amountOfIterations
+          };
+        }
+      } else if (typeOfLink === 'together') {
+        if (!o.playTogether) {
+          o.playTogether = [animation];
+        }
+      }
+
+      return true;
     }
 
-    check = sketcheObject.waitIterations ? sketcheObject.waitIterations.animations.indexOf(animationObject) : -1;
+    if (a) {
+      var i = a.indexOf(linkedAnimation);
 
-    if (sketcheObject.waitIterations && check > -1) {
-      return {
-        index: index,
-        deepIndex: check,
-        array: 'waitIterations'
-      };
-    }
-
-    if (sketcheObject.animationProperties === animationObject) {
-      return {
-        index: index
-      };
+      if (i > -1) {
+        a.splice(i, 0, animation);
+        return true;
+      }
     }
   }
 
   return false;
 }
 
-function addInStackForConstruction(animationProperties, performerFn, animationObject, typeOfLink, waitIterations) {
-  var aProperties = animationProperties;
-  var instanceToLink = animationObject;
+function organizeAnimationsObjects() {
+  STACK_OF_ANIMATIONS_SKETCHES.slice().forEach(function (obj, index) {
+    var o = obj;
+    var fromStaggers = createAnimationPropertiesFromStaggers(o.animationOptions);
+
+    if (fromStaggers) {
+      fromStaggers.forEach(function (a, i) {
+        if (i === 0) {
+          o.animationOptions = a;
+          STACK_OF_ANIMATIONS_SKETCHES[index] = o;
+        } else {
+          STACK_OF_ANIMATIONS_SKETCHES.push({
+            indexOrAnimation: index,
+            typeOfLink: 'together',
+            animationOptions: a,
+            performerFn: o.performerFn
+          });
+        }
+      });
+    }
+  });
+  var organizedAnimations = [];
+  STACK_OF_ANIMATIONS_SKETCHES.map(function (o) {
+    var performerFn = o.performerFn;
+    var creator = performerFn.creator;
+    return _objectSpread(_objectSpread({}, o), {}, {
+      animation: new _animation__WEBPACK_IMPORTED_MODULE_0__.default(o.animationOptions, creator)
+    });
+  }).forEach(function (o, _index, array) {
+    var linkedAnimation = typeof o.indexOrAnimation === 'number' ? array[o.indexOrAnimation].animation : o.indexOrAnimation;
+
+    if (!linkedAnimation || o.typeOfLink === 'afterAnimation' || linkedAnimation && !addToLinkedAnimationObject(organizedAnimations, o.animation, linkedAnimation, o.typeOfLink, o.amountOfIterations)) {
+      organizedAnimations.push({
+        typeOfLink: o.typeOfLink,
+        linkedAnimation: linkedAnimation,
+        animation: o.animation
+      });
+    }
+  });
+  return organizedAnimations;
+}
+
+function createAnimationsFromTheStackedSketches() {
+  organizeAnimationsObjects().forEach(function (o) {
+    var animation = o.animation,
+        linkedAnimation = o.linkedAnimation,
+        typeOfLink = o.typeOfLink,
+        playTogether = o.playTogether,
+        afterIterations = o.afterIterations;
+    var performerFn = animation.performer;
+
+    if (typeOfLink === 'afterAnimation' && linkedAnimation) {
+      linkedAnimation.on('end', function f() {
+        (0,_organize_cycle__WEBPACK_IMPORTED_MODULE_2__.organizeCycleSequence)(performerFn, animation);
+        (0,_logic_to_play_animations__WEBPACK_IMPORTED_MODULE_1__.default)(animation, playTogether, afterIterations);
+        linkedAnimation.off('end', f);
+      });
+    } else {
+      performerFn.$hidden.animationInstances.push(animation);
+      performerFn.$hidden.independentAnimations.push(animation);
+      (0,_organize_cycle__WEBPACK_IMPORTED_MODULE_2__.organizeCycleSequence)(performerFn, animation);
+      (0,_logic_to_play_animations__WEBPACK_IMPORTED_MODULE_1__.default)(animation, playTogether, afterIterations);
+    }
+  });
+}
+
+function addInStackForConstruction(animationOptions, performerFn, linkedAnimation, typeOfLink, amountOfIterations) {
+  var aOptions = animationOptions;
+  var lAnimation = linkedAnimation;
 
   if (performerFn.$hidden.cycleOptions) {
-    aProperties.isInCycle = true;
+    aOptions.isInCycle = true;
 
-    if (instanceToLink && !instanceToLink.isInCycle) {
+    if (lAnimation && !lAnimation.isInCycle) {
       /**
        * Do not allow link  with out-of-cycle animations.
        */
-      instanceToLink = undefined;
+      lAnimation = undefined;
     }
   }
 
@@ -4831,46 +4831,36 @@ function addInStackForConstruction(animationProperties, performerFn, animationOb
     });
   }
 
-  if (instanceToLink) {
-    var playAfter = instanceToLink.play ? instanceToLink : getInstanceLink(instanceToLink);
+  if (lAnimation) {
+    var indexOrAnimation = lAnimation.play ? lAnimation : function () {
+      var l = STACK_OF_ANIMATIONS_SKETCHES.length;
 
-    if (typeOfLink === 'afterAnimation') {
+      for (var index = 0; index < l; index += 1) {
+        if (STACK_OF_ANIMATIONS_SKETCHES[index].animationOptions === lAnimation) {
+          return index;
+        }
+      }
+
+      return null;
+    }();
+
+    if (indexOrAnimation !== null) {
       STACK_OF_ANIMATIONS_SKETCHES.push({
-        playAfter: playAfter,
-        animationProperties: animationProperties,
+        indexOrAnimation: indexOrAnimation,
+        typeOfLink: typeOfLink,
+        amountOfIterations: amountOfIterations,
+        animationOptions: animationOptions,
         performerFn: performerFn
       });
-    } else if (typeOfLink === 'together' && playAfter) {
-      var i = playAfter.index;
-
-      if (i > -1) {
-        var _STACK_OF_ANIMATIONS_;
-
-        if (!STACK_OF_ANIMATIONS_SKETCHES[i].playTogether) {
-          STACK_OF_ANIMATIONS_SKETCHES[i].playTogether = [];
-        }
-
-        (_STACK_OF_ANIMATIONS_ = STACK_OF_ANIMATIONS_SKETCHES[i].playTogether) === null || _STACK_OF_ANIMATIONS_ === void 0 ? void 0 : _STACK_OF_ANIMATIONS_.push(animationProperties);
-      }
-    } else if (typeOfLink === 'afterIterations' && playAfter) {
-      var _i = playAfter.index;
-
-      if (_i > -1) {
-        var _STACK_OF_ANIMATIONS_2;
-
-        if (!STACK_OF_ANIMATIONS_SKETCHES[_i].waitIterations) {
-          STACK_OF_ANIMATIONS_SKETCHES[_i].waitIterations = {
-            waitIterations: waitIterations,
-            animations: []
-          };
-        }
-
-        (_STACK_OF_ANIMATIONS_2 = STACK_OF_ANIMATIONS_SKETCHES[_i].waitIterations) === null || _STACK_OF_ANIMATIONS_2 === void 0 ? void 0 : _STACK_OF_ANIMATIONS_2.animations.push(animationProperties);
-      }
+    } else {
+      STACK_OF_ANIMATIONS_SKETCHES.push({
+        animationOptions: animationOptions,
+        performerFn: performerFn
+      });
     }
   } else {
     STACK_OF_ANIMATIONS_SKETCHES.push({
-      animationProperties: animationProperties,
+      animationOptions: animationOptions,
       performerFn: performerFn
     });
   }
@@ -4899,28 +4889,28 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-function revertAnimationProgress(animationInstance) {
-  var animationAuxiliaryObject = (0,_animation_mount_crud_animation_objects__WEBPACK_IMPORTED_MODULE_1__.getAnimationAuxiliaryObject)(animationInstance.animationId);
+function revertAnimationProgress(animation) {
+  var animationAuxiliaryObject = (0,_animation_mount_crud_animation_objects__WEBPACK_IMPORTED_MODULE_1__.getAnimationAuxiliaryObject)(animation.animationId);
 
   if (animationAuxiliaryObject) {
     var lastStartProgress = animationAuxiliaryObject.lastStartProgress || 0;
-    (0,_iteration_control_methods__WEBPACK_IMPORTED_MODULE_3__.default)(animationAuxiliaryObject.duration, undefined, 1 / _constants__WEBPACK_IMPORTED_MODULE_2__.MAX_KEYFRAME * lastStartProgress, animationInstance, true // apply delay
+    (0,_iteration_control_methods__WEBPACK_IMPORTED_MODULE_3__.default)(animationAuxiliaryObject.duration, undefined, 1 / _constants__WEBPACK_IMPORTED_MODULE_2__.MAX_KEYFRAME * lastStartProgress, animation, true // apply delay
     );
   }
 }
 
-function runAnimation(animationInstance) {
-  if (animationInstance.state === _constants__WEBPACK_IMPORTED_MODULE_2__.ANIMATION_STATES[0]) {
-    animationInstance.play();
-  } else if (animationInstance.state === _constants__WEBPACK_IMPORTED_MODULE_2__.ANIMATION_STATES[2]) {
-    revertAnimationProgress(animationInstance);
+function runAnimation(animation) {
+  if (animation.state === _constants__WEBPACK_IMPORTED_MODULE_2__.ANIMATION_STATES[0]) {
+    animation.play();
+  } else if (animation.state === _constants__WEBPACK_IMPORTED_MODULE_2__.ANIMATION_STATES[2]) {
+    revertAnimationProgress(animation);
   }
 }
 
-function runAfter(animationInstance, otherAnimationInstance) {
-  animationInstance.on('end', function f() {
+function runAfter(animation, otherAnimationInstance) {
+  animation.on('end', function f() {
     runAnimation(otherAnimationInstance);
-    animationInstance.off('end', f);
+    animation.off('end', f);
   });
 }
 
@@ -4968,19 +4958,19 @@ function repeatCycleExecution(cycleOptions) {
     cycle.countLoops += 1;
   }
 }
-function organizeCycleSequence(animationPerformer, animationInstance, instanceToLink, typeOfLink) {
+function organizeCycleSequence(animationPerformer, animation, instanceToLink, typeOfLink) {
   var cycleOptions = animationPerformer.$hidden.cycleOptions;
 
-  if (cycleOptions && animationInstance.isInCycle) {
+  if (cycleOptions && animation.isInCycle) {
     if (!cycleOptions.animationInstancesInCycle) {
       cycleOptions.animationInstancesInCycle = [];
     }
 
     cycleOptions.numberOfAnimationsToComplete += 1;
-    cycleOptions.animationInstancesInCycle.unshift(animationInstance);
+    cycleOptions.animationInstancesInCycle.unshift(animation);
     (0,_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_0__.addAnimationEventListener)(_animation_listeners_animations_listeners_handlers__WEBPACK_IMPORTED_MODULE_0__.LISTENERS_NAMES[11], function () {
       return repeatCycleExecution(cycleOptions);
-    }, animationInstance);
+    }, animation);
 
     if (!cycleOptions.sequence) {
       cycleOptions.sequence = [];
@@ -4994,16 +4984,16 @@ function organizeCycleSequence(animationPerformer, animationInstance, instanceTo
 
         if (typeOfLink === 'together') {
           if (bucket.indexOf(instanceToLink) > -1) {
-            bucket.push(animationInstance);
+            bucket.push(animation);
             break;
           }
         } else if (typeOfLink === 'afterAnimation' && bucket.indexOf(instanceToLink) > -1) {
-          cycleOptions.sequence.splice(index, 0, [animationInstance]);
+          cycleOptions.sequence.splice(index, 0, [animation]);
           break;
         }
       }
     } else {
-      cycleOptions.sequence.push([animationInstance]);
+      cycleOptions.sequence.push([animation]);
     }
   }
 }
@@ -5431,7 +5421,6 @@ var PERFORMER_FNS_METHODS = {
         return a.destroy();
       });
     });
-    this.$hidden.creator.performers.splice(this.$hidden.index, 1);
     return true;
   },
   on: function on(eventName, callbackfn) {
@@ -5576,13 +5565,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": function() { return /* binding */ debugAnimation; },
 /* harmony export */   "debugNormal": function() { return /* binding */ debugNormal; }
 /* harmony export */ });
-function debugAnimation(animationInstance, message, callbackTest) {
+function debugAnimation(animation, message, callbackTest) {
   var check = callbackTest ? callbackTest() : true;
-  if (check) throw new Error("\n\n<WideSmile>: \n\n| AnimationWS object name: ".concat(animationInstance.animationId, " | \n\n--> ").concat(message, "\n\n"));
+  if (check) throw new Error("\n\n<CreatorFn>: \n\n| AnimationWS object name: ".concat(animation.animationId, " | \n\n--> ").concat(message, "\n\n"));
 }
 function debugNormal(type, message, callbackTest) {
   var check = callbackTest ? callbackTest() : true;
-  if (check) throw new Error("\n\n<WideSmile>: \n\n| Where or what happened: ".concat(type, " | \n\n--> ").concat(message, "\n\n"));
+  if (check) throw new Error("\n\n<CreatorFn>: \n\n| Where or what happened: ".concat(type, " | \n\n--> ").concat(message, "\n\n"));
 }
 
 /***/ }),
@@ -6730,7 +6719,7 @@ var __webpack_exports__ = {};
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _src_index__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./src/index */ "./src/index.ts");
 /*
-  # wide-smile (C) 2021, Diogo Neves.
+  # wide-smile (C) 2021, Diogo Neves. 
 
   # Licensed under the MIT license. See LICENSE file in the project root for details.
   ___________________________________________________________________________________
@@ -6743,6 +6732,9 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = (_src_index__WEBPACK_IMPORTED_MODULE_0__.default);
 }();
+__webpack_exports__ = __webpack_exports__.default;
+/******/ 	return __webpack_exports__;
 /******/ })()
 ;
+});
 //# sourceMappingURL=wide-smile.js.map

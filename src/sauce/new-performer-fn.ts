@@ -3,7 +3,7 @@ import {
   addInStackForConstruction,
   useAnimationObjectExpectingSideEffects,
 } from './organize-animation-creations';
-import AnimableProperties from '../contracts/animable-properties';
+import AllAnimableProperties from '../contracts/animable-properties';
 import createAnimationPropertiesObject, {
   ANIMATION_PERFORMER_PROPERTIES,
 } from './create-animation-properties-object';
@@ -58,7 +58,7 @@ const NewPerformerFn = (
     animate:
       | PropertiesToAnimateObject
       | Keyframes
-      | AnimableProperties
+      | AllAnimableProperties
       | number,
     parametersToAnimateOrPropertyValue?:
       | AnimationOptions
@@ -66,11 +66,6 @@ const NewPerformerFn = (
       | true,
     parametersToAnimate?: AnimationOptions | AnimationOptions['dur'] | true
   ) {
-    if (typeof animate === 'number') {
-      performerFn.$hidden.currentAfterIterations = animate;
-      return performerFn;
-    }
-
     const animationProperties = createAnimationPropertiesObject(
       performerFn,
       animate as never,

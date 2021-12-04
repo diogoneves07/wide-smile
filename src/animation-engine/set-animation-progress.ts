@@ -12,7 +12,7 @@ export default function setAnimationProgress(
     AnimationAuxiliaryObject,
     'countDriveloop' | 'keyframesKeys' | 'lastStartProgress'
   > & {
-    animationInstance: Pick<
+    animation: Pick<
       AnimationInstance,
       'dir' | 'count' | 'drive' | 'dur' | 'max' | 'progressValue'
     >;
@@ -22,15 +22,12 @@ export default function setAnimationProgress(
   progress: AnimationInstance['progressValue'];
 } {
   const a = animationAuxiliaryObject;
-  const { keyframesKeys, animationInstance } = a;
+  const { keyframesKeys, animation } = a;
   let { countDriveloop } = a;
-  let maxProgress = animationInstance.max;
-  let progress = animationInstance.progressValue;
+  let maxProgress = animation.max;
+  let progress = animation.progressValue;
 
-  const drive = animationInstance.drive as Exclude<
-    typeof animationInstance.drive,
-    Function
-  >;
+  const drive = animation.drive as Exclude<typeof animation.drive, Function>;
 
   let driveEasy = typeof drive === 'string' ? drive : '';
 
@@ -41,9 +38,9 @@ export default function setAnimationProgress(
       typeof listOfProgress[countDriveloop] === 'string'
     : false;
 
-  const direction = animationInstance.dir;
+  const direction = animation.dir;
 
-  const iterationsCompleted = animationInstance.count;
+  const iterationsCompleted = animation.count;
 
   const progressStoppedAt = progress || 0;
 

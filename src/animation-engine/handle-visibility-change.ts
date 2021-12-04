@@ -7,13 +7,10 @@ const ANIMATIONS_PAUSED: AnimationInstance[] = [];
 export default function handleVisibilityChange(): void {
   if (document.hidden) {
     customForIn(getAllAnimationAuxiliaryObjects(), (c) => {
-      const animationInstance = c.animationInstance;
-      if (
-        animationInstance.state !== ANIMATION_STATES[3] &&
-        animationInstance.pauseDocHidden
-      ) {
-        animationInstance.pause();
-        ANIMATIONS_PAUSED.push(animationInstance);
+      const animation = c.animation;
+      if (animation.state !== ANIMATION_STATES[3] && animation.pauseDocHidden) {
+        animation.pause();
+        ANIMATIONS_PAUSED.push(animation);
       }
     });
   } else {

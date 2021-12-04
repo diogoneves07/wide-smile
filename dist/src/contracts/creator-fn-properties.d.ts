@@ -12,12 +12,12 @@ export default interface CreatorFnProperties {
     dfs: AnimationOptions;
     performers: PerformerFn[];
     /**
-     * An object shared by all instances of the function( WideSmile ).
+     * An object shared by all instances of the function( CreatorFn ).
      */
     global: {
         asyncLoading: boolean;
         /**
-         * Create a new instance of the function( WideSmile ).
+         * Create a new instance of the function( CreatorFn ).
          */
         'new'(): Function & CreatorFnProperties;
         /**
@@ -33,7 +33,7 @@ export default interface CreatorFnProperties {
          */
         readonly observeds: Record<string, CreateObserverPropertyCallbackfn>;
         /**
-         * All the instances of the functions( WideSmile ) created.
+         * All the instances of the functions( CreatorFn ) created.
          */
         readonly all: PerformerFn['$hidden']['creator'][];
         newEasing(name: string, callback: EasingFunction): CreatorFnProperties['global'];
@@ -89,6 +89,10 @@ export default interface CreatorFnProperties {
      */
     load(): this;
     /**
+     * Loads each animation created by the **Performer* functions(created by this) and performs them in the form they have been structured.
+     */
+    ready(): this;
+    /**
      * Pause all animations(created by this).
      */
     pause(): this;
@@ -129,11 +133,15 @@ export default interface CreatorFnProperties {
      */
     dirTo(dir: Parameters<AnimationsPropotype['dirTo']>['0']): this;
     /**
+     * Cancels all animations(created by this).
+     */
+    cancel(): this;
+    /**
      * Destroys all animations(created by this).
      */
     destroy(): this;
     /**
-     * Appends an event listener.
+     * Adds the listener to  all animations(created by this).
      *
      * @param typeOfListener
      * The name of the listener.
@@ -141,7 +149,7 @@ export default interface CreatorFnProperties {
      * @param callbackfn
      * The call-back
      */
-    on(typeOfListener: ListenersEventsName, callbackfn: (this: PerformerFn['$hidden']['animationInstances'][number], typeOfListener: string, animationInstance: PerformerFn['$hidden']['animationInstances'][number]) => unknown): this;
+    on(typeOfListener: ListenersEventsName, callbackfn: (this: PerformerFn['$hidden']['animationInstances'][number], typeOfListener: string, animation: PerformerFn['$hidden']['animationInstances'][number]) => unknown): this;
     /**
      * Remove the listener from all animations(created by this).
      *

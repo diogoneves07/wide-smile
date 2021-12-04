@@ -1,6 +1,6 @@
 import { ListenersEventsName } from './listeners-events-name';
 import ValuesToAnimateProperty from './values-to-animate-property';
-import AnimableProperties from './animable-properties';
+import AllAnimableProperties from './animable-properties';
 import EasingsFunctionsList from './easings-functions-list';
 import Keyframes from './key-frames';
 import PropertiesToAnimateObject from './properties-to-animate-object';
@@ -23,25 +23,25 @@ export interface OverloadsForAnimationCreation {
   (iterations: number): this;
 
   (
-    propertyName: AnimableProperties,
+    propertyName: AllAnimableProperties,
     propertyValue: ValuesToAnimateProperty,
     parametersToAnimate?: AnimationOptions
   ): this;
 
   (
-    propertyName: AnimableProperties,
+    propertyName: AllAnimableProperties,
     propertyValue: ValuesToAnimateProperty,
     dur?: AnimationOptions['dur']
   ): this;
 
   (
-    propertyName: AnimableProperties,
+    propertyName: AllAnimableProperties,
     propertyValue: ValuesToAnimateProperty,
     autoDestroy?: true
   ): this;
 
   (
-    propertyName: AnimableProperties,
+    propertyName: AllAnimableProperties,
     propertyValue: ValuesToAnimateProperty[],
     autoDestroy?: true
   ): this;
@@ -262,7 +262,7 @@ export interface PerformerFnMethods {
     callbackfn: (
       this: AnimationInstance,
       eventName: string,
-      animationInstance: AnimationInstance
+      animation: AnimationInstance
     ) => unknown
   ): PerformerFn;
 

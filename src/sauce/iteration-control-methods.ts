@@ -12,10 +12,10 @@ export default function iterationControlMethods(
   realDuration: number,
   newDuration: number | undefined,
   part: number,
-  animationInstance: AnimationInstance,
+  animation: AnimationInstance,
   applyDelay?: boolean
 ): void {
-  const aInstance = animationInstance;
+  const aInstance = animation;
   const animationAuxiliaryObject = getAnimationAuxiliaryObject(
     aInstance.animationId
   );
@@ -35,12 +35,12 @@ export default function iterationControlMethods(
     addAnimationEventListener(
       LISTENERS_NAMES[7],
       function a(this: AnimationInstance) {
-        if (dur === animationInstance.dur) {
+        if (dur === animation.dur) {
           aInstance.dur = realDuration;
         }
-        removeAnimationEventListener(LISTENERS_NAMES[7], a, animationInstance);
+        removeAnimationEventListener(LISTENERS_NAMES[7], a, animation);
       },
-      animationInstance
+      animation
     );
 
     if (checkDur && dur <= 0) {

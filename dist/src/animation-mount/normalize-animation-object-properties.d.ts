@@ -12,4 +12,4 @@ export declare function normalizePastedProperties<Type extends object>(obj: Type
  * }
  *
  */
-export default function normalizePastedAnimationProperties<Type extends object>(animationInstance: Type): Type;
+export default function normalizePastedAnimationProperties<Type extends object>(animation: Type): Type;

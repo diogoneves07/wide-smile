@@ -39,11 +39,18 @@ module.exports = [
     output: {
       path: path.resolve(__dirname, './'),
       filename: 'wide-smile.js',
+      library: {
+        type: 'umd',
+        name: 'wS',
+        export: 'default',
+      },
     },
   },
 
   {
     ...defaults,
+    // bundling mode
+    mode: 'production',
 
     // output bundles (location)
     output: {
@@ -58,6 +65,8 @@ module.exports = [
   },
   {
     ...defaults,
+
+    mode: 'production',
 
     experiments: {
       outputModule: true,

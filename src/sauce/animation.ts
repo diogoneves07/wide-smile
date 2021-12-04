@@ -35,14 +35,14 @@ interface AnimationWS extends AnimationInstance {
 
 class AnimationWS implements AnimationInstance {
   constructor(
-    animationInstance:
+    animation:
       | AnimationInstancePropertiesAllWritable
       | UserAnimationObjectInternal
       | PropertiesForTheCreationOfAnimation,
     creator: AnimationInstance['creator']
   ) {
     const U_A_O = normalizePastedAnimationProperties(
-      animationInstance
+      animation
     ) as UserAnimationObjectInternal;
     Object.assign(this, AnimationConstructor(U_A_O, creator));
 
@@ -283,11 +283,7 @@ class AnimationWS implements AnimationInstance {
 
   on(
     eventName: ListenersEventsName,
-    callbackfn: (
-      this: this,
-      eventName: string,
-      animationInstance: this
-    ) => unknown
+    callbackfn: (this: this, eventName: string, animation: this) => unknown
   ): this {
     addAnimationEventListener(eventName, callbackfn, this);
     return this;

@@ -1,7 +1,7 @@
 import { AnimationInstance } from '../contracts/animation-inter';
 import { customForIn } from '../utilities/index';
 
-function isPossiblyAnArray<Type extends object>(o: Type): Type | false {
+function toArray<Type extends object>(o: unknown): Type | false {
   if (!o || typeof o !== 'object') {
     return false;
   }
@@ -22,7 +22,7 @@ export function normalizePastedProperties<Type extends object>(
         const n = pName as never;
         if (pName) {
           if (o[n] && typeof propertyValue === 'object') {
-            const v = isPossiblyAnArray(propertyValue as never);
+            const v = toArray(propertyValue);
             if (v) {
               o[n] = (o[n] as unknown[]).concat(v) as never;
             } else {
@@ -39,7 +39,7 @@ export function normalizePastedProperties<Type extends object>(
       loopObject &&
       propertyValue &&
       typeof propertyValue === 'object' &&
-      !isPossiblyAnArray(propertyValue as never)
+      !toArray(propertyValue)
     ) {
       normalizePastedProperties(propertyValue as never);
     }
@@ -60,10 +60,10 @@ export function normalizePastedProperties<Type extends object>(
  *
  */
 export default function normalizePastedAnimationProperties<Type extends object>(
-  animationInstance: Type
+  animation: Type
 ): Type {
   const aInstance = (normalizePastedProperties(
-    animationInstance
+    animation
   ) as unknown) as AnimationInstance;
 
   return (aInstance as unknown) as Type;

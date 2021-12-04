@@ -9,24 +9,21 @@ import EasingFunction from '../contracts/easing-function';
  * Sets the value of some properties For `AnimationAuxiliaryObject` from a `AnimationInstance`.
  */
 export function propertiesForAnimationAuxiliaryObject(
-  animationInstance: AnimationInstance
+  animation: AnimationInstance
 ): Pick<AnimationAuxiliaryObject, 'easing' | 'reverseExecution' | 'duration'> {
   let easing: EasingFunction;
   if (
-    typeof animationInstance.easing === 'string' &&
-    getCustomEasing(animationInstance.easing)
+    typeof animation.easing === 'string' &&
+    getCustomEasing(animation.easing)
   ) {
-    easing = getCustomEasing(animationInstance.easing) as EasingFunction;
+    easing = getCustomEasing(animation.easing) as EasingFunction;
   } else {
-    easing = parseEasings(
-      animationInstance.easing,
-      toMs(animationInstance.dur)
-    );
+    easing = parseEasings(animation.easing, toMs(animation.dur));
   }
   return {
     easing,
 
-    duration: animationInstance.dur,
+    duration: animation.dur,
 
     reverseExecution: ((direction: AnimationInstance['dir']) => {
       switch (direction) {
@@ -37,24 +34,24 @@ export function propertiesForAnimationAuxiliaryObject(
         default:
           return false;
       }
-    })(animationInstance.dir),
+    })(animation.dir),
   };
 }
 export default function CreateAnimationAuxiliaryObject(
-  animationInstance: AnimationInstance
+  animation: AnimationInstance
 ): AnimationAuxiliaryObject {
   return {
     animateProperties: [],
 
     keyframesKeys: [],
 
-    remainingDelayAnimation: toMs(animationInstance.delay),
+    remainingDelayAnimation: toMs(animation.delay),
 
-    initialProgress: animationInstance.progressValue,
+    initialProgress: animation.progressValue,
 
     lastStartProgress: 0,
 
-    animationId: animationInstance.animationId,
+    animationId: animation.animationId,
 
     countDriveloop: 0,
 
@@ -77,7 +74,7 @@ export default function CreateAnimationAuxiliaryObject(
     },
     animationLoadingTime: 0,
 
-    animationInstance,
-    ...propertiesForAnimationAuxiliaryObject(animationInstance),
+    animation,
+    ...propertiesForAnimationAuxiliaryObject(animation),
   } as AnimationAuxiliaryObject;
 }

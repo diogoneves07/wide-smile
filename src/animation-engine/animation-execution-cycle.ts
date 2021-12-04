@@ -40,7 +40,7 @@ const manageAnimationDelay = (() => {
       ANIMATIONS_DELAY = ANIMATIONS_DELAY.filter((values) => {
         const v = values;
         const c = getTimeNow() - v.startTime;
-        const state = v.animationAuxiliaryObject.animationInstance.state;
+        const state = v.animationAuxiliaryObject.animation.state;
         if (state === ANIMATION_STATES[1]) {
           if (c >= v.delay) {
             v.animationAuxiliaryObject.remainingDelayAnimation = v.delay - c;
@@ -88,16 +88,13 @@ function insertAnimationInTheQueue(
   animationLoadingTime = 0
 ) {
   const a = animationAuxiliaryObject;
-  const { animationInstance, remainingDelayAnimation } = a;
+  const { animation, remainingDelayAnimation } = a;
 
   if (!a.animationAlreadyStarted) {
-    propagateAnimationEventListener(LISTENERS_NAMES[8], animationInstance);
+    propagateAnimationEventListener(LISTENERS_NAMES[8], animation);
   }
 
-  const delay = Math.max(
-    toMs(animationInstance.delay) - animationLoadingTime,
-    0
-  );
+  const delay = Math.max(toMs(animation.delay) - animationLoadingTime, 0);
 
   if ((delay > 0 || remainingDelayAnimation) && !jumpTimeout) {
     manageAnimationDelay(
@@ -106,7 +103,7 @@ function insertAnimationInTheQueue(
       getTimeNow(),
       () => {
         addAnimationToStack(a);
-        propagateAnimationEventListener(LISTENERS_NAMES[10], animationInstance);
+        propagateAnimationEventListener(LISTENERS_NAMES[10], animation);
       }
     );
   } else {
@@ -115,7 +112,7 @@ function insertAnimationInTheQueue(
     a.remainingDelayAnimation = 0;
 
     addAnimationToStack(a);
-    propagateAnimationEventListener(LISTENERS_NAMES[10], animationInstance);
+    propagateAnimationEventListener(LISTENERS_NAMES[10], animation);
   }
 }
 
@@ -130,7 +127,7 @@ function newIntercalation(
     | 'reverseExecution'
     | 'timeRunningIteration'
   > & {
-    animationInstance: Pick<
+    animation: Pick<
       AnimationInstance,
       'dur' | 'delay' | 'progressValue' | 'max'
     >;
@@ -146,12 +143,9 @@ function newIntercalation(
   progress: number;
 } {
   const animationAuxiliaryObject = requiredAnimationProperties;
-  const {
-    animationInstance,
-    iterationInterlacations,
-  } = animationAuxiliaryObject;
-  const maxProgress = animationInstance.max;
-  let progress = animationInstance.progressValue;
+  const { animation, iterationInterlacations } = animationAuxiliaryObject;
+  const maxProgress = animation.max;
+  let progress = animation.progressValue;
 
   let {
     startTimeOfTheIteration,
@@ -159,7 +153,7 @@ function newIntercalation(
     timeRunningIteration,
   } = animationAuxiliaryObject;
 
-  const duration = toMs(animationInstance.dur);
+  const duration = toMs(animation.dur);
 
   if (duration <= 0) {
     return {
@@ -257,12 +251,12 @@ export function resetIterationRelatedProperties(
   animationAuxiliaryObject: AnimationAuxiliaryObject
 ): void {
   const a = animationAuxiliaryObject;
-  const { animationInstance } = a;
+  const { animation } = a;
   let { backRunning } = a;
-  let maxProgress = animationInstance.max;
+  let maxProgress = animation.max;
 
-  const amountOfIterations = animationInstance.loop;
-  let iterationsCompleted = animationInstance.count;
+  const amountOfIterations = animation.loop;
+  let iterationsCompleted = animation.count;
 
   let backRunningStopped = -1;
 
@@ -277,7 +271,7 @@ export function resetIterationRelatedProperties(
   if (!backRunning) {
     iterationsCompleted += 1;
   }
-  animationInstance.count = iterationsCompleted;
+  animation.count = iterationsCompleted;
 
   if (
     amountOfIterations > iterationsCompleted ||
@@ -285,9 +279,9 @@ export function resetIterationRelatedProperties(
     amountOfIterations === true
   ) {
     if (backRunning) {
-      backRunningStopped = animationInstance.progressValue;
+      backRunningStopped = animation.progressValue;
       backRunning = false;
-      propagateAnimationEventListener(LISTENERS_NAMES[7], animationInstance);
+      propagateAnimationEventListener(LISTENERS_NAMES[7], animation);
     }
 
     const animationProgressObject = setAnimationProgress(a);
@@ -297,33 +291,33 @@ export function resetIterationRelatedProperties(
 
     maxProgress = animationProgressObject.maxProgress;
 
-    propagateAnimationEventListener(LISTENERS_NAMES[7], animationInstance);
-    propagateAnimationEventListener(LISTENERS_NAMES[1], animationInstance);
+    propagateAnimationEventListener(LISTENERS_NAMES[7], animation);
+    propagateAnimationEventListener(LISTENERS_NAMES[1], animation);
 
     resetIterationRelatedProperties(a);
 
     a.backRunning = backRunning;
 
-    animationInstance.max = maxProgress;
-    animationInstance.progressValue = animationProgressObject.progress;
+    animation.max = maxProgress;
+    animation.progressValue = animationProgressObject.progress;
 
     if (backRunningStopped > -1) {
       /**
        * Maintain the value of the last progress.
        */
-      animationInstance.progressValue = backRunningStopped;
+      animation.progressValue = backRunningStopped;
 
       performNewAnimationIntercalation(a);
     } else {
       const newIntercalationObject = newIntercalation(a);
 
       Object.assign(a, newIntercalationObject.toAuxiliaryObject);
-      animationInstance.progressValue = newIntercalationObject.progress;
+      animation.progressValue = newIntercalationObject.progress;
 
       insertAnimationInTheQueue(a);
     }
   } else {
-    propagateAnimationEventListener(LISTENERS_NAMES[1], animationInstance);
+    propagateAnimationEventListener(LISTENERS_NAMES[1], animation);
     completedAnimation(a);
   }
 }
@@ -336,20 +330,20 @@ function conclusionOfTheIntercalation(
   releasesGarbageFromAnimations();
 
   const aAuxiliaryObject = animationAuxiliaryObject;
-  const { animationInstance } = aAuxiliaryObject;
+  const { animation } = aAuxiliaryObject;
 
-  if (animationInstance.state === ANIMATION_STATES[1]) {
+  if (animation.state === ANIMATION_STATES[1]) {
     const { reverseExecution } = aAuxiliaryObject;
-    const maxProgress = animationInstance.max;
-    const progress = animationInstance.progressValue;
+    const maxProgress = animation.max;
+    const progress = animation.progressValue;
     if (
       (reverseExecution && progress < maxProgress) ||
       (!reverseExecution && progress > maxProgress) ||
       progress === maxProgress
     ) {
-      animationInstance.progressValue = maxProgress;
+      animation.progressValue = maxProgress;
 
-      const endDelay = Math.max(toMs(animationInstance.endDelay));
+      const endDelay = Math.max(toMs(animation.endDelay));
 
       if (endDelay > 0) {
         manageAnimationDelay(
@@ -378,24 +372,21 @@ function performIntercalationOfTheAnimations(
     (animationAuxiliaryObject: AnimationAuxiliaryObject) => {
       const aAuxiliaryObject = animationAuxiliaryObject;
 
-      const { animationInstance, animateProperties } = aAuxiliaryObject;
+      const { animation, animateProperties } = aAuxiliaryObject;
       let { animationAlreadyStarted } = aAuxiliaryObject;
 
-      if (animationInstance.state === ANIMATION_STATES[1]) {
+      if (animation.state === ANIMATION_STATES[1]) {
         applyAnimationsStyleToElement(animateProperties, aAuxiliaryObject);
 
         if (!animationAlreadyStarted) {
-          propagateAnimationEventListener(
-            LISTENERS_NAMES[0],
-            animationInstance
-          );
+          propagateAnimationEventListener(LISTENERS_NAMES[0], animation);
           animationAlreadyStarted = true;
           aAuxiliaryObject.animationAlreadyStarted = true;
         }
 
-        propagateAnimationEventListener(LISTENERS_NAMES[9], animationInstance);
-        if (typeof animationInstance.progress === 'function') {
-          animationInstance.progress(animationInstance.progressValue);
+        propagateAnimationEventListener(LISTENERS_NAMES[9], animation);
+        if (typeof animation.progress === 'function') {
+          animation.progress(animation.progressValue);
         }
       }
     }
@@ -426,8 +417,7 @@ export function performNewAnimationIntercalation(
 
   Object.assign(aAuxiliaryObject, newIntercalationObject.toAuxiliaryObject);
 
-  aAuxiliaryObject.animationInstance.progressValue =
-    newIntercalationObject.progress;
+  aAuxiliaryObject.animation.progressValue = newIntercalationObject.progress;
 
   addAnimationToStack(aAuxiliaryObject);
 }
@@ -436,21 +426,18 @@ function completedAnimation(
   animationAuxiliaryObject: AnimationAuxiliaryObject
 ): void {
   const aAuxiliaryObject = animationAuxiliaryObject;
-  const { animationInstance } = animationAuxiliaryObject;
+  const { animation } = animationAuxiliaryObject;
   /**
    * Check before propagating events.
    */
-  if (animationInstance.autoDestroy) {
+  if (animation.autoDestroy) {
     recyclePropertyObjectToAnimate(aAuxiliaryObject.animateProperties);
   }
-  animationInstance.state = ANIMATION_STATES[2];
-  propagateAnimationEventListener(LISTENERS_NAMES[7], animationInstance);
-  propagateAnimationEventListener(LISTENERS_NAMES[2], animationInstance);
-  if (animationInstance.isInCycle) {
-    propagateAnimationEventListener(LISTENERS_NAMES[11], animationInstance);
-  }
-  if (animationInstance.autoDestroy) {
-    animationInstance.destroy();
+  animation.state = ANIMATION_STATES[2];
+  propagateAnimationEventListener(LISTENERS_NAMES[7], animation);
+  propagateAnimationEventListener(LISTENERS_NAMES[2], animation);
+  if (animation.isInCycle) {
+    propagateAnimationEventListener(LISTENERS_NAMES[11], animation);
   }
 }
 
@@ -471,8 +458,8 @@ export default function startAnimationExecutionCycle(
 
   a.animationLoadingTime = 0;
 
-  a.animationInstance.state = ANIMATION_STATES[1];
-  a.animationInstance.progressValue = newIntercalationObject.progress;
+  a.animation.state = ANIMATION_STATES[1];
+  a.animation.progressValue = newIntercalationObject.progress;
 
   insertAnimationInTheQueue(a, jumpTimeout, animationLoadingTime);
 }

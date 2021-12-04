@@ -9,7 +9,7 @@ import {
 let ANIMATIONS_ID = -1;
 
 export default function AnimationConstructor(
-  animationInstance:
+  animation:
     | AnimationInstancePropertiesAllWritable
     | UserAnimationObjectInternal,
   creator: UserAnimationObjectInternal['creator']
@@ -18,13 +18,13 @@ export default function AnimationConstructor(
   ANIMATIONS_ID += 1;
   return {
     ...D_A_P,
-    ...animationInstance,
+    ...animation,
     ...{
       creator,
 
-      targets: animationInstance.targets,
+      targets: animation.targets,
 
-      loop: animationInstance.loop,
+      loop: animation.loop,
 
       count: 0,
 

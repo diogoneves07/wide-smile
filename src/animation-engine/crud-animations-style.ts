@@ -126,7 +126,7 @@ export function applyAnimationsStyleToElement(
     valuesOfThePropertiesBeforeAnimating,
     reverseExecution,
   } = animationAuxiliaryObject;
-  const progress = animationAuxiliaryObject.animationInstance.progressValue;
+  const progress = animationAuxiliaryObject.animation.progressValue;
 
   animateProperties.forEach((propertyObject) => {
     if (!valuesOfThePropertiesBeforeAnimating[propertyObject.index]) {
@@ -202,7 +202,7 @@ export function applyAnimationsStyleToElement(
         [from, to],
         percentageInRelationToKey,
         animationAuxiliaryObject.easing,
-        animationAuxiliaryObject.animationInstance.round
+        animationAuxiliaryObject.animation.round
       );
 
       let f: Function;
@@ -270,17 +270,17 @@ export function removeAnimationStyle(
     AnimationAuxiliaryObject,
     'animationId' | 'valuesOfThePropertiesBeforeAnimating'
   > & {
-    animationInstance: Pick<AnimationInstance, 'removeChanges' | 'targets'>;
+    animation: Pick<AnimationInstance, 'removeChanges' | 'targets'>;
   }
 ): void {
   const {
-    animationInstance,
+    animation,
     valuesOfThePropertiesBeforeAnimating,
   } = requiredAnimationProperties;
-  if (!animationInstance.removeChanges) {
+  if (!animation.removeChanges) {
     return;
   }
-  const targets = animationInstance.targets;
+  const targets = animation.targets;
 
   for (let index = targets.length - 1; index > -1; index -= 1) {
     const targetObject = targets[index];

@@ -17,13 +17,13 @@ export default interface CreatorFnProperties {
   performers: PerformerFn[];
 
   /**
-   * An object shared by all instances of the function( WideSmile ).
+   * An object shared by all instances of the function( CreatorFn ).
    */
   global: {
     asyncLoading: boolean;
 
     /**
-     * Create a new instance of the function( WideSmile ).
+     * Create a new instance of the function( CreatorFn ).
      */
     'new'(): Function & CreatorFnProperties;
 
@@ -43,7 +43,7 @@ export default interface CreatorFnProperties {
     readonly observeds: Record<string, CreateObserverPropertyCallbackfn>;
 
     /**
-     * All the instances of the functions( WideSmile ) created.
+     * All the instances of the functions( CreatorFn ) created.
      */
     readonly all: PerformerFn['$hidden']['creator'][];
 
@@ -205,7 +205,7 @@ export default interface CreatorFnProperties {
     callbackfn: (
       this: PerformerFn['$hidden']['animationInstances'][number],
       typeOfListener: string,
-      animationInstance: PerformerFn['$hidden']['animationInstances'][number]
+      animation: PerformerFn['$hidden']['animationInstances'][number]
     ) => unknown
   ): this;
 

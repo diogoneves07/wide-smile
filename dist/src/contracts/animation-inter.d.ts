@@ -18,7 +18,12 @@ export declare type UserAnimationObjectInternal = Required<Omit<AnimationInstanc
     targets: TargetsAnimationProperty;
 };
 export default interface AnimationInstanceProperties extends UserAnimationOptions {
-    progress?: number;
+    /**
+     * Gets or defines the animation's progress.
+     *
+     * The default value is undefined. And throughout the animation is changed in real time.
+     */
+    progressValue?: number;
     /**
      * The function that created the animation instance.
      * @readonly
@@ -64,6 +69,10 @@ export interface UserAnimationOptions {
      */
     targets?: HTMLElement | string | (HTMLElement | AllNormalObject | string)[] | AllNormalObject;
     /**
+     * Callback that triggers every change in the progress of the animation.
+     */
+    progress?: (progress: number) => never;
+    /**
      * Defines how the animation should play.
      *
      * The default value is "normal".
@@ -87,11 +96,6 @@ export interface UserAnimationOptions {
      * The default value is "linear".
      */
     easing?: EasingsFunctionsList | EasingFunction;
-    /**
-     * Gets or defines the animation's progress.
-     *
-     * The default value is undefined. And throughout the animation is changed in real time.
-     */
     /**
      * Defines a interval at the beginning of each animation cycle, and only after that interval the animation begins to run the next cycle.
      *

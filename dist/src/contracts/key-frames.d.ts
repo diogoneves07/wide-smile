@@ -1,5 +1,5 @@
 import PropertiesToAnimateObject from './properties-to-animate-object';
 declare type Keyframes = (PropertiesToAnimateObject & {
-    dur?: number;
+    offset?: number;
 })[];
 export default Keyframes;

@@ -14,6 +14,10 @@ export function isHsl(a: string): boolean {
   return /^hsl/.test(a);
 }
 export function isColor(a: string): boolean {
+  const c = removeSpacesChar(a);
+  if (c.split(')').length > 1) {
+    return false;
+  }
   return isHex(a) || isRgb(a) || isHsl(a);
 }
 

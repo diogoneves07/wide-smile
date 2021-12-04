@@ -4,13 +4,19 @@ import AnimationInstanceProperties, {
 } from '../contracts/animation-inter';
 import FunctionForPropertyValueInKeyframe from '../contracts/function-for-property-value-in-keyframe';
 import PerformerFn from '../contracts/performer-fn';
-import hasOwnProperty from '../utilities/has-own-property';
 import AnimationWS from './animation';
 import logicToPlayAnimations from './logic-to-play-animations';
 import { organizeCycleSequence } from './organize-cycle';
 import parserStringStagger from './parser-string-stagger';
 
 /* eslint-disable @typescript-eslint/no-use-before-define  */
+const STACK_OF_ANIMATIONS_SKETCHES: {
+  animationOptions: AnimationOptions;
+  indexOrAnimation?: number | AnimationWS;
+  typeOfLink?: 'afterAnimation' | 'together' | 'afterIterations';
+  amountOfIterations?: number;
+  performerFn: PerformerFn;
+}[] = [];
 
 let ANIMATION_OBJECT_EXPECTING_SIDE_EFFECTS: [
   PerformerFn,
@@ -39,36 +45,19 @@ export function useAnimationObjectExpectingSideEffects(
   return undefined;
 }
 
-const STACK_OF_ANIMATIONS_SKETCHES: {
-  animationProperties: AnimationOptions;
-  playAfter?:
-    | {
-        index: number;
-        deepIndex?: number;
-        array?: 'waitIterations' | 'playTogether';
-      }
-    | AnimationWS;
-  playTogether?: AnimationOptions[];
-  waitIterations?: {
-    animations: AnimationOptions[];
-    waitIterations: number;
-  };
-  performerFn: PerformerFn;
-}[] = [];
-
 function createAnimationPropertiesFromStaggers(
-  animationProperties: AnimationOptions
+  animationOptions: AnimationOptions
 ) {
   const animationPropertiesObjects: AnimationOptions[] = [];
-  if (animationProperties.targets) {
-    animationProperties.targets.forEach((targetObject) => {
+  if (animationOptions.targets) {
+    animationOptions.targets.forEach((targetObject) => {
       const { target, index, originalArrayLength } = targetObject;
       const newAnimationProperties: AnimationOptions = {};
       let checkCreateNewObject = false;
 
       ['delay', 'drive', 'endDelay', 'dur', 'loop'].forEach((propertyName) => {
         let fn: string | FunctionForPropertyValueInKeyframe =
-          animationProperties[propertyName as never];
+          animationOptions[propertyName as never];
 
         if (typeof fn === 'string') {
           fn = parserStringStagger(fn);
@@ -85,7 +74,7 @@ function createAnimationPropertiesFromStaggers(
 
       if (checkCreateNewObject) {
         animationPropertiesObjects.push({
-          ...animationProperties,
+          ...animationOptions,
           ...newAnimationProperties,
           targets: [targetObject],
         });
@@ -126,166 +115,176 @@ export const runCallbacksAtTheRightTime = (() => {
   };
 })();
 
-function organizeAnimationsObjects() {
-  return STACK_OF_ANIMATIONS_SKETCHES.map((obj) => {
-    const o = obj;
+type OrganizedAnimations = {
+  typeOfLink: typeof STACK_OF_ANIMATIONS_SKETCHES[number]['typeOfLink'];
+  linkedAnimation: AnimationWS | undefined;
+  animation: AnimationWS;
+  playTogether?: AnimationWS[];
+  afterIterations?: {
+    animations: AnimationWS[];
+    amountOfIterations: number;
+  };
+}[];
 
-    const fromStaggers = createAnimationPropertiesFromStaggers(
-      o.animationProperties
-    );
-    if (fromStaggers) {
-      o.animationProperties = fromStaggers.shift() as AnimationOptions;
-      if (!o.playTogether) {
-        o.playTogether = [];
-      }
-      o.playTogether = o.playTogether.concat(fromStaggers);
-    }
-    return o;
-  }).map((o) => {
-    const performerFn = o.performerFn;
-    const creator = performerFn.creator as AnimationInstance['creator'];
-
-    const animationObject = new AnimationWS(
-      o.animationProperties as AnimationInstanceProperties,
-      creator
-    );
-
-    const playTogether = o.playTogether
-      ? o.playTogether.map(
-          (i) => new AnimationWS(i as AnimationInstanceProperties, creator)
-        )
-      : undefined;
-
-    const waitIterations = o.waitIterations as
-      | undefined
-      | {
-          animations: AnimationWS[];
-          waitIterations: number;
-        };
-    if (waitIterations) {
-      waitIterations.animations = waitIterations.animations.map(
-        (i) => new AnimationWS(i as AnimationInstanceProperties, creator)
-      );
-    }
-    return {
-      animationObject,
-      playAfter: o.playAfter,
-      playTogether,
-      waitIterations,
-      performerFn,
-    };
-  });
-}
-function createAnimationsFromTheStackedSketches(): void {
-  const animationsObjects = organizeAnimationsObjects();
-
-  animationsObjects.forEach((o) => {
-    const {
-      animationObject,
-      playAfter,
-      playTogether,
-      waitIterations,
-      performerFn,
-    } = o;
-
-    if (typeof playAfter === 'object' && !(playAfter instanceof AnimationWS)) {
-      const index = playAfter.index as number;
-      let instanceLink: AnimationWS;
-      if (hasOwnProperty(playAfter, 'deepIndex')) {
-        if (playAfter.array === 'waitIterations') {
-          instanceLink = animationsObjects[index].waitIterations?.animations[
-            playAfter.deepIndex as number
-          ] as AnimationWS;
-        } else {
-          instanceLink = (animationsObjects[index]
-            .playTogether as AnimationWS[])[playAfter.deepIndex as number];
-        }
-      } else {
-        instanceLink = animationsObjects[index].animationObject;
-      }
-
-      instanceLink.on('end', function f() {
-        performerFn.$hidden.independentAnimations.push(animationObject);
-
-        organizeCycleSequence(performerFn, animationObject);
-        logicToPlayAnimations(animationObject, playTogether, waitIterations);
-
-        instanceLink.off('end', f);
-      });
-    } else if (playAfter instanceof AnimationWS) {
-      playAfter.on('end', function f() {
-        performerFn.$hidden.independentAnimations.push(animationObject);
-        organizeCycleSequence(performerFn, animationObject);
-
-        logicToPlayAnimations(animationObject, playTogether, waitIterations);
-        playAfter.off('end', f);
-      });
-    } else {
-      performerFn.$hidden.animationInstances.push(animationObject);
-
-      performerFn.$hidden.independentAnimations.push(animationObject);
-
-      organizeCycleSequence(performerFn, animationObject);
-
-      logicToPlayAnimations(animationObject, playTogether, waitIterations);
-    }
-  });
-}
-
-function getInstanceLink(animationObject: AnimationOptions) {
-  const l = STACK_OF_ANIMATIONS_SKETCHES.length;
+function addToLinkedAnimationObject(
+  organizedAnimations: OrganizedAnimations,
+  animation: AnimationWS,
+  linkedAnimation: AnimationWS,
+  typeOfLink: typeof STACK_OF_ANIMATIONS_SKETCHES[number]['typeOfLink'],
+  amountOfIterations?: number
+) {
+  const l = organizedAnimations.length;
   for (let index = 0; index < l; index += 1) {
-    const sketcheObject = STACK_OF_ANIMATIONS_SKETCHES[index];
-    let check = sketcheObject.playTogether
-      ? sketcheObject.playTogether.indexOf(animationObject)
-      : -1;
-    if (sketcheObject.playTogether && check > -1) {
-      return {
-        index,
-        deepIndex: check,
-        array: 'playTogether',
-      };
+    const o = organizedAnimations[index];
+    const a =
+      typeOfLink === 'afterIterations' && o.afterIterations
+        ? o.afterIterations.animations
+        : o.playTogether;
+
+    if (linkedAnimation === o.animation) {
+      if (a) {
+        a.push(animation);
+      } else if (typeOfLink === 'afterIterations') {
+        if (!o.afterIterations) {
+          o.afterIterations = {
+            animations: [animation],
+            amountOfIterations: amountOfIterations as number,
+          };
+        }
+      } else if (typeOfLink === 'together') {
+        if (!o.playTogether) {
+          o.playTogether = [animation];
+        }
+      }
+      return true;
     }
-    check = sketcheObject.waitIterations
-      ? sketcheObject.waitIterations.animations.indexOf(animationObject)
-      : -1;
-    if (sketcheObject.waitIterations && check > -1) {
-      return {
-        index,
-        deepIndex: check,
-        array: 'waitIterations',
-      };
-    }
-    if (sketcheObject.animationProperties === animationObject) {
-      return { index };
+    if (a) {
+      const i = a.indexOf(linkedAnimation);
+
+      if (i > -1) {
+        a.splice(i, 0, animation);
+        return true;
+      }
     }
   }
 
   return false;
 }
+
+function organizeAnimationsObjects() {
+  STACK_OF_ANIMATIONS_SKETCHES.slice().forEach((obj, index) => {
+    const o = obj;
+    const fromStaggers = createAnimationPropertiesFromStaggers(
+      o.animationOptions
+    );
+    if (fromStaggers) {
+      fromStaggers.forEach((a, i) => {
+        if (i === 0) {
+          o.animationOptions = a;
+          STACK_OF_ANIMATIONS_SKETCHES[index] = o;
+        } else {
+          STACK_OF_ANIMATIONS_SKETCHES.push({
+            indexOrAnimation: index,
+            typeOfLink: 'together',
+            animationOptions: a,
+            performerFn: o.performerFn,
+          });
+        }
+      });
+    }
+  });
+  const organizedAnimations: OrganizedAnimations = [];
+
+  STACK_OF_ANIMATIONS_SKETCHES.map((o) => {
+    const performerFn = o.performerFn;
+    const creator = performerFn.creator as AnimationInstance['creator'];
+
+    return {
+      ...o,
+      animation: new AnimationWS(
+        o.animationOptions as AnimationInstanceProperties,
+        creator
+      ),
+    } as Omit<typeof o, 'animationOptions'> & {
+      animation: AnimationWS;
+    };
+  }).forEach((o, _index, array) => {
+    const linkedAnimation =
+      typeof o.indexOrAnimation === 'number'
+        ? array[o.indexOrAnimation].animation
+        : o.indexOrAnimation;
+
+    if (
+      !linkedAnimation ||
+      o.typeOfLink === 'afterAnimation' ||
+      (linkedAnimation &&
+        !addToLinkedAnimationObject(
+          organizedAnimations,
+          o.animation,
+          linkedAnimation,
+          o.typeOfLink,
+          o.amountOfIterations
+        ))
+    ) {
+      organizedAnimations.push({
+        typeOfLink: o.typeOfLink,
+        linkedAnimation,
+        animation: o.animation,
+      });
+    }
+  });
+  return organizedAnimations;
+}
+function createAnimationsFromTheStackedSketches(): void {
+  organizeAnimationsObjects().forEach((o) => {
+    const {
+      animation,
+      linkedAnimation,
+      typeOfLink,
+
+      playTogether,
+      afterIterations,
+    } = o;
+    const performerFn = animation.performer;
+    if (typeOfLink === 'afterAnimation' && linkedAnimation) {
+      linkedAnimation.on('end', function f() {
+        organizeCycleSequence(performerFn, animation);
+        logicToPlayAnimations(animation, playTogether, afterIterations);
+
+        linkedAnimation.off('end', f);
+      });
+    } else {
+      performerFn.$hidden.animationInstances.push(animation);
+
+      performerFn.$hidden.independentAnimations.push(animation);
+
+      organizeCycleSequence(performerFn, animation);
+
+      logicToPlayAnimations(animation, playTogether, afterIterations);
+    }
+  });
+}
+
 export function addInStackForConstruction(
-  animationProperties: AnimationOptions,
+  animationOptions: AnimationOptions,
   performerFn: PerformerFn,
-  animationObject?:
+  linkedAnimation?:
     | AnimationOptions
     | AnimationInstanceProperties
     | AnimationWS,
   typeOfLink?: 'afterAnimation' | 'together' | 'afterIterations',
-  waitIterations?: number
+  amountOfIterations?: number
 ): void {
-  const aProperties = animationProperties;
-  let instanceToLink = animationObject;
+  const aOptions = animationOptions;
+  let lAnimation = linkedAnimation;
   if (performerFn.$hidden.cycleOptions) {
-    (aProperties as AnimationInstanceProperties).isInCycle = true;
+    (aOptions as AnimationInstanceProperties).isInCycle = true;
 
-    if (
-      instanceToLink &&
-      !(instanceToLink as AnimationInstanceProperties).isInCycle
-    ) {
+    if (lAnimation && !(lAnimation as AnimationInstanceProperties).isInCycle) {
       /**
        * Do not allow link  with out-of-cycle animations.
        */
-      instanceToLink = undefined;
+      lAnimation = undefined;
     }
   }
   if (!STACK_OF_ANIMATIONS_SKETCHES[0]) {
@@ -297,45 +296,39 @@ export function addInStackForConstruction(
       ANIMATION_OBJECT_EXPECTING_SIDE_EFFECTS = [];
     });
   }
-  if (instanceToLink) {
-    const playAfter = (instanceToLink as AnimationWS).play
-      ? (instanceToLink as AnimationWS)
-      : (getInstanceLink(
-          instanceToLink as AnimationOptions
-        ) as typeof STACK_OF_ANIMATIONS_SKETCHES[number]['playAfter']);
+  if (lAnimation) {
+    const indexOrAnimation = (lAnimation as AnimationWS).play
+      ? (lAnimation as AnimationWS)
+      : (() => {
+          const l = STACK_OF_ANIMATIONS_SKETCHES.length;
+          for (let index = 0; index < l; index += 1) {
+            if (
+              STACK_OF_ANIMATIONS_SKETCHES[index].animationOptions ===
+              lAnimation
+            ) {
+              return index;
+            }
+          }
+          return null;
+        })();
 
-    if (typeOfLink === 'afterAnimation') {
+    if (indexOrAnimation !== null) {
       STACK_OF_ANIMATIONS_SKETCHES.push({
-        playAfter,
-        animationProperties,
+        indexOrAnimation,
+        typeOfLink,
+        amountOfIterations,
+        animationOptions,
         performerFn,
       });
-    } else if (typeOfLink === 'together' && playAfter) {
-      const i = playAfter.index as number;
-      if (i > -1) {
-        if (!STACK_OF_ANIMATIONS_SKETCHES[i].playTogether) {
-          STACK_OF_ANIMATIONS_SKETCHES[i].playTogether = [];
-        }
-        STACK_OF_ANIMATIONS_SKETCHES[i].playTogether?.push(animationProperties);
-      }
-    } else if (typeOfLink === 'afterIterations' && playAfter) {
-      const i = playAfter.index as number;
-      if (i > -1) {
-        if (!STACK_OF_ANIMATIONS_SKETCHES[i].waitIterations) {
-          STACK_OF_ANIMATIONS_SKETCHES[i].waitIterations = {
-            waitIterations: waitIterations as number,
-            animations: [],
-          };
-        }
-
-        STACK_OF_ANIMATIONS_SKETCHES[i].waitIterations?.animations.push(
-          animationProperties
-        );
-      }
+    } else {
+      STACK_OF_ANIMATIONS_SKETCHES.push({
+        animationOptions,
+        performerFn,
+      });
     }
   } else {
     STACK_OF_ANIMATIONS_SKETCHES.push({
-      animationProperties,
+      animationOptions,
       performerFn,
     });
   }

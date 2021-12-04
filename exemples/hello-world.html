@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Hello world</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" type="text/css" href="./index.css" />
+    <style>
+      #hello {
+        width: 400px;
+        height: 300px;
+        background-color: #363636;
+        display: inline-block;
+        margin-top: 120px;
+        border-radius: 10% 0;
+        padding: 50px;
+        font-size: 50px;
+        font-family: gabriola;
+      }
+
+      strong {
+        position: relative;
+        float: left;
+        text-align: left;
+        top: 130px;
+        width: 100%;
+        color: #cecece;
+      }
+    </style>
+
+    <script src="../wide-smile.min.js"></script>
+  </head>
+  <body>
+    <section id="hello"><strong></strong></section>
+
+    <script>
+      wS().newObservedProperty('text', (v, p, e) => {
+        e.textContent = v.toString().substring(0, (v.length / 100) * p);
+      });
+
+      wS(
+        'strong',
+        2.5,
+        'easeOutInExpo'
+      )('text', ['...', 'Hello world... Master!!!']);
+
+      wS('#hello', 2.5, 'easeOutInExpo')._('boxShadow', [
+        '#000 0px 0px',
+        '#555 10px 10px 200px 30px',
+      ]);
+    </script>
+  </body>
+</html>

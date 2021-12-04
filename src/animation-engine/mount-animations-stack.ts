@@ -64,7 +64,7 @@ export function addAnimationToStack(
 ): boolean {
   if (
     animationAuxiliaryObject !== 'open' &&
-    (!animationAuxiliaryObject || !animationAuxiliaryObject.animationInstance)
+    (!animationAuxiliaryObject || !animationAuxiliaryObject.animation)
   ) {
     return false;
   }

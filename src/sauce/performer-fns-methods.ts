@@ -6,7 +6,7 @@ import {
   runCallbacksAtTheRightTime,
 } from './organize-animation-creations';
 import { debugNormal } from './wide-smile-debug';
-import AnimableProperties from '../contracts/animable-properties';
+import AllAnimableProperties from '../contracts/animable-properties';
 import createAnimationPropertiesObject from './create-animation-properties-object';
 import PerformerFn, {
   OverloadsForAnimationCreation,
@@ -30,7 +30,7 @@ const createIndependentAnimations: OverloadsForAnimationCreation = function a(
   animate:
     | PropertiesToAnimateObject
     | Keyframes
-    | AnimableProperties
+    | AllAnimableProperties
     | string
     | ValuesToAnimateProperty[],
   parametersToAnimateOrPropertyValue?:
@@ -76,7 +76,7 @@ const createDependentAnimations: OverloadsForAnimationCreation = function a(
   animate:
     | PropertiesToAnimateObject
     | Keyframes
-    | AnimableProperties
+    | AllAnimableProperties
     | string
     | ValuesToAnimateProperty[],
   parametersToAnimateOrPropertyValue?:
@@ -133,7 +133,7 @@ function addFinalKeyframeInTheAnimation(
   animate:
     | PropertiesToAnimateObject
     | Keyframes
-    | AnimableProperties
+    | AllAnimableProperties
     | ValuesToAnimateProperty[]
     | ValuesToAnimateProperty,
   parametersToAnimateOrPropertyValue?:
@@ -379,7 +379,6 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
     runCallbacksAtTheRightTime(() => {
       this.$hidden.animationInstances.forEach((a) => a.destroy());
     });
-    this.$hidden.creator.performers.splice(this.$hidden.index, 1);
     return true;
   },
 
@@ -389,7 +388,7 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
     callbackfn: (
       this: AnimationInstance,
       eventName: string,
-      animationInstance: AnimationInstance
+      animation: AnimationInstance
     ) => unknown
   ) {
     runCallbacksAtTheRightTime(() => {

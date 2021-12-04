@@ -1,5 +1,5 @@
 /*
-  # wide-smile (C) 2021, Diogo Neves.
+  # wide-smile (C) 2021, Diogo Neves. 
 
   # Licensed under the MIT license. See LICENSE file in the project root for details.
   ___________________________________________________________________________________
@@ -17,5 +17,4 @@ declare global {
     wS: typeof wideSmile;
   }
 }
-
 export default wideSmile;

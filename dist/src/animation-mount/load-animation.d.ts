@@ -3,7 +3,7 @@ import AnimationAuxiliaryObject from '../contracts/animation-auxiliary-object';
 /**
  * Creates an object with the properties of the user's animation instance, and adds control-related properties and the execution of the animation, thus maintaining hidden complexity.
  */
-export default function LoadAnimation(animationInstance: AnimationInstance, callbackLoaded: (animationAuxiliaryObjects: AnimationAuxiliaryObject) => void): void;
+export default function LoadAnimation(animation: AnimationInstance, callbackLoaded: (animationAuxiliaryObjects: AnimationAuxiliaryObject) => void): void;
 export declare function startAnimation(animationAuxiliaryObject: AnimationAuxiliaryObject): void;
 export declare function loadedAnimation(animationAuxiliaryObject: AnimationAuxiliaryObject): void;
 export declare function restartAnimationProperties(animationAuxiliaryObject: AnimationAuxiliaryObject): AnimationAuxiliaryObject;

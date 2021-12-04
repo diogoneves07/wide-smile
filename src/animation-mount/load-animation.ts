@@ -26,12 +26,12 @@ function forwardAnimation(
   callbackLoaded: (animationAuxiliaryObjects: AnimationAuxiliaryObject) => void
 ) {
   const aAuxiliaryObject = animationAuxiliaryObject;
-  const { animationInstance } = aAuxiliaryObject;
+  const { animation } = aAuxiliaryObject;
   const startAnimationLoadingTime = getTimeNow();
 
   const keyframes = flattenKeyframes(
-    animationInstance.keyframes,
-    animationInstance.performer.$hidden.propertiesUsed
+    animation.keyframes,
+    animation.performer.$hidden.propertiesUsed
   );
 
   const keyframesKeys = (() => {
@@ -54,8 +54,8 @@ function forwardAnimation(
   aAuxiliaryObject.lastStartProgress = animationProgressObject.progress;
   aAuxiliaryObject.countDriveloop = animationProgressObject.countDriveloop;
 
-  animationInstance.progressValue = animationProgressObject.progress;
-  animationInstance.max = animationProgressObject.maxProgress;
+  animation.progressValue = animationProgressObject.progress;
+  animation.max = animationProgressObject.maxProgress;
   loadPropertiesToAnimate(
     aAuxiliaryObject,
     keyframes,
@@ -66,7 +66,7 @@ function forwardAnimation(
       const loadingTime = currentTime - startAnimationLoadingTime;
 
       /* console.log(
-        `AnimationWS "${animationInstance.animationId}" - Times: [ \n\r\n\r waitingTime: ${waitingTime}ms, \n\r\n\r loadingTime: ${loadingTime}ms,\n\r\n\r elementLenght: ${animationInstance.targets.length}\n\r\n\r]`
+        `AnimationWS "${animation.animationId}" - Times: [ \n\r\n\r waitingTime: ${waitingTime}ms, \n\r\n\r loadingTime: ${loadingTime}ms,\n\r\n\r elementLenght: ${animation.targets.length}\n\r\n\r]`
       ); */
       aAuxiliaryObject.dataLoadingState = result ? 'load' : 'stoped';
       aAuxiliaryObject.animationLoadingTime = animationLoadingTime;
@@ -76,7 +76,7 @@ function forwardAnimation(
 
       propagateAnimationEventListener(
         LISTENERS_NAMES[3],
-        aAuxiliaryObject.animationInstance
+        aAuxiliaryObject.animation
       );
     }
   );
@@ -86,30 +86,26 @@ function forwardAnimation(
  * Creates an object with the properties of the user's animation instance, and adds control-related properties and the execution of the animation, thus maintaining hidden complexity.
  */
 export default function LoadAnimation(
-  animationInstance: AnimationInstance,
+  animation: AnimationInstance,
   callbackLoaded: (animationAuxiliaryObjects: AnimationAuxiliaryObject) => void
 ): void {
   const hasAnimationAuxiliaryObject = getAnimationAuxiliaryObject(
-    animationInstance.animationId
+    animation.animationId
   );
 
-  if (
-    animationInstance.state !== ANIMATION_STATES[0] ||
-    hasAnimationAuxiliaryObject
-  ) {
+  if (animation.state !== ANIMATION_STATES[0] || hasAnimationAuxiliaryObject) {
     if (hasAnimationAuxiliaryObject) {
       if (hasAnimationAuxiliaryObject.dataLoadingState === 'loading') {
         const setTimeoutId = setTimeout(() => {
           clearTimeout(setTimeoutId);
 
-          if (animationInstance.state !== ANIMATION_STATES[1]) {
-            LoadAnimation(animationInstance, callbackLoaded);
+          if (animation.state !== ANIMATION_STATES[1]) {
+            LoadAnimation(animation, callbackLoaded);
           }
         });
       } else if (
         hasAnimationAuxiliaryObject.dataLoadingState === 'load' &&
-        hasAnimationAuxiliaryObject.animationInstance.state ===
-          ANIMATION_STATES[5]
+        hasAnimationAuxiliaryObject.animation.state === ANIMATION_STATES[5]
       ) {
         startAnimationExecutionCycle(hasAnimationAuxiliaryObject);
       } else {
@@ -126,15 +122,13 @@ export default function LoadAnimation(
 
   const currentTime = getTimeNow();
 
-  const animationAuxiliaryObject = CreateAnimationAuxiliaryObject(
-    animationInstance
-  );
+  const animationAuxiliaryObject = CreateAnimationAuxiliaryObject(animation);
 
   addAnimationAuxiliaryObject(animationAuxiliaryObject);
 
-  Object.assign(animationAuxiliaryObject.animationInstance, {
+  Object.assign(animationAuxiliaryObject.animation, {
     state: ANIMATION_STATES[6],
-    delay: animationInstance.delay,
+    delay: animation.delay,
   });
 
   forwardAnimation(animationAuxiliaryObject, currentTime, callbackLoaded);
@@ -145,10 +139,10 @@ export function startAnimation(
 ): void {
   if (
     animationAuxiliaryObject.dataLoadingState === 'load' &&
-    animationAuxiliaryObject.animationInstance.state !== ANIMATION_STATES[3]
+    animationAuxiliaryObject.animation.state !== ANIMATION_STATES[3]
   ) {
     const a = animationAuxiliaryObject;
-    a.animationInstance.state = ANIMATION_STATES[1];
+    a.animation.state = ANIMATION_STATES[1];
 
     startAnimationExecutionCycle(animationAuxiliaryObject);
   }
@@ -159,9 +153,9 @@ export function loadedAnimation(
   const a = animationAuxiliaryObject;
   if (
     a.dataLoadingState === 'load' &&
-    a.animationInstance.state !== ANIMATION_STATES[3]
+    a.animation.state !== ANIMATION_STATES[3]
   ) {
-    a.animationInstance.state = ANIMATION_STATES[5];
+    a.animation.state = ANIMATION_STATES[5];
   }
 }
 
@@ -183,7 +177,7 @@ export function restartAnimationProperties(
     progress: animationProgressObject.progress,
   });
 
-  Object.assign(animationAuxiliaryObject.animationInstance, {
+  Object.assign(animationAuxiliaryObject.animation, {
     progress: animationProgressObject.progress,
     max: animationProgressObject.maxProgress,
     state: ANIMATION_STATES[1],

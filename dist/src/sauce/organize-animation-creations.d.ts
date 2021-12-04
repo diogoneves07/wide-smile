@@ -6,4 +6,4 @@ export declare function useAnimationObjectExpectingSideEffects(animationPerforme
  * Executes the methods and forwards the animations to the construct.
  */
 export declare const runCallbacksAtTheRightTime: (callbackfn: Function) => void;
-export declare function addInStackForConstruction(animationProperties: AnimationOptions, performerFn: PerformerFn, animationObject?: AnimationOptions | AnimationInstanceProperties | AnimationWS, typeOfLink?: 'after' | 'together' | 'wait', waitIterations?: number): void;
+export declare function addInStackForConstruction(animationOptions: AnimationOptions, performerFn: PerformerFn, linkedAnimation?: AnimationOptions | AnimationInstanceProperties | AnimationWS, typeOfLink?: 'afterAnimation' | 'together' | 'afterIterations', amountOfIterations?: number): void;

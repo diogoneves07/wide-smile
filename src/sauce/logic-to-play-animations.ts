@@ -3,46 +3,39 @@ import { ANIMATION_STATES } from './constants';
 import { organizeCycleSequence } from './organize-cycle';
 
 export default function logicToPlayAnimations(
-  animationInstance: AnimationWS,
+  animation: AnimationWS,
   animationsThatPerformTogether?: AnimationWS[],
   animationsThatWaitIterations?: {
     animations: AnimationWS[];
-    waitIterations: number;
+    amountOfIterations: number;
   }
 ): void {
-  const performerFn = animationInstance.performer;
+  const performerFn = animation.performer;
   if (
     (!animationsThatPerformTogether || !animationsThatPerformTogether[0]) &&
     (!animationsThatWaitIterations ||
       !animationsThatWaitIterations.animations[0])
   ) {
-    if (
-      animationInstance.autoPlay &&
-      animationInstance.state === ANIMATION_STATES[0]
-    ) {
-      animationInstance.play();
+    if (animation.autoPlay && animation.state === ANIMATION_STATES[0]) {
+      animation.play();
     }
   } else {
     if (
       animationsThatWaitIterations &&
       animationsThatWaitIterations.animations[0]
     ) {
-      const waitIterations = animationsThatWaitIterations.waitIterations;
+      const amountOfIterations =
+        animationsThatWaitIterations.amountOfIterations;
       animationsThatWaitIterations.animations.forEach((o) => {
         const i = o;
         let count = 1;
 
-        animationInstance.on('loopEnd', function f() {
-          if (count >= waitIterations) {
-            animationInstance.off('loopEnd', f);
+        animation.on('loopEnd', function f() {
+          if (count >= amountOfIterations) {
+            animation.off('loopEnd', f);
 
             if (performerFn.$hidden.cycleOptions) {
-              organizeCycleSequence(
-                performerFn,
-                i,
-                animationInstance,
-                'together'
-              );
+              organizeCycleSequence(performerFn, i, animation, 'together');
               performerFn.$hidden.animationInstances.push(i);
 
               i.play();
@@ -57,61 +50,53 @@ export default function logicToPlayAnimations(
     if (animationsThatPerformTogether && animationsThatPerformTogether[0]) {
       const length = animationsThatPerformTogether.length;
       let count = 0;
-      if (animationInstance.state === ANIMATION_STATES[0]) {
-        animationInstance.on('load', function f() {
+      if (animation.state === ANIMATION_STATES[0]) {
+        animation.on('load', function f() {
           animationsThatPerformTogether.forEach((i) => {
             i.on('load', function d() {
               count += 1;
 
               if (count >= length) {
-                animationInstance.on('ready', function g() {
+                animation.on('ready', function g() {
                   animationsThatPerformTogether.forEach((a) => {
                     organizeCycleSequence(
                       performerFn,
                       a,
-                      animationInstance,
+                      animation,
                       'together'
                     );
                     performerFn.$hidden.animationInstances.push(a);
                     a.play();
                   });
-                  animationInstance.off('ready', g);
+                  animation.off('ready', g);
                 });
-                if (animationInstance.autoPlay) {
-                  animationInstance.play();
+                if (animation.autoPlay) {
+                  animation.play();
                 }
               }
               i.off('load', d);
             });
             i.load();
           });
-          animationInstance.off('load', f);
+          animation.off('load', f);
         });
-        animationInstance.load();
+        animation.load();
       } else {
-        animationInstance.on('ready', function g() {
+        animation.on('ready', function g() {
           animationsThatPerformTogether.forEach((a) => {
-            organizeCycleSequence(
-              performerFn,
-              a,
-              animationInstance,
-              'together'
-            );
+            organizeCycleSequence(performerFn, a, animation, 'together');
             performerFn.$hidden.animationInstances.push(a);
             a.play();
           });
-          animationInstance.off('ready', g);
+          animation.off('ready', g);
         });
-        if (animationInstance.autoPlay) {
-          animationInstance.play();
+        if (animation.autoPlay) {
+          animation.play();
         }
       }
     }
-    if (
-      animationInstance.autoPlay &&
-      animationInstance.state === ANIMATION_STATES[0]
-    ) {
-      animationInstance.play();
+    if (animation.autoPlay && animation.state === ANIMATION_STATES[0]) {
+      animation.play();
     }
   }
 }

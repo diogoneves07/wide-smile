@@ -11,10 +11,11 @@ export declare const LISTENERS_NAMES: [
     'ready',
     'change',
     'loopStart',
-    '$-end-animation-in-cycle'
+    '$-end-animation-in-cycle',
+    'progressValue'
 ];
-export declare function addAnimationEventListener(name: string, callbackfn: Function, animationInstance: AnimationInstance): void;
-export declare function removeAnimationEventListener(name: string, callbackfnOrIndex: Function | number, animationInstance: AnimationInstance): void;
+export declare function addAnimationEventListener(name: string, callbackfn: Function, animation: AnimationInstance): void;
+export declare function removeAnimationEventListener(name: string, callbackfnOrIndex: Function | number, animation: AnimationInstance): void;
 export declare function removeAllAnimationEventListeners(animationId: number): void;
-export declare function propagateAnimationEventListener(name: string, animationInstance: AnimationInstance, callbackfnReturn?: (fnReturn: unknown) => void): void;
+export declare function propagateAnimationEventListener(name: string, animation: AnimationInstance, callbackfn?: (callbackfn: Function, animation: AnimationInstance) => void): void;
 export declare function updateListenersAnimationId(lastAnimationId: number, newAnimationId: number): void;

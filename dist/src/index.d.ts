@@ -6,13 +6,13 @@ import CreatorFnProperties from './contracts/creator-fn-properties';
 import PerformerFn from './contracts/performer-fn';
 declare function GetCreatorFnProperties(): Omit<CreatorFnProperties, 'global'> & {
     global: Omit<CreatorFnProperties['global'], 'new'> & {
-        new: () => WideSmile;
+        new: () => CreatorFn;
     };
 };
 declare const creatorFn: {
-    (): WideSmile['global'];
+    (): CreatorFn['global'];
     (performerProperties: UserAnimationOptions | object | string, ...props: (EasingsFunctionsList | AnimationInstance['dir'] | number | boolean | UserAnimationOptions)[]): PerformerFn;
 };
-export declare type WideSmile = typeof creatorFn & ReturnType<typeof GetCreatorFnProperties>;
-declare const _default: WideSmile;
+export declare type CreatorFn = typeof creatorFn & ReturnType<typeof GetCreatorFnProperties>;
+declare const _default: CreatorFn;
 export default _default;

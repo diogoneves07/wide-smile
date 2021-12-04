@@ -109,6 +109,7 @@ function revealSpecialProperties(
 
   return propertiesFound;
 }
+
 function computedStyle(target: HTMLElement) {
   return (useElementCanche(target).computedStyle as unknown) as Record<
     string,
@@ -266,6 +267,7 @@ function CSSPropertiesToAnimate(
     } else {
       o = kf;
     }
+
     customForIn(o, (propertyValue, propertyName) => {
       if (!propertiesKeyframes[propertyName]) {
         propertiesKeyframes[propertyName] = {};
@@ -383,6 +385,7 @@ function getCurrentValueTransformFunction(
       return transformFunctionsObject[transformFunction];
     }
   }
+
   return WIDE_SMILE_CSS_TRANSFORM_FUNCTIONS[transformFunction];
 }
 
@@ -637,10 +640,10 @@ export default function loadPropertiesToAnimate(
     propertiesToAnimate: PropertyObject[]
   ) => void
 ): void {
-  const { animationInstance } = animationAuxiliaryObject;
-  const targets = animationInstance.targets;
+  const { animation } = animationAuxiliaryObject;
+  const targets = animation.targets;
 
-  if (animationInstance.creator.global.asyncLoading) {
+  if (animation.creator.global.asyncLoading) {
     IS_BUSY_LOADER = false;
   }
 
@@ -681,7 +684,7 @@ export default function loadPropertiesToAnimate(
 
     count += 1;
 
-    switch (animationInstance.state) {
+    switch (animation.state) {
       case ANIMATION_STATES[2]:
       case ANIMATION_STATES[3]:
       case ANIMATION_STATES[4]:

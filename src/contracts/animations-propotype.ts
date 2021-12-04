@@ -89,11 +89,7 @@ export default interface AnimationsPropotype {
 
   on(
     typeOfListener: ListenersEventsName,
-    callbackfn: (
-      this: this,
-      typeOfListener: string,
-      animationInstance: this
-    ) => unknown
+    callbackfn: (this: this, typeOfListener: string, animation: this) => unknown
   ): this;
 
   /**

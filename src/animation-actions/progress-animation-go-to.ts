@@ -11,17 +11,16 @@ export default function progressAnimationGoTo(
 ): void {
   const animationAuxiliaryObject = getAnimationAuxiliaryObject(animationId);
   if (animationAuxiliaryObject) {
-    const animationInstance = animationAuxiliaryObject.animationInstance;
+    const animation = animationAuxiliaryObject.animation;
 
     removeAnimationFromStack(animationAuxiliaryObject.animationId);
 
-    animationAuxiliaryObject.lastStartProgress =
-      animationInstance.progressValue;
+    animationAuxiliaryObject.lastStartProgress = animation.progressValue;
 
-    animationInstance.max = newProgress;
+    animation.max = newProgress;
 
-    if (animationInstance.loop === animationInstance.count) {
-      animationInstance.count -= 1;
+    if (animation.loop === animation.count) {
+      animation.count -= 1;
     }
     if (applyDelay) {
       startAnimationExecutionCycle(

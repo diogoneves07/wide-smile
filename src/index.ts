@@ -119,7 +119,7 @@ const CREATORS_FN_METHODS = {
     callbackfn: (
       this: AnimationInstance,
       eventName: string,
-      animationInstance: AnimationInstance
+      animation: AnimationInstance
     ) => unknown
   ) {
     this.performers.forEach((i) => i.on(eventName, callbackfn));
@@ -196,7 +196,7 @@ const CREATORS_FN_GLOBAL: CreatorFnProperties['global'] = {
 
 function GetCreatorFnProperties(): Omit<CreatorFnProperties, 'global'> & {
   global: Omit<CreatorFnProperties['global'], 'new'> & {
-    new: () => WideSmile;
+    new: () => CreatorFn;
   };
 } {
   return {
@@ -211,7 +211,7 @@ function GetCreatorFnProperties(): Omit<CreatorFnProperties, 'global'> & {
 
 function NewCreatorFn() {
   const creator = (creatorFn as unknown) as AnimationInstance['creator'];
-  function creatorFn(): WideSmile['global'];
+  function creatorFn(): CreatorFn['global'];
 
   function creatorFn(
     performerProperties: UserAnimationOptions | object | string,
@@ -280,9 +280,9 @@ function NewCreatorFn() {
 }
 const creatorFn = NewCreatorFn();
 
-export type WideSmile = typeof creatorFn &
+export type CreatorFn = typeof creatorFn &
   ReturnType<typeof GetCreatorFnProperties>;
 
 Object.assign(creatorFn, GetCreatorFnProperties());
 
-export default creatorFn as WideSmile;
+export default creatorFn as CreatorFn;

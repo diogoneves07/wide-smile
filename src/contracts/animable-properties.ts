@@ -1,4 +1,4 @@
-interface Properties {
+interface AnimableProperties {
   scrollLeft: string;
   scrollTop: string;
 
@@ -27,12 +27,13 @@ interface Properties {
   };
 }
 type AllProperties = Partial<
-  Omit<Properties, 'CSSTransformFunctions'> &
-    Properties[keyof Pick<Properties, 'CSSTransformFunctions'>]
+  Omit<AnimableProperties, 'CSSTransformFunctions'> &
+    AnimableProperties[keyof Pick<AnimableProperties, 'CSSTransformFunctions'>]
 >;
 
-type AnimableProperties =
+type AllAnimableProperties =
   | keyof (HTMLElement['style'] & AllProperties)
-  | keyof HTMLElement;
+  | keyof HTMLElement
+  | keyof AnimableProperties;
 
-export default AnimableProperties;
+export default AllAnimableProperties;

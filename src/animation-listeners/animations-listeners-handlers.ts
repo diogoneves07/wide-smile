@@ -37,9 +37,9 @@ export const LISTENERS_NAMES: [
 export function addAnimationEventListener(
   name: string,
   callbackfn: Function,
-  animationInstance: AnimationInstance
+  animation: AnimationInstance
 ): void {
-  const { animationId } = animationInstance;
+  const { animationId } = animation;
   if (!EVENTS_IN_OBSERVATION[animationId]) {
     EVENTS_IN_OBSERVATION[animationId] = {};
   }
@@ -57,9 +57,9 @@ export function addAnimationEventListener(
 export function removeAnimationEventListener(
   name: string,
   callbackfnOrIndex: Function | number,
-  animationInstance: AnimationInstance
+  animation: AnimationInstance
 ): void {
-  const animationId = animationInstance.animationId;
+  const animationId = animation.animationId;
 
   if (!EVENTS_IN_OBSERVATION[animationId]) {
     return;
@@ -87,15 +87,12 @@ export function removeAllAnimationEventListeners(animationId: number): void {
 
 export function propagateAnimationEventListener(
   name: string,
-  animationInstance: AnimationInstance,
-  callbackfn?: (
-    callbackfn: Function,
-    animationInstance: AnimationInstance
-  ) => void
+  animation: AnimationInstance,
+  callbackfn?: (callbackfn: Function, animation: AnimationInstance) => void
 ): void {
   let eventName = trimString(name);
   let eventBucket: typeof EVENTS_IN_OBSERVATION[string][string];
-  const { animationId } = animationInstance;
+  const { animationId } = animation;
   if (!EVENTS_IN_OBSERVATION[animationId]) {
     return;
   }
@@ -115,9 +112,9 @@ export function propagateAnimationEventListener(
     // Copy the array to avoid side effects of the methods.
     eventBucket.slice().forEach((v) => {
       if (callbackfn) {
-        callbackfn(v, animationInstance);
+        callbackfn(v, animation);
       } else {
-        v.call(animationInstance.performer, animationInstance.performer);
+        v.call(animation.performer, animation.performer);
       }
     });
   }

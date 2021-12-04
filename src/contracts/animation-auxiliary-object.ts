@@ -48,7 +48,7 @@ export default interface AnimationAuxiliaryObject {
 
   remainingDelayAnimation: number;
 
-  animationInstance: AnimationInstance;
+  animation: AnimationInstance;
 
   valuesOfThePropertiesBeforeAnimating: {
     direct: Record<string, string>;

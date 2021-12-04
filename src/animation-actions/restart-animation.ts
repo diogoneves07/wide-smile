@@ -12,13 +12,11 @@ import { getAnimationAuxiliaryObject } from '../animation-mount/crud-animation-o
 /**
  * Restart animation.
  */
-export default function restartAnimation(
-  animationInstance: AnimationInstance
-): void {
+export default function restartAnimation(animation: AnimationInstance): void {
   const animationAuxiliaryObject = getAnimationAuxiliaryObject(
-    animationInstance.animationId
+    animation.animationId
   );
-  const u = animationInstance;
+  const u = animation;
   if (animationAuxiliaryObject) {
     startAnimationExecutionCycle(
       restartAnimationProperties(
@@ -29,6 +27,6 @@ export default function restartAnimation(
     u.state = ANIMATION_STATES[0];
     u.count = 0;
 
-    LoadAnimation(animationInstance, startAnimation);
+    LoadAnimation(animation, startAnimation);
   }
 }

@@ -1,4 +1,4 @@
-interface Properties {
+interface AnimableProperties {
     scrollLeft: string;
     scrollTop: string;
     CSSTransformFunctions: {
@@ -25,6 +25,6 @@ interface Properties {
         skewY: string;
     };
 }
-declare type AllProperties = Partial<Omit<Properties, 'CSSTransformFunctions'> & Properties[keyof Pick<Properties, 'CSSTransformFunctions'>]>;
-declare type AnimableProperties = keyof (HTMLElement['style'] & AllProperties) | keyof HTMLElement;
-export default AnimableProperties;
+declare type AllProperties = Partial<Omit<AnimableProperties, 'CSSTransformFunctions'> & AnimableProperties[keyof Pick<AnimableProperties, 'CSSTransformFunctions'>]>;
+declare type AllAnimableProperties = keyof (HTMLElement['style'] & AllProperties) | keyof HTMLElement | keyof AnimableProperties;
+export default AllAnimableProperties;
