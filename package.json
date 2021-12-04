@@ -32,7 +32,7 @@
     "wide-smile.es.js.map",
     "wide-smile.min.js",
     "wide-smile.min.js.map",
-    "./dist/"
+    "dist"
   ],
   "scripts": {
     "test": "jest",

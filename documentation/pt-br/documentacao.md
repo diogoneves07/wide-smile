@@ -1,3 +1,5 @@
+<img src='https://github.com/diogoneves07/wide-smile/blob/main/small-wide-smile.png' alt='WideSmile - logo' width='400px' />
+
 # Documentação
 
 A documentação é pequena, mas será o suficiente para dominar todos os recursos da biblioteca e criar animações incríveis. Abaixo esta a ordem de leitura recomendada:

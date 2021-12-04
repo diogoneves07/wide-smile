@@ -100,4 +100,4 @@ wS('div', 1, 'easeOutInSine', {
 
 [Documentação](https://github.com/diogoneves07/wide-smile/wiki)
 
-[MIT License](LICENSE). © Diogo Neves ([http://linkedin.com/in/diogoneves07/](http://linkedin.com/in/diogoneves07/)).
+[MIT License](LICENSE). © ([Diogo Neves](http://linkedin.com/in/diogoneves07/)).
