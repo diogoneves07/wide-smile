@@ -10,25 +10,28 @@ São funções que contêm propriedades e métodos e tem como principal objetivo
 
 ##### Parâmetros 1
 
-`properties`
-
-: Um objeto com as propriedades a serem animadas.
-
-    Type
-    : *`object`*
-
-    Uso
-    : Obrigatório
-
-`options`
-
-: Um objeto de propriedades relacionadas a animação como por exemplo: duração, alvos, direção e outras.
-
-    Type
-    : *`object`*
-
-    Uso
-    : Opcional
+<dl>
+<dt><code>properties</code></dt>
+<dd>
+<p>Um objeto com as propriedades a serem animadas.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>object</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+<dt><code>options</code></dt>
+<dd>
+<p>Um objeto de propriedades relacionadas a animação como por exemplo: duração, alvos, direção e outras.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>object</code></em></dd>
+<dt>Uso</dt>
+<dd>Opcional</dd>
+</dl>
+</dd>
+</dl>
 
 ```javascript
 const performer = wS('span', 3, 'easeOutInSine');
@@ -44,35 +47,38 @@ performer(
 
 ##### Parâmetros 2
 
-`property`
-
-: A propriedade a ser animada.
-
-    Type
-    : *`string`*
-
-    Uso
-    : Obrigatório
-
-`propertyValue`
-
-: O valor a ser alcançado pela animação.
-
-    Type
-    : *`string`*  |  *`Array`* | *`function`*
-
-    Uso
-    : Obrigatório
-
-`options`
-
-: Um objeto de propriedades relacionadas a animação como por exemplo: duração, alvos, direção e outras.
-
-    Type
-    : *`object`*
-
-    Uso
-    : Opcional
+<dl>
+<dt><code>property</code></dt>
+<dd>
+<p>A propriedade a ser animada.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>string</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+<dt><code>propertyValue</code></dt>
+<dd>
+<p>O valor a ser alcançado pela animação.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>string</code></em> | <em><code>Array</code></em> | <em><code>function</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+<dt><code>options</code></dt>
+<dd>
+<p>Um objeto de propriedades relacionadas a animação como por exemplo: duração, alvos, direção e outras.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>object</code></em></dd>
+<dt>Uso</dt>
+<dd>Opcional</dd>
+</dl>
+</dd>
+</dl>
 
 ```javascript
 const performer = wS('span', 3, 'easeOutInSine');
@@ -88,11 +94,8 @@ const performer = wS('span', 3, 'easeOutInSine');
 Podemos passar múltiplos argumentos em que cada um será aplicado as determinadas propriedades de acordo com as regras abaixo:
 
 - O argumento do tipo _`string`_ são aplicados da seguinte forma: O valor seja compatível para a propriedade `dir` então ele será aplicado a ela, se não, será aplicado a propriedade `easing`.
-
 - O argumento do tipo _`function`_ é aplicado a propriedade `easing`.
-
 - O argumento do tipo _`number`_ será aplicado a propriedade `dur`.
-
 - O argumento do tipo _`boolean`_ será aplicado a propriedade `autoDestroy`.
 
 ##### Exemplo 1
@@ -258,7 +261,7 @@ Os quadros-chave sem a propriedade `offset` serão espaçados uniformemente entr
 
 Em algumas situações podemos querer definir o valor inicial da propriedade e o valor a ser alcançado pela animação.
 
-- Forma 1 - `keyframes`
+- Forma 1 -`keyframes`
 
 ```javascript
 import wS from './wide-smile/';
@@ -269,7 +272,7 @@ const performer = wS(
 )('height', [50, 250]);
 ```
 
-- Forma 2 - `to()`
+- Forma 2 -`to()`
 
 ```javascript
 const performer = wS(
@@ -285,16 +288,18 @@ Faz com que as animações posterior a este, esperem a animação anterior alcan
 
 ##### Parâmetros
 
-`iterations`
-
-: A quantidade de interações.
-
-    Type
-    : *`number`*
-
-    Uso
-    : Obrigatório
-
+<dl>
+<dt><code>iterations</code></dt>
+<dd>
+<p>A quantidade de interações.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>number</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+</dl>
 ##### Descrição
 
 Este método informa a biblioteca que as animações criadas de forma imediata após a chamada dele, devem espera que a animação anterior alcance o número de interações especificado no argumento passado.
@@ -317,33 +322,37 @@ Faz com que as animações possam ser executadas novamente da maneira que foram 
 
 ##### Parâmetros
 
-`loopOrDir`
-
-: A quantidade de interações ou a direção em que as animações devem ser executadas.
-
-    Type
-    : *`number`* | *`true`*  | *`'normal'`* |  *`'alternate'`*
-
-    Uso
-    : Opcional
-
-    Padrão
-    : `1`
+<dl>
+<dt><code>loopOrDir</code></dt>
+<dd>
+<p>A quantidade de interações ou a direção em que as animações devem ser executadas.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>number</code></em> | <em><code>true</code></em> | <em><code>'normal'</code></em> | <em><code>'alternate'</code></em></dd>
+<dt>Uso</dt>
+<dd>Opcional</dd>
+<dt>Padrão</dt>
+<dd><code>1</code></dd>
+</dl>
+</dd>
+</dl>
 
 > Por padrão o ciclo terá duas interações. Caso queira interações infinitas passe: `true`
 
-`dir`
-
-: A direção em que as animações devem ser executadas.
-
-    Type
-    :  *`'normal'`* |  *`'alternate'`*
-
-    Uso
-    : Opcional
-
-    Padrão
-    : `'normal'`
+<dl>
+<dt><code>dir</code></dt>
+<dd>
+<p>A direção em que as animações devem ser executadas.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>'normal'</code></em> | <em><code>'alternate'</code></em></dd>
+<dt>Uso</dt>
+<dd>Opcional</dd>
+<dt>Padrão</dt>
+<dd><code>'normal'</code></dd>
+</dl>
+</dd>
+</dl>
 
 ##### Descrição
 

@@ -1,6 +1,6 @@
 ﻿# WideSmile
 
-“Abstraia a complexidade, apenas faça.”
+"Abstraia a complexidade, apenas faça."
 
 A WideSmile é uma biblioteca de animação construída em `TypeScript / JavaScript`, seu principal objetivo é entregar um mecanismo moderno de animação que atenda verdadeiramente as necessidades do desenvolvedor. **Sendo uma nova forma de estruturar animações, deixando mais simples, direta e elegante**.
 
@@ -70,50 +70,34 @@ Como assim só isso?. Calma têm mais!. E se quiséssemos que após a conclusão
 wS('div', 2)('height', 200)._('width', 200);
 ```
 
-Simples e direto não é?. E se quiséssemos que essa nova animação tivesse uma “irmã” que iniciaria sua execução ao mesmo tempo que ela, mas que a sua duração fosse diferente?:
+Simples e direto não é?. E se quiséssemos que essa nova animação tivesse uma "irmã" que iniciaria sua execução ao mesmo tempo que ela, mas que a sua duração fosse diferente?:
 
 ```javascript
 wS('div', 2)('height', 200)._('width', 200)('opacity', 0, 1);
 ```
 
-Estes exemplos são apenas uma **degustação**, mas que tal mais uma última?:
+Estes exemplos são apenas uma **degustação**, mas que tal uma última?:
 
 ```javascript
-wS('span', 1, 'easeOutInSine')
+wS().newObservedProperty('Text', (v, p, e) => {
+  e.textContent = v.toString().substring(0, (v.length / 100) * p);
+});
+
+wS('div', 1, 'easeOutInSine', {
+  delay: '0.1 <>',
+})
   .cycle('alternate')
   ._('backgroundColor', 'red')
-  ._(0, 'green')({ width: 200, top_left: 150 }, 2)
-  ._(0, 'blue')('height', 200, 'easeInBounce');
+  .after(1)('height_width', 200, 'easeInBounce')
+  ._(0, 'blue')
+  ._({
+    Text: ['...', 'Hello world... Master!!!'],
+    fontSize: 50,
+  });
 ```
-
-## Documentação
-
-Resumo
-
-: Um resumo/introdução dos recursos e novidades mais atraentes da biblioteca. Excelente para quem não perder tempo lendo a API de uma biblioteca que talvez não vá utilizar.
-
-Propriedades de comportamento
-: Essas são as propriedades que definem como a animação será executada, nossa biblioteca disponibiliza propriedades úteis e comumente utilizadas, mas também propriedades novas e muito poderosas.
-
-Propriedades e valores animáveis
-
-: Veja como utilizar as propriedades e os valores destinados a elas.
-
-Easings Functions
-: A lista de funções e sintaxe que a biblioteca suporta de forma built-in, além de exemplos de uso e como criar suas próprias funções.
-
-Creator Functions
-: Entenda o que é uma função **Creator** e como fazer uso dela e de seus métodos e propriedades.
-
-Estruturando animações
-: Aprenda a estrutura suas animações, verá que é extremamente simples criar múltiplas e diversas animações com pouquíssimo código.
-
-Escalonamento/stagger
-: Um dos recursos mais utilizados em animações é o escalonamento que é capaz de criar animações incríveis com muita facilidade, nossa biblioteca dispõe de uma sintaxe especial que facilita o seu uso.
-
-Métodos de controle
-: Por fim, veja os métodos que possui duas formas de acesso, e que são muito extremamente úteis.
 
 ---
 
-[MIT License](LICENSE). © Diogo Neves (http://linkedin.com/in/diogoneves07/).
+[Documentação](https://github.com/diogoneves07/wide-smile/wiki)
+
+[MIT License](LICENSE). © Diogo Neves ([http://linkedin.com/in/diogoneves07/](http://linkedin.com/in/diogoneves07/)).

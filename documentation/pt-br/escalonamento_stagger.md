@@ -68,23 +68,20 @@ O valor dentro da sintaxe especial: `<>`, é considerado o valor destinado a est
 
 #### Valores disponíveis
 
-_`number`_
-: Inicia o efeito a partir do índice especificado.
-
-`'first' `
-: Inicia o efeito a partir do primeiro alvo.
-
-`'last' `
-: Inicia o efeito a partir do último alvo.
-
-`'center' `
-: Iniciar o efeito do centro.
-
-`'edges' `
-: Inicia o efeito a partir das bordas.
-
-`'random' `
-: O efeito é aplicado de forma aleatória.
+<dl>
+<dt><em><code>number</code></em></dt>
+<dd>Inicia o efeito a partir do índice especificado.</dd>
+<dt><code>'first'</code></dt>
+<dd>Inicia o efeito a partir do primeiro alvo.</dd>
+<dt><code>'last'</code></dt>
+<dd>Inicia o efeito a partir do último alvo.</dd>
+<dt><code>'center'</code></dt>
+<dd>Iniciar o efeito do centro.</dd>
+<dt><code>'edges'</code></dt>
+<dd>Inicia o efeito a partir das bordas.</dd>
+<dt><code>'random'</code></dt>
+<dd>O efeito é aplicado de forma aleatória.</dd>
+</dl>
 
 ```
 '<center>'
@@ -116,14 +113,14 @@ Após a sintaxe especial: `<>`, podemos usar uma _`string`_ com um dos valores a
 
 #### Valores disponíveis
 
-`'x' `
-: Se concentrar no eixo `x`.
-
-`'y' `
-: Se concentrar no eixo `y`.
-
-`'both' `
-: Se concentrar nos dois eixos.
+<dl>
+<dt><code>'x'</code></dt>
+<dd>Se concentrar no eixo <code>x</code>.</dd>
+<dt><code>'y'</code></dt>
+<dd>Se concentrar no eixo <code>y</code>.</dd>
+<dt><code>'both'</code></dt>
+<dd>Se concentrar nos dois eixos.</dd>
+</dl>
 
 ```
 '150 <center> both'
@@ -139,11 +136,12 @@ Após a sintaxe especial: `<>`, podemos usar uma _`string`_ com um dos valores a
 
 #### Valores disponíveis
 
-`'normal' `
-: Inicia o efeito a partir do primeiro alvo.
-
-`reverse' `
-: Inicia o efeito a partir do último alvo.
+<dl>
+<dt><code>'normal'</code></dt>
+<dd>Inicia o efeito a partir do primeiro alvo.</dd>
+<dt><code>reverse'</code></dt>
+<dd>Inicia o efeito a partir do último alvo.</dd>
+</dl>
 
 ```
 '150 <center> reverse'

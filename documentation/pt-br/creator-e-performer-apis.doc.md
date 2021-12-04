@@ -3,7 +3,6 @@
 Os métodos que serão apresentados são semelhantes em sua nomenclatura e uso nas duas APIs, entretanto com pequenas diferenças em seus efeitos colaterais:
 
 - Ao usar o método por uma função **Performer** estamos aplicando este método a todas as animações criadas por esta função.
-
 - Ao usar o método por uma função **Creator**, estamos aplicando este método a todas as funções **Performer** que esta função **Creator** criou, e cada função **Performer** aplicará o método em todas as animações criadas por ela.
 
 ### Métodos de controle de interação
@@ -16,15 +15,18 @@ Faz a animação retornar seu progresso atual para um determinado ponto e finali
 
 ##### Parâmetros
 
-`part`
-
-: O ponto da animação. Este deve ser um valor entre `0` e `1`, onde `0` significa o inicio da interação e `1` o final.
-
-    Type
-    : *`number`*
-
-    Uso
-    : Obrigatório
+<dl>
+<dt><code>part</code></dt>
+<dd>
+<p>O ponto da animação. Este deve ser um valor entre <code>0</code> e <code>1</code>, onde <code>0</code> significa o inicio da interação e <code>1</code> o final.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>number</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+</dl>
 
 ##### Exemplo de código
 
@@ -48,15 +50,18 @@ Faz a animação retornar seu progresso atual para um determinado ponto e contin
 
 ##### Parâmetros
 
-`part`
-
-: O ponto da animação. Este deve ser um valor entre `0` e `1`, onde `0` significa o inicio da interação e `1` o final.
-
-    Type
-    : *`number`*
-
-    Uso
-    : Obrigatório
+<dl>
+<dt><code>part</code></dt>
+<dd>
+<p>O ponto da animação. Este deve ser um valor entre <code>0</code> e <code>1</code>, onde <code>0</code> significa o inicio da interação e <code>1</code> o final.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>number</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+</dl>
 
 ##### Exemplo de código
 
@@ -80,9 +85,10 @@ Faz a animação saltar o seu progresso para um determinado ponto e continuar a 
 
 ##### Parâmetros
 
-`part`
-
-: O ponto da animação. Este deve ser um valor entre `0` e `1`, onde `0` significa o inicio da interação e `1` o final.
+<dl>
+<dt><code>part</code></dt>
+<dd>O ponto da animação. Este deve ser um valor entre <code>0</code> e <code>1</code>, onde <code>0</code> significa o inicio da interação e <code>1</code> o final.</dd>
+</dl>
 
 ##### Exemplo de código
 
@@ -106,15 +112,18 @@ Controla a velocidade da execução da interação atual.
 
 ##### Parâmetros
 
-`multiplyDur`
-
-: A velocidade em que o processo deve ser realizado. A velocidade é calculada multiplicando o valor deste parâmetro pelo o valor da propriedade `dur`.
-
-    Type
-    : *`number`*
-
-    Uso
-    : Obrigatório
+<dl>
+<dt><code>multiplyDur</code></dt>
+<dd>
+<p>A velocidade em que o processo deve ser realizado. A velocidade é calculada multiplicando o valor deste parâmetro pelo o valor da propriedade <code>dur</code>.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>number</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+</dl>
 
 > Caso o valor passado seja negativo então a velocidade será o valor da propriedade `dur` menos o resultado da multiplicação.
 
@@ -140,15 +149,18 @@ Reverte o progresso alcançado pela interação atual.
 
 ##### Parâmetros
 
-`endIteration`
-
-: Define se a interação atual deve ser encerrada quando alcançar o ponto máximo da reversão.
-
-    Type
-    : *`boolean`*
-
-    Uso
-    : Opcional
+<dl>
+<dt><code>endIteration</code></dt>
+<dd>
+<p>Define se a interação atual deve ser encerrada quando alcançar o ponto máximo da reversão.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>boolean</code></em></dd>
+<dt>Uso</dt>
+<dd>Opcional</dd>
+</dl>
+</dd>
+</dl>
 
 ##### Exemplo de código
 
@@ -176,11 +188,12 @@ Define um novo valor para a propriedade `dir`.
 
 ##### Parâmetros
 
-`dir`
-
-: A novo direção da animação.
-Uso
-: Obrigatório
+<dl>
+<dt><code>dir</code></dt>
+<dd>A novo direção da animação.<br>
+Uso</dd>
+<dd>Obrigatório</dd>
+</dl>
 
 > Este parâmetro recebe o mesmo tipo de valores da propriedade `dir`.
 
@@ -390,15 +403,18 @@ Parra a animação e destrói todos os dados relacionado a ela.
 
 ##### Parâmetros
 
-`removeChanges`
-
-: Define se as alterações feitas nos alvos da animação devem ser removidas.
-
-    Type
-    : *`boolean`*
-
-    Uso
-    : Opcional
+<dl>
+<dt><code>removeChanges</code></dt>
+<dd>
+<p>Define se as alterações feitas nos alvos da animação devem ser removidas.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>boolean</code></em></dd>
+<dt>Uso</dt>
+<dd>Opcional</dd>
+</dl>
+</dd>
+</dl>
 
 > Apenas use este parâmetro caso queria que as alterações sejam removidas, para isso passe: _`true`_.
 
@@ -428,46 +444,54 @@ Acrescenta ouvinte de evento.
 
 ##### Parâmetros
 
-`eventName`
-
-: O nome do evento de interesse. Veja a lista abaixo.
-
-`play`
-: Ocorre apenas uma vez quando a animação é enviada.
-
-`load`
-: Ocorre apenas uma vez quando a animação é carregada.
-
-`start`
-: Ocorre apenas uma vez na primeira intercalação da animação.
-
-`change`
-: Ocorre cada intercalação da animação.
-
-`loopStart`
-: Ocorre a cada inicio de interação.
-
-`loopEnd`
-: Ocorre a cada interação concluída.
-
-    `end`
-    : Ocorre apenas uma vez quando a animação é concluída.
-
-    `cancel`
-    : Ocorre quando a animação é cancelada.
-
-    `destroy`
-    : Ocorre quando a animação é destruída.
-
-`callback`
-
-: A função a ser chamada quando o evento especificado ocorrer. Recebe dois argumentos:
-
-    `eventName`
-    : O nome do evento ocorrido.
-
-    `performer`
-    : A função **Performer**.
+<dl>
+<dt><code>eventName</code></dt>
+<dd>
+<p>O nome do evento de interesse. Veja a lista abaixo.</p>
+</dd>
+<dt><code>play</code></dt>
+<dd>
+<p>Ocorre apenas uma vez quando a animação é enviada.</p>
+</dd>
+<dt><code>load</code></dt>
+<dd>
+<p>Ocorre apenas uma vez quando a animação é carregada.</p>
+</dd>
+<dt><code>start</code></dt>
+<dd>
+<p>Ocorre apenas uma vez na primeira intercalação da animação.</p>
+</dd>
+<dt><code>change</code></dt>
+<dd>
+<p>Ocorre cada intercalação da animação.</p>
+</dd>
+<dt><code>loopStart</code></dt>
+<dd>
+<p>Ocorre a cada inicio de interação.</p>
+</dd>
+<dt><code>loopEnd</code></dt>
+<dd>
+<p>Ocorre a cada interação concluída.</p>
+<dl>
+<dt><code>end</code></dt>
+<dd>Ocorre apenas uma vez quando a animação é concluída.</dd>
+<dt><code>cancel</code></dt>
+<dd>Ocorre quando a animação é cancelada.</dd>
+<dt><code>destroy</code></dt>
+<dd>Ocorre quando a animação é destruída.</dd>
+</dl>
+</dd>
+<dt><code>callback</code></dt>
+<dd>
+<p>A função a ser chamada quando o evento especificado ocorrer. Recebe dois argumentos:</p>
+<dl>
+<dt><code>eventName</code></dt>
+<dd>O nome do evento ocorrido.</dd>
+<dt><code>performer</code></dt>
+<dd>A função <strong>Performer</strong>.</dd>
+</dl>
+</dd>
+</dl>
 
 ##### Exemplo de código
 
@@ -482,7 +506,7 @@ performer.on('end', () => {
   alert('The End');
 });
 // Ou
-/* 
+/*
     wS.on('end', () => {
       alert('The End');
     });
@@ -495,13 +519,12 @@ Remove um ouvinte de evento.
 
 ##### Parâmetros
 
-`eventName`
-
-: O nome do evento.
-
-`callback`
-
-: A função utilizada na inserção do ouvinte ou um valor número(`index`) a partir do `0` de acordo com a ordem de inserção de ouvintes.
+<dl>
+<dt><code>eventName</code></dt>
+<dd>O nome do evento.</dd>
+<dt><code>callback</code></dt>
+<dd>A função utilizada na inserção do ouvinte ou um valor número(<code>index</code>) a partir do <code>0</code> de acordo com a ordem de inserção de ouvintes.</dd>
+</dl>
 
 ##### Exemplo de código
 

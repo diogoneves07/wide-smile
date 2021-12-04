@@ -1,6 +1,6 @@
 {
   "name": "wide-smile",
-  "version": "0.0.2.1",
+  "version": "0.0.3",
   "author": "Diogo neves",
   "main": "wide-smile.min.js",
   "umd:main": "wide-smile.min.js",
@@ -18,7 +18,13 @@
     "SVG",
     "canvas"
   ],
-  "repository": "diogoneves07/wide-smile",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/diogoneves07/wide-smile.git"
+  },
+  "bugs": {
+    "url": "http://github.com/diogoneves07/wide-smile/issues"
+  },
   "files": [
     "wide-smile.js",
     "wide-smile.js.map",
@@ -26,7 +32,7 @@
     "wide-smile.es.js.map",
     "wide-smile.min.js",
     "wide-smile.min.js.map",
-    "./dist/**"
+    "./dist/"
   ],
   "scripts": {
     "test": "jest",

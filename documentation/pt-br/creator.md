@@ -1,18 +1,21 @@
-## Creator Functions
+# Creator Functions
 
 São funções que contêm propriedades e métodos e tem como principal objetivo criar **Performers**, definir padrões e criar outros **Creators**. Também são capazes de aplicar métodos em todos os **Performers** que forem criados por eles e por consequência mudam o comportamento das animações.
 
 ### Parâmetro formal
 
-`options`
-
-: Um objeto de propriedades relacionadas a animação como por exemplo: duração, alvos, direção e outras.
-
-    Type
-    : *`object`*
-
-    Uso
-    : Obrigatório
+<dl>
+<dt><code>options</code></dt>
+<dd>
+<p>Um objeto de propriedades relacionadas a animação como por exemplo: duração, alvos, direção e outras.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>object</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+</dl>
 
 > As propriedades disponíveis são detalhadas logo abaixo, você pode clicar aqui para ver
 
@@ -34,15 +37,12 @@ Podemos passar múltiplos argumentos em que cada um será aplicado as determinad
 A partir do primeiro argumento podemos passar valores de forma não ordenada pela sua posição, mas sim pelo seu tipo:
 
 - Os argumentos do tipo _`string`_ são aplicados da seguinte forma: caso o valor seja compatível a propriedade `dir` então ele será aplicado a ela, se não, será aplicado a propriedade `easing`.
-
 - O primeiro argumento do tipo _`number`_ é aplicado a propriedade `dur` e o segundo a propriedade `loop`.
-
 - O argumento do tipo _`function`_ é aplicado a propriedade `easing`.
 
 > Caso use o atalho e passe um valor destinado a propriedade `loop`, em que a intenção será fazer com que a animação seja executada infinitamente não use _`true`_, use _`Infinity`_.
 
 - O primeiro argumento do tipo _`boolean`_ é aplicado a propriedade `autoPlay`.
-
 - Podemos também passar um objeto de opções, junto ao outros argumentos.
 
 #### Exemplo de código 1
@@ -132,12 +132,12 @@ _`boolean`_. Leitura e gravação.
 
 Define se o carregamento das animações deve ocorrer de forma assíncrona.
 
-`true`
-: As animações são carregadas de forma assíncrona, em que normalmente as mais simples são carregadas primeiro.
-
-`false`
-
-: As animações são carregadas de forma síncrona, ou seja, o carregamento é feito de acordo com a ordem de chegada.
+<dl>
+<dt><code>true</code></dt>
+<dd>As animações são carregadas de forma assíncrona, em que normalmente as mais simples são carregadas primeiro.</dd>
+<dt><code>false</code></dt>
+<dd>As animações são carregadas de forma síncrona, ou seja, o carregamento é feito de acordo com a ordem de chegada.</dd>
+</dl>
 
 ##### Valor padrão
 
@@ -185,45 +185,43 @@ Cria ou sobrescreve uma função easing customizada.
 
 ##### Parâmetros
 
-`name`
-
-: Um nome para uso da nova função easing.
-
-    Type
-    : *`string`*
-
-    Uso
-    : Obrigatório
-
-`callback`
-
-: A função a ser executada para calcular os valores.
-
-    Type
-    : *`function`*
-
-    Uso
-    : Obrigatório
+<dl>
+<dt><code>name</code></dt>
+<dd>
+<p>Um nome para uso da nova função easing.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>string</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+<dt><code>callback</code></dt>
+<dd>
+<p>A função a ser executada para calcular os valores.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>function</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+</dl>
 
 ##### Descrição
 
 A função passada como `callback` recebe alguns parâmetros:
 
-`time`
-
-: _`number`_ . O tempo relacionado a animação(um valor de `0` a `1`).
-
-`target`
-
-: _`object`_. O alvo a ser atingindo.
-
-`index`
-
-: _`number`_. A posição do alvo no _`array`_ de alvos.
-
-`length`
-
-: _`number`_. O comprimento do _`array`_ de alvos.
+<dl>
+<dt><code>time</code></dt>
+<dd><em><code>number</code></em> . O tempo relacionado a animação(um valor de <code>0</code> a <code>1</code>).</dd>
+<dt><code>target</code></dt>
+<dd><em><code>object</code></em>. O alvo a ser atingindo.</dd>
+<dt><code>index</code></dt>
+<dd><em><code>number</code></em>. A posição do alvo no <em><code>array</code></em> de alvos.</dd>
+<dt><code>length</code></dt>
+<dd><em><code>number</code></em>. O comprimento do <em><code>array</code></em> de alvos.</dd>
+</dl>
 
 ##### Exemplo de código
 
@@ -245,25 +243,28 @@ Uma propriedade observada não é aplicada aos alvos da animação pela bibliote
 
 ##### Parâmetros 1
 
-`propertyName`
-
-: O nome da nova propriedade a ser criada.
-
-    Type
-    : *`string`*
-
-    Uso
-    : Obrigatório
-
-`callback`
-
-: A função a ser executada sempre que a propriedade for utilizada por uma animação.
-
-    Type
-    : *`function`*
-
-    Uso
-    : Obrigatório
+<dl>
+<dt><code>propertyName</code></dt>
+<dd>
+<p>O nome da nova propriedade a ser criada.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>string</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+<dt><code>callback</code></dt>
+<dd>
+<p>A função a ser executada sempre que a propriedade for utilizada por uma animação.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>function</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+</dl>
 
 ```javascript
 // Criando uma propriedade observada.
@@ -280,15 +281,18 @@ wS().newObservedProperty(
 
 ##### Parâmetros 2
 
-`propertiesAndCallbacks`
-
-: Um objeto com propriedades chave-valor onde a chave é o nome da nova propriedade e o valor e o `callback` a ser usado.
-
-    Type
-    : *`object`*
-
-    Uso
-    : Obrigatório
+<dl>
+<dt><code>propertiesAndCallbacks</code></dt>
+<dd>
+<p>Um objeto com propriedades chave-valor onde a chave é o nome da nova propriedade e o valor e o <code>callback</code> a ser usado.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>object</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+</dl>
 
 ##### Exemplo de código
 
@@ -312,20 +316,16 @@ wS().newObservedProperty({
 
 A função passada como `callback` da propriedade especial, ela recebe alguns parâmetros:
 
-`value`
-
-: _`any`_ . O valor definido para propriedade observada.
-
-`percentageCompleted`
-: _`number`_. A porcentagem do valor definido para a propriedade observada que que está em processo de intercalação.
-
-`target`
-
-: _`object`_. O alvo a ser atingindo.
-
-`index`
-
-: _`object`_. A posição do alvo na lista de alvos.
+<dl>
+<dt><code>value</code></dt>
+<dd><em><code>any</code></em> . O valor definido para propriedade observada.</dd>
+<dt><code>percentageCompleted</code></dt>
+<dd><em><code>number</code></em>. A porcentagem do valor definido para a propriedade observada que que está em processo de intercalação.</dd>
+<dt><code>target</code></dt>
+<dd><em><code>object</code></em>. O alvo a ser atingindo.</dd>
+<dt><code>index</code></dt>
+<dd><em><code>object</code></em>. A posição do alvo na lista de alvos.</dd>
+</dl>
 
 ##### Exemplo de código
 
@@ -370,7 +370,6 @@ wS(
 O exemplo de uso da propriedade observada a cima é muito simples, mas há coisas importantes a ser explicadas. Note que neste exemplo separarmos a animação em quadros-chave, vamos explicar o comportamento de dois parâmetros que a função `callback` da propriedade observada recebe, são eles `value` e `percentageCompleted`.
 
 - Na primeira intercalação da animação o valor de `value` seria: `''` e o de `percentageCompleted`: `100`.
-
 - Agora vamos simular seus valores quando a animação estivesse `25%` concluída, o valor de `value` seria: `'Hello'` e o de `percentageCompleted`: `50`.
 
 O valor de `percentageCompleted` está relacionado ao valor atual de `value` que está em processo de intercalação e indica a porcentagem desse valor que deve ser aplicado. Com isso podemos trabalhar a aplicação da propriedade de acordo com os quadros definidos na animação.
@@ -385,15 +384,18 @@ Remove definitivamente uma ou mais propriedades observadas.
 
 ##### Parâmetros
 
-`propertiesNames`
-
-: O nome da propriedade a ser removida.
-
-    Type
-    : *`string`*
-
-    Uso
-    : Obrigatório
+<dl>
+<dt><code>propertiesNames</code></dt>
+<dd>
+<p>O nome da propriedade a ser removida.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>string</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+</dl>
 
 ##### Exemplo de código
 
@@ -422,25 +424,28 @@ Uma propriedade especial pode ser criada a partir da junção de outras propried
 
 ##### Parâmetros 1
 
-`propertyName`
-
-: O nome da nova propriedade a ser criada.
-
-    Type
-    : *`string`*
-
-    Uso
-    : Obrigatório
-
-`callback`
-
-: A função a ser executada sempre que a propriedade for utilizada por uma animação.
-
-    Type
-    : *`function`*
-
-    Uso
-    : Obrigatório
+<dl>
+<dt><code>propertyName</code></dt>
+<dd>
+<p>O nome da nova propriedade a ser criada.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>string</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+<dt><code>callback</code></dt>
+<dd>
+<p>A função a ser executada sempre que a propriedade for utilizada por uma animação.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>function</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+</dl>
 
 ##### Exemplo de código
 
@@ -456,15 +461,18 @@ wS().newSpecialProperty('Size', (value) => {
 
 ##### Parâmetros 2
 
-`propertiesAndCallbacks`
-
-: Um objeto com propriedades chave-valor onde a chave é o nome da nova propriedade e o valor e o `callback` a ser usado.
-
-    Type
-    : *`object`*
-
-    Uso
-    : Obrigatório
+<dl>
+<dt><code>propertiesAndCallbacks</code></dt>
+<dd>
+<p>Um objeto com propriedades chave-valor onde a chave é o nome da nova propriedade e o valor e o <code>callback</code> a ser usado.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>object</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+</dl>
 
 ##### Exemplo de código
 
@@ -485,17 +493,14 @@ wS().newSpecialProperty({
 
 A função passada como `callback` da propriedade especial, ela recebe alguns argumentos e deve retornar um objeto de propriedades. Abaixo esta os parâmetros que a função recebe.
 
-`value`
-
-: _`string`_. O valor definido para propriedade especial.
-
-`target`
-
-: _`object`_. O alvo a ser atingindo.
-
-`index`
-
-: _`number`_. A posição do alvo na lista de alvos.
+<dl>
+<dt><code>value</code></dt>
+<dd><em><code>string</code></em>. O valor definido para propriedade especial.</dd>
+<dt><code>target</code></dt>
+<dd><em><code>object</code></em>. O alvo a ser atingindo.</dd>
+<dt><code>index</code></dt>
+<dd><em><code>number</code></em>. A posição do alvo na lista de alvos.</dd>
+</dl>
 
 ##### Exemplo de código
 
@@ -527,15 +532,18 @@ Remove definitivamente uma ou mais propriedades especiais.
 
 ##### Parâmetros
 
-`propertiesNames`
-
-: O nome da propriedade a ser removida.
-
-    Type
-    : *`string`*
-
-    Uso
-    : Obrigatório
+<dl>
+<dt><code>propertiesNames</code></dt>
+<dd>
+<p>O nome da propriedade a ser removida.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>string</code></em></dd>
+<dt>Uso</dt>
+<dd>Obrigatório</dd>
+</dl>
+</dd>
+</dl>
 
 ##### Exemplo de código
 

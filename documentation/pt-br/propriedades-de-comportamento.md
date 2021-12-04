@@ -8,10 +8,13 @@ Define os alvos da animação.
 
 #### Type
 
-_`Array`_ |
-_`CSS selector`_ | _`DOM Node`_ | _`object`_
-_`(CSS selector | DOM Node | object)[]`_  
- | _`DOM Node`_ | _`NodeList`_ | . Leitura e gravação.
+_`Array`_ |<br>
+
+_`CSS selector`_ | _`DOM Node`_ | _`object`_<br>
+
+_`(CSS selector | DOM Node | object)[]`_<br>
+
+| _`DOM Node`_ | _`NodeList`_ | . Leitura e gravação.
 
 #### Descrição
 
@@ -45,12 +48,16 @@ _`function`_. Leitura e gravação
 
 A função _`callback`_ definida como o valor desta propriedade será chamada a cada mudança no progresso da animação, ela também recebe um argumento:
 
-`progress`
-
-: O andamento da animação(um valor de `0%` a `100%`.
-
-    Type
-    : *`number`*
+<dl>
+<dt><code>progress</code></dt>
+<dd>
+<p>O andamento da animação(um valor de <code>0%</code> a <code>100%</code>.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>number</code></em></dd>
+</dl>
+</dd>
+</dl>
 
 #### Exemplo de código - Usando a propriedade
 
@@ -76,17 +83,16 @@ _`string`_. Leitura e gravação.
 
 A lista abaixo informa os valores possíveis.
 
-`normal`
-: Todas as iterações da animação são reproduzidas na direção da forma como foram especificadas.
-
-`reverse`
-: Todas as iterações da animação são reproduzidas na direção inversa da forma como foram especificadas.
-
-`alternate`
-: As iterações ímpares são reproduzidas na direção `normal` e as pares são reproduzidas em uma direção `reverse`.
-
-`alternate-reverse`
-: As iterações ímpares são reproduzidas na direção `reverse` e as pares são reproduzidas em uma direção `normal`.
+<dl>
+<dt><code>normal</code></dt>
+<dd>Todas as iterações da animação são reproduzidas na direção da forma como foram especificadas.</dd>
+<dt><code>reverse</code></dt>
+<dd>Todas as iterações da animação são reproduzidas na direção inversa da forma como foram especificadas.</dd>
+<dt><code>alternate</code></dt>
+<dd>As iterações ímpares são reproduzidas na direção <code>normal</code> e as pares são reproduzidas em uma direção <code>reverse</code>.</dd>
+<dt><code>alternate-reverse</code></dt>
+<dd>As iterações ímpares são reproduzidas na direção <code>reverse</code> e as pares são reproduzidas em uma direção <code>normal</code>.</dd>
+</dl>
 
 #### Nota
 
@@ -302,24 +308,36 @@ Com esta propriedade podemos controlar nossas animações com maestria e facilid
 
 Na lista abaixo esta os valores disponíveis ao utilizar a propriedade com um valor do tipo _`string`_, todos estes valores são redefinidos a cada novo ciclo da animação.
 
-_`string`_
-: `normal`
-
-: Faz com a propriedade respeite o deslocamento definido na propriedade `dir`.
-
-: Partindo sempre da chave inicial, é sorteado uma chave que foi definida nos quadros-chave da animação, a chave sorteada será o progresso máximo a ser alcançado pelo atual ciclo da animação.
-
-: `random-offset`
-
-: Partindo sempre da chave inicial, é sorteado um deslocamento de `0` a `100`, o valor sorteado será o progresso máximo a ser alcançado pelo atual ciclo da animação.
-
-: `fluid-random-keys`
-
-: Partindo sempre do progresso alcançado no ciclo anterior, é sorteado uma chave que foi definida nos quadros-chave da animação, a chave sorteada será o progresso máximo a ser alcançado pelo atual ciclo da animação.
-
-: `fluid-random-offset`
-
-: Partindo sempre do progresso alcançado no ciclo anterior, é sorteado um deslocamento de `0` a `100` , o valor sorteado será o progresso máximo a ser alcançado pelo atual ciclo da animação.
+<dl>
+<dt><em><code>string</code></em></dt>
+<dd>
+<p><code>normal</code></p>
+</dd>
+<dd>
+<p>Faz com a propriedade respeite o deslocamento definido na propriedade <code>dir</code>.</p>
+</dd>
+<dd>
+<p>Partindo sempre da chave inicial, é sorteado uma chave que foi definida nos quadros-chave da animação, a chave sorteada será o progresso máximo a ser alcançado pelo atual ciclo da animação.</p>
+</dd>
+<dd>
+<p><code>random-offset</code></p>
+</dd>
+<dd>
+<p>Partindo sempre da chave inicial, é sorteado um deslocamento de <code>0</code> a <code>100</code>, o valor sorteado será o progresso máximo a ser alcançado pelo atual ciclo da animação.</p>
+</dd>
+<dd>
+<p><code>fluid-random-keys</code></p>
+</dd>
+<dd>
+<p>Partindo sempre do progresso alcançado no ciclo anterior, é sorteado uma chave que foi definida nos quadros-chave da animação, a chave sorteada será o progresso máximo a ser alcançado pelo atual ciclo da animação.</p>
+</dd>
+<dd>
+<p><code>fluid-random-offset</code></p>
+</dd>
+<dd>
+<p>Partindo sempre do progresso alcançado no ciclo anterior, é sorteado um deslocamento de <code>0</code> a <code>100</code> , o valor sorteado será o progresso máximo a ser alcançado pelo atual ciclo da animação.</p>
+</dd>
+</dl>
 
 #### Exemplo de código 1
 
@@ -379,26 +397,32 @@ Pode ser útil fazer com que cada alvo da animação tenha o valor a ser alcanç
 
 #### Parâmetros recebidos
 
-`target`
-
-: O alvo da animação.
-
-    Type
-    : *`object`*
-
-`index`
-
-: A posição do alvo na lista.
-
-    Type
-    : *`number`*
-
-`length`
-
-: O comprimento da lista.
-
-    Type
-    : *`number`*
+<dl>
+<dt><code>target</code></dt>
+<dd>
+<p>O alvo da animação.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>object</code></em></dd>
+</dl>
+</dd>
+<dt><code>index</code></dt>
+<dd>
+<p>A posição do alvo na lista.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>number</code></em></dd>
+</dl>
+</dd>
+<dt><code>length</code></dt>
+<dd>
+<p>O comprimento da lista.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>number</code></em></dd>
+</dl>
+</dd>
+</dl>
 
 #### Exemplo de código 5
 
@@ -442,22 +466,16 @@ _`string`_ | _`function`_. Leitura e gravação.
 
 Esta propriedade recebe o nome dado a uma função de easing ou uma função easing que recebe os seguintes parâmetros:
 
-`time`
-
-: _`number`_ . O tempo relacionado a animação(um valor de `0` a `1`).
-
-`target`
-
-: _`object`_ . O alvo a ser atingindo.
-
-`index`
-
-: _`number`_ . A posição do alvo no _`array`_ de alvos.
-
-`length`
-
-: _`number`_ . O comprimento do _`array`_ de alvos.
-
+<dl>
+<dt><code>time</code></dt>
+<dd><em><code>number</code></em> . O tempo relacionado a animação(um valor de <code>0</code> a <code>1</code>).</dd>
+<dt><code>target</code></dt>
+<dd><em><code>object</code></em> . O alvo a ser atingindo.</dd>
+<dt><code>index</code></dt>
+<dd><em><code>number</code></em> . A posição do alvo no <em><code>array</code></em> de alvos.</dd>
+<dt><code>length</code></dt>
+<dd><em><code>number</code></em> . O comprimento do <em><code>array</code></em> de alvos.</dd>
+</dl>
 #### Exemplo de código 1
 
 ```javascript

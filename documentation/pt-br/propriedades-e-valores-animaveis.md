@@ -86,26 +86,32 @@ Podemos passar uma função para retornar um valor para cada alvo da animação 
 
 #### Parâmetros recebidos
 
-`target`
-
-: O alvo da animação.
-
-    Type
-    : *`object`*
-
-`index`
-
-: A posição do alvo na lista.
-
-    Type
-    : *`number`*
-
-`length`
-
-: O comprimento da lista.
-
-    Type
-    : *`number`*
+<dl>
+<dt><code>target</code></dt>
+<dd>
+<p>O alvo da animação.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>object</code></em></dd>
+</dl>
+</dd>
+<dt><code>index</code></dt>
+<dd>
+<p>A posição do alvo na lista.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>number</code></em></dd>
+</dl>
+</dd>
+<dt><code>length</code></dt>
+<dd>
+<p>O comprimento da lista.</p>
+<dl>
+<dt>Type</dt>
+<dd><em><code>number</code></em></dd>
+</dl>
+</dd>
+</dl>
 
 #### Exemplo de código
 
