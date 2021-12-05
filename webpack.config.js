@@ -65,7 +65,6 @@ module.exports = [
   },
   {
     ...defaults,
-
     mode: 'production',
 
     experiments: {

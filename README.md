@@ -33,7 +33,7 @@ yarn add wide-smile
 Importando via módulo:
 
 ```javascript
-import wS from './wide-smile/';
+import wS from 'wide-smile';
 ```
 
 ### CommonJS
@@ -41,7 +41,7 @@ import wS from './wide-smile/';
 Exigi-lo como você faria com qualquer outro módulo:
 
 ```javascript
-const wS = require('wS');
+const wS = require('wide-smile');
 ```
 
 ### `<script>`
@@ -86,7 +86,7 @@ wS().newObservedProperty('Text', (v, p, e) => {
 wS('div', 1, 'easeOutInSine', {
   delay: '0.1 <>',
 })
-  .cycle('alternate')
+  .cycle(5, 'alternate')
   ._('backgroundColor', 'red')
   .after(1)('height_width', 200, 'easeInBounce')
   ._(0, 'blue')

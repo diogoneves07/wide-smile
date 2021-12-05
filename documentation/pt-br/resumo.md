@@ -1,4 +1,4 @@
-# `WideSmile`
+# WideSmile
 
 “Abstraia a complexidade, apenas faça.”
 
@@ -33,7 +33,7 @@ yarn add wide-smile
 Importando via módulo:
 
 ```javascript
-import wS from './wide-smile/';
+import wS from 'wide-smile';
 ```
 
 ### CommonJS
@@ -41,7 +41,7 @@ import wS from './wide-smile/';
 Exigi-lo como você faria com qualquer outro módulo:
 
 ```javascript
-const wS = require('wS');
+const wS = require('wide-smile');
 ```
 
 ### `<script>`

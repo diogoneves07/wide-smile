@@ -1,6 +1,6 @@
 {
   "name": "wide-smile",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "Diogo neves",
   "main": "wide-smile.min.js",
   "umd:main": "wide-smile.min.js",
@@ -26,6 +26,7 @@
     "url": "http://github.com/diogoneves07/wide-smile/issues"
   },
   "files": [
+    "index.js",
     "wide-smile.js",
     "wide-smile.js.map",
     "wide-smile.es.js",
