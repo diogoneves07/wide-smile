@@ -1,1 +1,1 @@
-export { default as wS } from './';
+export { default as wS } from './wide-smile.es';
