@@ -39,7 +39,7 @@ funções.
 Entenda o que é uma função <strong>Creator</strong> e como
 fazer uso dela e de seus métodos e propriedades.
 </dd>
-<dt><a href='https://github.com/diogoneves07/wide-smile/wiki/Creator-Functions'>Propriedades customizadas / Hooks</a></dt>
+<dt><a href='https://github.com/diogoneves07/wide-smile/wiki/Propriedades-customizadas-%7C-Hooks'>Propriedades customizadas / Hooks</a></dt>
 
 <dd>
 Crie propriedades customizadas que podem ser usadas como qualquer outra, abstraindo toda complexidade por trás delas.

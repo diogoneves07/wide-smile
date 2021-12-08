@@ -331,6 +331,6 @@ Este método pode receber múltiplos argumentos.
 
 A função **Creator** que o invocou.
 
-## Próximos passos
+### Próximos passos
 
-Compartilhe as propriedades customizadas com a comunidade, será incrível usá-la sem precisar lidar com a código por traz dela.
+Compartilhe as propriedades customizadas com a comunidade, será incrível usá-la sem precisar lidar com o código por trás dela.

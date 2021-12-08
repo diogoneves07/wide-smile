@@ -1,6 +1,6 @@
 {
   "name": "wide-smile",
-  "version": "0.0.7",
+  "version": "0.0.8",
   "author": "Diogo neves",
   "main": "wide-smile.min.js",
   "umd:main": "wide-smile.min.js",
