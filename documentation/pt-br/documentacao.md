@@ -1,4 +1,4 @@
-<img src='https://github.com/diogoneves07/wide-smile/blob/main/other/small-wide-smile.png' alt='WideSmile - logo' width='400px' />
+<img src='https://github.com/diogoneves07/wide-smile/blob/main/other/img/small-wide-smile.png' alt='WideSmile - logo' width='400px' />
 
 # Documentação
 
