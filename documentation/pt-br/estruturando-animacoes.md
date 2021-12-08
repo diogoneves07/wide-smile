@@ -181,7 +181,7 @@ performer({
 
 O método _`to()`_ faz com que as propriedades e seus valores da declaração de animação anterior a ele seja tratado como os valores inicias e, as propriedades e valores que forem definidos nele seja os valores a serem alcançados durante a animação.
 
-> É remendado o uso deste método imediatamente após a declaração de animação a qual ele será aplicado.
+> É recomendado o uso deste método imediatamente após a declaração de animação a qual ele será aplicado.
 
 ###### Atalhos de uso
 
@@ -239,7 +239,7 @@ const performer = wS(
 
 ###### Espaçamento dos quadros
 
-Para espaçar os quadros podemos fazer o uso da propriedade `offset` dentro dos objeto no _`array`_ keyframes, o valor deve ser um número de `0` a `1`.
+Para espaçar os quadros podemos fazer o uso da propriedade `offset` dentro dos objeto no _`array`_ keyframes, o valor pode ser um número de `0` a `1` ou um _`array`_ de números:
 
 ```javascript
 const performer = wS(
@@ -248,7 +248,8 @@ const performer = wS(
   'easeOutInSine'
 )([
   { backgroundColor: 'red' },
-  { 0: 'green', offset: 0.8 },
+  { 0: 'green', offset: 0.5 },
+  { 0: 'green', offset: [0.8, 1] },
   { 0: 'blue' },
 ]);
 ```
@@ -261,7 +262,7 @@ Os quadros-chave sem a propriedade `offset` serão espaçados uniformemente entr
 
 Em algumas situações podemos querer definir o valor inicial da propriedade e o valor a ser alcançado pela animação.
 
-- Forma 1 -`keyframes`
+- Forma 1 - `keyframes`
 
 ```javascript
 import wS from './wide-smile/';
@@ -272,7 +273,7 @@ const performer = wS(
 )('height', [50, 250]);
 ```
 
-- Forma 2 -`to()`
+- Forma 2 - `to()`
 
 ```javascript
 const performer = wS(

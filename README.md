@@ -98,6 +98,38 @@ wS('div', 1, 'easeOutInSine', {
 
 ---
 
-[Documentação](https://github.com/diogoneves07/wide-smile/wiki)
+## IMPORTANTE:
 
-[MIT License](LICENSE). © ([Diogo Neves](http://linkedin.com/in/diogoneves07/)).
+Nossa biblioteca está nas suas versões iniciais, mas verá que ela possui um grande potencial de crescimento([Documentação](https://github.com/diogoneves07/wide-smile/wiki)). Por isso, esse é o melhor momento para você contribuir! E o melhor, você pode escolher como:
+
+<dl>
+<dt>Participar diretamente do desenvolvimento.</dt>
+<dd>
+Participe do desenvolvimento do código, criando propriedades customizados e animações e compartilhando com comunidade, sugerindo novas futures ou desenvolvendo.</dd>
+<dt>Dando seu feedback.</dt>
+<dd>
+Sua opinião é importantíssima, afinal estamos desenvolvendo para você.
+</dd>
+<dt>Divulgando a wide-smile.</dt>
+<dd>
+Faça mais pessoas conhecerem nossa biblioteca, compartilhe em suas redes sociais e colegas da área.
+</dd>
+<dt>Colaborando na documentação.</dt>
+<dd>
+Nossa biblioteca merece uma documentação cada dia melhor, além de uma versão em Inglês, mas para isso precisamos da sua ajuda. Colabore diretamente na documentação atual ou faça artigos próprios da forma que desejar.
+</dd>
+<dt>Doando subsídios financeiro.</dt>
+<dd>
+Até o momento,  os desenvolvedores não recebem retorno financeiro. Se você gostou do projeto e quer propiciar o desenvolvimento dela, pense em apoiar.
+</dd>
+</dl>
+
+Por fim, não se prenda a essa lista, como dito, você pode ajudar da maneira que desejar. <a href = "mailto:ndiogo778@gmail.com">Entre em contato</a>.
+
+---
+
+<br>
+<p align='center'> 
+  <a href='https://github.com/diogoneves07/wide-smile/wiki'>Documentação</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  <a href='https://github.com/diogoneves07/wide-smile/LICENSE'>MIT License.</a> © <a href='http://linkedin.com/in/diogoneves07/'>Diogo Neves</a>
+</p>

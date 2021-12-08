@@ -1,5 +1,3 @@
-/* wide-smile (C) 2021, Diogo Neves<diogoneves07 - GitHub>. Licensed under the MIT license */
-
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();
@@ -1546,7 +1544,29 @@ function arrayKeyframesToObject(keyframes) {
   var lastKey = 0;
   var keyframesArrayLength = keyframes.length;
   var leftoversIndexs = keyframesArrayLength;
-  keyframesArray.forEach(function (keyframe, index) {
+  var newKeyframesArray = [];
+  keyframesArray.slice().forEach(function (keyframe, index) {
+    if ((0,_utilities_has_own_property__WEBPACK_IMPORTED_MODULE_1__.default)(keyframe, 'offset') && Array.isArray(keyframe.offset)) {
+      keyframesArray.splice(index, 1);
+      keyframe.offset.forEach(function (value) {
+        var newKeyframe = function () {
+          var k = {};
+          (0,_utilities_custom_for_in__WEBPACK_IMPORTED_MODULE_0__.default)(keyframe, function (propertyValue, propertyName) {
+            if (propertyName !== 'offset') {
+              k[propertyName] = propertyValue;
+            }
+          });
+          return k;
+        }();
+
+        newKeyframe.offset = value;
+        newKeyframesArray.push(newKeyframe);
+      });
+    } else {
+      newKeyframesArray.push(keyframe);
+    }
+  });
+  newKeyframesArray.forEach(function (keyframe, index) {
     var kf = keyframe;
 
     if ((0,_utilities_has_own_property__WEBPACK_IMPORTED_MODULE_1__.default)(keyframe, 'offset')) {

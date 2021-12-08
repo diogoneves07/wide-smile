@@ -370,7 +370,7 @@ No exemplo acima, estaríamos definindo que nossa animação teria quatro intera
 
 > Este é exemplo simples dessa propriedade, ele não demonstra seu total poder.
 
-#### Propriedades customizadas( observadas e especiais)
+#### Propriedades customizadas / Hooks
 
 Por mais que temos uma quantidade incrível de propriedades que essa biblioteca é capaz de animar, as vezes podemos querer ter uma propriedade só nossa, que resolve um determinado caso. Com isso em mente, a nossa biblioteca expõe dois métodos poderosos que, são capazes de criar propriedades que podem ser usadas como qualquer outra, abstraindo toda complexidade por trás dela.
 

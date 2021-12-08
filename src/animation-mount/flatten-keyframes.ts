@@ -13,8 +13,29 @@ function arrayKeyframesToObject(keyframes: Keyframes) {
   let lastKey = 0;
   const keyframesArrayLength = keyframes.length;
   let leftoversIndexs = keyframesArrayLength;
+  const newKeyframesArray: typeof keyframesArray = [];
+  keyframesArray.slice().forEach((keyframe, index) => {
+    if (hasOwnProperty(keyframe, 'offset') && Array.isArray(keyframe.offset)) {
+      keyframesArray.splice(index, 1);
+      keyframe.offset.forEach((value) => {
+        const newKeyframe = (() => {
+          const k: typeof keyframe = {};
+          customForIn(keyframe, (propertyValue, propertyName) => {
+            if (propertyName !== 'offset') {
+              k[propertyName] = propertyValue as never;
+            }
+          });
+          return k;
+        })();
+        newKeyframe.offset = value as number;
+        newKeyframesArray.push(newKeyframe);
+      });
+    } else {
+      newKeyframesArray.push(keyframe);
+    }
+  });
 
-  keyframesArray.forEach((keyframe, index) => {
+  newKeyframesArray.forEach((keyframe, index) => {
     const kf = keyframe;
     if (hasOwnProperty(keyframe, 'offset')) {
       lastKey = Math.max(Math.min((100 / 1) * (kf.offset as number), 100), 0);
@@ -71,7 +92,7 @@ export default function flattenKeyframes(
       });
       return keyframe;
     })();
-    newKeyframes[100] = kframes;
+    newKeyframes[100] = kframes as never;
   }
 
   customForIn(newKeyframes, (keyframe, key) => {
@@ -132,5 +153,6 @@ export default function flattenKeyframes(
       }
     });
   });
+
   return propertiesToAnimate;
 }
