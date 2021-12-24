@@ -1,6 +1,8 @@
-﻿# WideSmile
+﻿<p align='center'>
+  <img src='https://github.com/diogoneves07/wide-smile/blob/main/other/img/small-wide-smile.png' alt='WideSmile - logo'  height='170px' />
+</p>
 
-"Abstraia a complexidade, apenas faça."
+<p align='center'><strong>“Abstraia a complexidade, apenas faça.”</strong></p>
 
 A WideSmile é uma biblioteca de animação construída em `TypeScript / JavaScript`, seu principal objetivo é entregar um mecanismo moderno de animação que atenda verdadeiramente as necessidades do desenvolvedor. **Sendo uma nova forma de estruturar animações, deixando mais simples, direta e elegante**.
 
