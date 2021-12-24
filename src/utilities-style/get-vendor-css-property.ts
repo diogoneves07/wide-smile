@@ -1,5 +1,6 @@
 import { CSS_VENDORS_LENGTH, CSS_VENDORS } from '../sauce/constants';
 import { toCamelCase } from '../utilities/index';
+import HACK_CSS_PROPERTY_VALUES from './hack-to-set-css-property-value';
 
 /**
  * Gets the vendor for a determined CSS property.
@@ -23,7 +24,7 @@ export default function getVendorCSSProperty(
   DIV_ELEMENT_STYLE.cssText = '';
 
   let name = propertyName;
-  const values = [propertyValue, 'inherit', 'initial'];
+  const values = [propertyValue, ...HACK_CSS_PROPERTY_VALUES];
   const l = values.length;
 
   for (let index = 0; index < l; index += 1) {

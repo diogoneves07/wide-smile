@@ -42,11 +42,16 @@ export function getUnitOfMeasureForPropertyValue(
       .split(' ')
       .map((value) => {
         const v = trimString(value);
+        const valueNumber = parseFloat(v);
 
-        if (!getUnit(v) && typeof parseFloat(v) === 'number') {
+        if (
+          !getUnit(v) &&
+          typeof valueNumber === 'number' &&
+          !Number.isNaN(valueNumber)
+        ) {
           if (hasOwnProperty(knownProperties, propertyName)) {
             return (
-              parseFloat(v) +
+              valueNumber +
               knownProperties[propertyName] +
               (v.indexOf(',') > -1 ? ',' : '')
             );

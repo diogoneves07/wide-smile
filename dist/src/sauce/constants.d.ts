@@ -18,7 +18,7 @@ export declare const ANIMATION_DIRECTIONS: Readonly<[
     fluidRandomKeys: 'fluid-random-keys',
     fluidRandomOffset: 'fluid-random-offset'
 ]>;
-export declare const WIDE_SMILE_VERSION = "0.0.1";
+export declare const WIDE_SMILE_VERSION = "0.1.0";
 export declare const CSS_VENDORS: Readonly<string[]>;
 export declare const CSS_VENDORS_LENGTH: number;
 export declare const MAX_KEYFRAME = 100;

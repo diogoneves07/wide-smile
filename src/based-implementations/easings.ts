@@ -315,7 +315,7 @@ const bezier = (() => {
 export function applyArguments(func: Function, args: number[]): EasingFunction {
   return func(...args) as EasingFunction;
 }
-export function parseEasings(
+export function parserEasings(
   easing: string | Function,
   duration?: number
 ): EasingFunction {

@@ -33,7 +33,6 @@ type AllProperties = Partial<
 
 type AllAnimableProperties =
   | keyof (HTMLElement['style'] & AllProperties)
-  | keyof HTMLElement
-  | keyof AnimableProperties;
+  | keyof HTMLElement;
 
 export default AllAnimableProperties;

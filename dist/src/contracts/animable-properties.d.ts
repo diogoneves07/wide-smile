@@ -26,5 +26,5 @@ interface AnimableProperties {
     };
 }
 declare type AllProperties = Partial<Omit<AnimableProperties, 'CSSTransformFunctions'> & AnimableProperties[keyof Pick<AnimableProperties, 'CSSTransformFunctions'>]>;
-declare type AllAnimableProperties = keyof (HTMLElement['style'] & AllProperties) | keyof HTMLElement | keyof AnimableProperties;
+declare type AllAnimableProperties = keyof (HTMLElement['style'] & AllProperties) | keyof HTMLElement;
 export default AllAnimableProperties;

@@ -17,7 +17,7 @@ A WideSmile funciona muito bem em todos os principais navegadores desde o IE9(In
 Instale a `wide-smile` a partir do npm:
 
 ```bash
-npm install wide-smile
+npm i wide-smile
 ```
 
 Instale a `wide-smile` a partir do yarn:
@@ -98,6 +98,29 @@ wS('div', 1, 'easeOutInSine', {
 
 ---
 
+### Novidades(versão - `0.1.0`):
+
+Esta nova versão conta com novidades importantes:
+
+- Cobertura de testes:
+  Agora a `wide-smile` consegue ter mais segurança e garantir que seus principais recursos funcionem da maneira esperada.
+
+- Novos métodos:
+  [`now()`](<https://github.com/diogoneves07/wide-smile/wiki/M%C3%A9todo-now()>), [`set()`](<https://github.com/diogoneves07/wide-smile/wiki/M%C3%A9todo-set()>), [`remove()`](<https://github.com/diogoneves07/wide-smile/wiki/M%C3%A9todo-remove()>), [`get()`](<https://github.com/diogoneves07/wide-smile/wiki/M%C3%A9todo-get()>), [`removeTarget()`](<https://github.com/diogoneves07/wide-smile/wiki/M%C3%A9todo-removeTarget()>).
+
+- Nova propriedade:
+  [`reset`](https://github.com/diogoneves07/wide-smile/wiki/Propriedade-reset).
+
+- Agora podemos adicionar ouvintes em propriedades de animação (top, height, color...). Com isso, podemos obter o valor que será aplicado à determinada propriedade a cada intercalação da animação (nós também podemos impedi-lo de ser aplicado).
+  ```javascript
+  wS('div')('height', 50).on('height', (o) => {
+    /*...*/
+  });
+  ```
+- Também houve melhoramento do código fonte e da documentação.
+
+---
+
 ### IMPORTANTE:
 
 Nossa biblioteca está nas suas versões iniciais, mas verá que ela possui um grande potencial de crescimento([Documentação](https://github.com/diogoneves07/wide-smile/wiki)). Por isso, esse é o melhor momento para você contribuir! E o melhor, você pode escolher como:
@@ -118,6 +141,5 @@ Por fim, **não se prenda a essa lista**, como dito, **você pode ajudar da mane
 
 <br />
 <p align='center'> 
-  <a href='https://github.com/diogoneves07/wide-smile/wiki'>Documentação</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-  <a href='https://github.com/diogoneves07/wide-smile/LICENSE'>MIT License.</a> © <a href='http://linkedin.com/in/diogoneves07/'>Diogo Neves</a>
+  <a href='https://github.com/diogoneves07/wide-smile/wiki'>Documentação</a> &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp;<a href='https://github.com/diogoneves07/wide-smile/LICENSE'>MIT License.</a> © <a href='http://linkedin.com/in/diogoneves07/'>Diogo Neves</a>
 </p>

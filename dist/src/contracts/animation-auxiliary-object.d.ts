@@ -3,14 +3,14 @@ import EasingFunction from './easing-function';
 export default interface AnimationAuxiliaryObject {
     startTimeOfTheIteration: number;
     initialProgress: number;
-    animateProperties: {
+    propertiesToBeAnimate: {
         target: HTMLElement | object;
         index: number;
         originalArrayLength: number;
         keyframes: Record<string, unknown>;
         keyframesKeys: number[];
         propertyName: string;
-        newPropertyValue?: string;
+        newPropertyValue?: unknown;
         lastKey?: number;
         type: 'attr' | 'css' | 'direct' | 'transform' | 'observed';
     }[];
@@ -18,7 +18,7 @@ export default interface AnimationAuxiliaryObject {
     reverseExecution: boolean;
     timeRunningIteration: number;
     backRunning: boolean;
-    countDriveloop: number;
+    countDriveLoops: number;
     dataLoadingState: 'loading' | 'load' | 'reload' | 'stoped';
     easing: EasingFunction;
     lastStartProgress: number;
@@ -39,4 +39,5 @@ export default interface AnimationAuxiliaryObject {
         transfromFns: Record<string, string>;
     }[];
     duration: AnimationInstance['dur'];
+    dateLastIntercalation: number;
 }

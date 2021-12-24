@@ -1,7 +1,7 @@
-import { AnimationInstancePropertiesAllWritable } from '../contracts/animation-inter';
+import { AnimationOptions } from '../contracts/animation-inter';
 
 export default function getElementsInTheDOM(
-  targets: AnimationInstancePropertiesAllWritable['targets']
+  targets: AnimationOptions['targets']
 ): HTMLElement[] {
   const elements: object[] = [];
   if (targets) {
@@ -9,12 +9,14 @@ export default function getElementsInTheDOM(
 
     if (
       typeof targetForElements === 'string' ||
-      typeof targetForElements === 'object'
+      (typeof targetForElements === 'object' &&
+        !Array.isArray(targetForElements))
     ) {
       targetForElements = [targetForElements as never];
     } else {
       targetForElements = [].slice.call(targetForElements);
     }
+
     (targetForElements as (string | object)[]).forEach((elementOrSelector) => {
       if (typeof elementOrSelector === 'string') {
         [].slice

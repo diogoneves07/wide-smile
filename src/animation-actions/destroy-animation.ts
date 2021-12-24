@@ -1,8 +1,12 @@
 import { ANIMATION_STATES } from '../sauce/constants';
 import { removeAllAnimationEventListeners } from '../animation-listeners/animations-listeners-handlers';
-import { removeAnimationStyle } from '../animation-engine/crud-animations-style';
 import { AnimationInstance } from '../contracts/animation-inter';
-import { removeAnimationAuxiliaryObject } from '../animation-mount/crud-animation-objects';
+import {
+  getAnimationAuxiliaryObject,
+  removeAnimationAuxiliaryObject,
+} from '../animation-mount/crud-animation-objects';
+import removeAnimationStyle from '../animation-engine/remove-animation-style';
+import removeReferenceInCreatorToPerformer from '../sauce/remove-reference-in-creator-to-performer';
 
 function removeInstance<T>(array: T, animation: AnimationInstance) {
   return (((array as unknown) as unknown[]).filter(
@@ -12,18 +16,22 @@ function removeInstance<T>(array: T, animation: AnimationInstance) {
 /**
  * Destroys an animation.
  */
-export default function destroyAnimation(animation: AnimationInstance): void {
-  const aInstance = animation;
-  const performerProperties = aInstance.performer.$hidden;
+export default function destroyAnimation(a: AnimationInstance): void {
+  const animation = a;
+  const performerProperties = animation.performer.$hidden;
   const cycleOptions = performerProperties.cycleOptions;
 
-  if (!aInstance.state) return;
+  if (!animation.state) return;
 
-  aInstance.state = ANIMATION_STATES[4];
+  animation.state = ANIMATION_STATES[4];
 
-  const animationAuxiliaryObject = removeAnimationAuxiliaryObject(
-    aInstance.animationId
+  const animationAuxiliaryObject = getAnimationAuxiliaryObject(
+    animation.animationId
   );
+  if (animationAuxiliaryObject) {
+    removeAnimationStyle(animationAuxiliaryObject);
+    removeAnimationAuxiliaryObject(animation.animationId);
+  }
   performerProperties.animationInstances = removeInstance(
     performerProperties.animationInstances,
     animation
@@ -48,15 +56,11 @@ export default function destroyAnimation(animation: AnimationInstance): void {
         sequence[index] = removeInstance(sequence[index], animation);
       }
 
-      cycleOptions.sequence = sequence.filter((a) => a.length > 0);
+      cycleOptions.sequence = sequence.filter((i) => i.length > 0);
     }
   }
 
-  if (animationAuxiliaryObject) {
-    removeAllAnimationEventListeners(aInstance.animationId);
+  removeReferenceInCreatorToPerformer(animation.performer);
 
-    if (aInstance.removeChanges) {
-      removeAnimationStyle(animationAuxiliaryObject);
-    }
-  }
+  removeAllAnimationEventListeners(animation.animationId);
 }

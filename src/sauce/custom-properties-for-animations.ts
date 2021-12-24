@@ -1,4 +1,4 @@
-import { debugNormal } from './wide-smile-debug';
+import WideSmileDebug from './wide-smile-debug';
 import customForIn from '../utilities/custom-for-in';
 import hasOwnProperty from '../utilities/has-own-property';
 import CreateSpecialPropertyCallbackfn from '../contracts/create-special-property-callbackfn';
@@ -57,7 +57,7 @@ export function createCustomProperty(
     });
     return p;
   })();
-  debugNormal(
+  WideSmileDebug(
     'createProperty Method',
     `There's already a property with that name "${debugHelper}" on it.`,
     () => {

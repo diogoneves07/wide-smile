@@ -4,7 +4,7 @@ import { trimString } from '../utilities/handle-string';
 
 function treatSupportsFloatingValue(propertyValues: string[]) {
   const values = propertyValues;
-  const hasRGB = values.indexOf('rgb');
+  const hasRGB = values.findIndex((v) => v.indexOf('rgb') > -1);
   if (hasRGB > -1) {
     let index = hasRGB;
     do {
@@ -18,7 +18,7 @@ function treatSupportsFloatingValue(propertyValues: string[]) {
   return values;
 }
 export default function calcNextPropertyValue(
-  propertyObject: AnimationAuxiliaryObject['animateProperties'][number],
+  propertyObject: AnimationAuxiliaryObject['propertiesToBeAnimate'][number],
   fromAndTo: [from: number, to: number],
   currentPercent: number,
   easingFn: AnimationAuxiliaryObject['easing'],
@@ -60,6 +60,5 @@ export default function calcNextPropertyValue(
     }
     newValue.push(result);
   });
-
-  return treatSupportsFloatingValue(newValue).join('');
+  return trimString(treatSupportsFloatingValue(newValue).join(''));
 }

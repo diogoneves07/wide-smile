@@ -18,5 +18,6 @@ const DEFAULTS_ANIMATION_PROPERTIES_VALUES = {
   removeChanges: false,
   pauseDocHidden: true,
   round: 0,
+  reset: false,
 } as AnimationOptions;
 export default DEFAULTS_ANIMATION_PROPERTIES_VALUES;

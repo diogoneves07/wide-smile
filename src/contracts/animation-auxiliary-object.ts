@@ -6,14 +6,14 @@ export default interface AnimationAuxiliaryObject {
 
   initialProgress: number;
 
-  animateProperties: {
+  propertiesToBeAnimate: {
     target: HTMLElement | object;
     index: number;
     originalArrayLength: number;
     keyframes: Record<string, unknown>;
     keyframesKeys: number[];
     propertyName: string;
-    newPropertyValue?: string;
+    newPropertyValue?: unknown;
     lastKey?: number;
     type: 'attr' | 'css' | 'direct' | 'transform' | 'observed';
   }[];
@@ -26,7 +26,7 @@ export default interface AnimationAuxiliaryObject {
 
   backRunning: boolean;
 
-  countDriveloop: number;
+  countDriveLoops: number;
 
   dataLoadingState: 'loading' | 'load' | 'reload' | 'stoped';
 
@@ -58,4 +58,6 @@ export default interface AnimationAuxiliaryObject {
   }[];
 
   duration: AnimationInstance['dur'];
+
+  dateLastIntercalation: number;
 }

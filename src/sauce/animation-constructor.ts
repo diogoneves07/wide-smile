@@ -4,7 +4,7 @@ import {
 } from '../contracts/animation-inter';
 
 /**
- * A simple counter that helps to mark animation objects through the `animationId` property to avoid collisions and also indicates the priority of the animation instance's style insertion.
+ * A simple counter that helps to mark animation objects through the `animationId` property to avoid collisions and also indicates the skip of the animation instance's style insertion.
  */
 let ANIMATIONS_ID = -1;
 

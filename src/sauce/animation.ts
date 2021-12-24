@@ -1,7 +1,6 @@
 import { ANIMATION_STATES, MAX_KEYFRAME } from './constants';
 import LoadAnimation, {
-  loadedAnimation,
-  startAnimation,
+  startAnimationIfItIsLoaded,
 } from '../animation-mount/load-animation';
 import normalizePastedAnimationProperties from '../animation-mount/normalize-animation-object-properties';
 import { removeAnimationFromStack } from '../animation-engine/mount-animations-stack';
@@ -12,22 +11,31 @@ import {
   LISTENERS_NAMES,
   removeAnimationEventListener,
 } from '../animation-listeners/animations-listeners-handlers';
-import { removeAnimationStyle } from '../animation-engine/crud-animations-style';
 import iterationControlMethods from './iteration-control-methods';
 import multiplyValue from '../utilities/multiply-value';
-import setAnimationProgress from '../animation-engine/set-animation-progress';
+import getNewAnimationProgress from '../animation-engine/get-new-animation-progress';
 import resumeAnimation from '../animation-actions/resume-animation';
 import restartAnimation from '../animation-actions/restart-animation';
-import updateAnimation from '../animation-actions/update-animation';
+import updateAnimation from '../animation-engine/update-animation';
 import destroyAnimation from '../animation-actions/destroy-animation';
 import {
   AnimationInstance,
   AnimationInstancePropertiesAllWritable,
+  AnimationOptions,
   PropertiesForTheCreationOfAnimation,
   UserAnimationObjectInternal,
 } from '../contracts/animation-inter';
 import { ListenersEventsName } from '../contracts/listeners-events-name';
 import { getAnimationAuxiliaryObject } from '../animation-mount/crud-animation-objects';
+import removeAnimationStyle from '../animation-engine/remove-animation-style';
+import AnimationAuxiliaryObject from '../contracts/animation-auxiliary-object';
+import PerformerFn from '../contracts/performer-fn';
+import pushPerformerAgainToTheCreator from './push-performer-again-to-the-creator';
+import {
+  removePropertyFromAnimation,
+  removeTargetFromAnimation,
+} from '../animation-actions/remove-from-animation';
+import AllAnimableProperties from '../contracts/animable-properties';
 
 interface AnimationWS extends AnimationInstance {
   [key: string]: unknown;
@@ -46,6 +54,8 @@ class AnimationWS implements AnimationInstance {
     ) as UserAnimationObjectInternal;
     Object.assign(this, AnimationConstructor(U_A_O, creator));
 
+    pushPerformerAgainToTheCreator(this);
+
     return this;
   }
 
@@ -55,7 +65,15 @@ class AnimationWS implements AnimationInstance {
     );
 
     if (!animationAuxiliaryObject) {
-      LoadAnimation(this, loadedAnimation);
+      LoadAnimation(this, (aAuxiliaryObject: AnimationAuxiliaryObject) => {
+        const a = aAuxiliaryObject;
+        if (
+          a.dataLoadingState === 'load' &&
+          a.animation.state !== ANIMATION_STATES[3]
+        ) {
+          a.animation.state = ANIMATION_STATES[5];
+        }
+      });
     }
 
     return this;
@@ -67,7 +85,7 @@ class AnimationWS implements AnimationInstance {
       this.state === ANIMATION_STATES[5] ||
       this.state === ANIMATION_STATES[6]
     ) {
-      LoadAnimation(this, startAnimation);
+      LoadAnimation(this, startAnimationIfItIsLoaded);
     }
     return this;
   }
@@ -113,11 +131,11 @@ class AnimationWS implements AnimationInstance {
     if (animationAuxiliaryObject) {
       if (typeof this.loop === 'number') {
         this.count = this.loop - 1;
-        const animationProgressObject = setAnimationProgress(
+        const animationProgressObject = getNewAnimationProgress(
           animationAuxiliaryObject
         );
-        animationAuxiliaryObject.countDriveloop =
-          animationProgressObject.countDriveloop;
+        animationAuxiliaryObject.countDriveLoops =
+          animationProgressObject.countDriveLoops;
         this.max = animationProgressObject.maxProgress;
       }
 
@@ -257,13 +275,16 @@ class AnimationWS implements AnimationInstance {
       this.animationId
     );
     if (animationAuxiliaryObject) {
+      const removeChanges = this.removeChanges;
       removeAnimationFromStack(this.animationId);
+
+      this.removeChanges = true;
       removeAnimationStyle(animationAuxiliaryObject);
+      this.removeChanges = removeChanges;
 
       propagateAnimationEventListener(LISTENERS_NAMES[4], this);
-
-      this.state = ANIMATION_STATES[7];
     }
+    this.state = ANIMATION_STATES[7];
 
     return this;
   }
@@ -274,27 +295,45 @@ class AnimationWS implements AnimationInstance {
     }
     removeAnimationFromStack(this.animationId);
 
+    propagateAnimationEventListener(LISTENERS_NAMES[5], this);
+
     destroyAnimation(this);
 
-    propagateAnimationEventListener(LISTENERS_NAMES[5], this);
+    /**
+     * Important ! Set the property state to avoid side effects of timeouts.
+     */
+    this.state = ANIMATION_STATES[4];
 
     return true;
   }
 
   on(
-    eventName: ListenersEventsName,
-    callbackfn: (this: this, eventName: string, animation: this) => unknown
+    eventName: ListenersEventsName | AllAnimableProperties | string,
+    callbackfn: (
+      this: PerformerFn,
+      item: unknown,
+      performerFn: PerformerFn
+    ) => unknown
   ): this {
     addAnimationEventListener(eventName, callbackfn, this);
     return this;
   }
 
   off(
-    eventName: ListenersEventsName,
-    callbackfnOrIndex: Function | number
+    eventName: ListenersEventsName | AllAnimableProperties | string,
+    callbackfnUsed: Function
   ): this {
-    removeAnimationEventListener(eventName, callbackfnOrIndex, this);
+    removeAnimationEventListener(eventName, callbackfnUsed, this);
+    return this;
+  }
 
+  remove(...names: (AllAnimableProperties | string)[]): this {
+    removePropertyFromAnimation(names, this);
+    return this;
+  }
+
+  removeTarget(targets: AnimationOptions['targets']): this {
+    removeTargetFromAnimation(targets, this);
     return this;
   }
 }

@@ -1,5 +1,6 @@
 import AnimationWS from './animation';
-export default function logicToPlayAnimations(animation: AnimationWS, animationsThatPerformTogether?: AnimationWS[], animationsThatWaitIterations?: {
+export declare function playAnimationsTogether(animationToLink: AnimationWS, playTogether?: AnimationWS[]): void;
+export declare function playAnimationsAfterIterations(animationToLink: AnimationWS, playAfterIterations?: {
     animations: AnimationWS[];
     amountOfIterations: number;
 }): void;

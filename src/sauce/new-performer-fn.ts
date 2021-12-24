@@ -1,17 +1,11 @@
 import getElementsInTheDOM from '../animation-mount/get-elements-in-the-dom';
-import {
-  addInStackForConstruction,
-  useAnimationObjectExpectingSideEffects,
-} from './organize-animation-creations';
+import { addAnimationObjectToTheConstructionStack } from './organize-animation-creations';
 import AllAnimableProperties from '../contracts/animable-properties';
 import createAnimationPropertiesObject, {
   ANIMATION_PERFORMER_PROPERTIES,
 } from './create-animation-properties-object';
 import PERFORMER_FNS_METHODS from './performer-fns-methods';
-import PerformerFn, {
-  OverloadsForAnimationCreation,
-  PerformerFnProperties,
-} from '../contracts/performer-fn';
+import PerformerFn, { PerformerFnProperties } from '../contracts/performer-fn';
 import PropertiesToAnimateObject from '../contracts/properties-to-animate-object';
 
 import ValuesToAnimateProperty from '../contracts/values-to-animate-property';
@@ -21,40 +15,18 @@ import {
   AnimationOptions,
   UserAnimationOptions,
 } from '../contracts/animation-inter';
+import {
+  addLastAnimationObjectAddedToPerformer,
+  getLastAnimationObjectAddedToPerformer,
+} from './last-added-animation-object';
+
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/no-use-before-define */
-
-const NewPerformerFn = (
-  performerProperties: UserAnimationOptions,
-  creator: AnimationInstance['creator']
-) => {
-  const performerProps = performerProperties;
-  const creatorDefaults = creator.dfs;
-  const defaults: PerformerFnProperties = {
-    creator,
-    animationInstances: [],
-    independentAnimations: [],
-    propertiesUsed: [],
-  };
-  ANIMATION_PERFORMER_PROPERTIES.forEach((propertyName) => {
-    defaults[propertyName as never] = creatorDefaults[propertyName as never];
-  });
-
-  if (performerProps.targets) {
-    performerProps.targets = getElementsInTheDOM(performerProps.targets);
-  }
-
-  const animationPerformerProperties = { ...defaults, ...performerProps };
-
-  const performerFn = Object.assign(
-    (PerformerFnFn as unknown) as OverloadsForAnimationCreation,
-    PERFORMER_FNS_METHODS,
-    {
-      $hidden: animationPerformerProperties as Required<PerformerFnProperties>,
-      creator,
-    }
-  ) as PerformerFn;
-  function PerformerFnFn(
+let COUNT_PERFORMER_ID = 0;
+function getNewPerformerFn(
+  creator: AnimationInstance['creator'],
+  animationPerformerProperties: Required<PerformerFnProperties>
+) {
+  const performerFn = (function Performer(
     animate:
       | PropertiesToAnimateObject
       | Keyframes
@@ -73,34 +45,74 @@ const NewPerformerFn = (
       parametersToAnimate as never
     );
 
-    const lastAnimationParametersAdded = useAnimationObjectExpectingSideEffects(
+    const lastAnimationParametersAdded = getLastAnimationObjectAddedToPerformer(
       performerFn
     );
 
-    useAnimationObjectExpectingSideEffects(performerFn, animationProperties);
+    addLastAnimationObjectAddedToPerformer(performerFn, animationProperties);
 
     if (performerFn.$hidden.currentAfterIterations) {
-      addInStackForConstruction(
-        animationProperties,
+      addAnimationObjectToTheConstructionStack(
         performerFn,
+        animationProperties,
         lastAnimationParametersAdded,
         'afterIterations',
         performerFn.$hidden.currentAfterIterations
       );
+      performerFn.$hidden.currentAfterIterations = undefined;
     } else if (lastAnimationParametersAdded) {
-      addInStackForConstruction(
-        animationProperties,
+      addAnimationObjectToTheConstructionStack(
         performerFn,
+        animationProperties,
+
         lastAnimationParametersAdded,
         'together'
       );
     } else {
-      addInStackForConstruction(animationProperties, performerFn);
+      addAnimationObjectToTheConstructionStack(
+        performerFn,
+        animationProperties
+      );
     }
 
     return performerFn;
+  } as unknown) as PerformerFn;
+
+  COUNT_PERFORMER_ID += 1;
+
+  Object.assign(performerFn, PERFORMER_FNS_METHODS, {
+    id: COUNT_PERFORMER_ID,
+    $hidden: animationPerformerProperties as Required<PerformerFnProperties>,
+    creator,
+  });
+
+  return performerFn;
+}
+const NewPerformerFn = (
+  performerProperties: UserAnimationOptions,
+  creator: AnimationInstance['creator']
+) => {
+  const performerProps = performerProperties;
+  const creatorDefaults = creator.dfs;
+  const defaults: PerformerFnProperties = {
+    animationInstances: [],
+    independentAnimations: [],
+    orderOfThePropertiesUsed: [],
+  };
+  ANIMATION_PERFORMER_PROPERTIES.forEach((propertyName) => {
+    defaults[propertyName as never] = creatorDefaults[propertyName as never];
+  });
+
+  if (performerProps.targets) {
+    performerProps.targets = getElementsInTheDOM(performerProps.targets);
   }
-  performerFn.$hidden.index = creator.performers.push(performerFn) - 1;
+
+  const performerFn = getNewPerformerFn(creator, {
+    ...defaults,
+    ...performerProps,
+  } as Required<PerformerFnProperties>);
+
+  creator.performers.push(performerFn);
   return performerFn;
 };
 

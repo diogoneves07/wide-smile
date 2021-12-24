@@ -1,5 +1,7 @@
-import { AnimationInstance, AnimationInstancePropertiesAllWritable, PropertiesForTheCreationOfAnimation, UserAnimationObjectInternal } from '../contracts/animation-inter';
+import { AnimationInstance, AnimationInstancePropertiesAllWritable, AnimationOptions, PropertiesForTheCreationOfAnimation, UserAnimationObjectInternal } from '../contracts/animation-inter';
 import { ListenersEventsName } from '../contracts/listeners-events-name';
+import PerformerFn from '../contracts/performer-fn';
+import AllAnimableProperties from '../contracts/animable-properties';
 interface AnimationWS extends AnimationInstance {
     [key: string]: unknown;
 }
@@ -19,7 +21,9 @@ declare class AnimationWS implements AnimationInstance {
     dirTo(dir: Parameters<AnimationInstance['dirTo']>['0']): this;
     cancel(): this;
     destroy(removeChanges?: true): boolean;
-    on(eventName: ListenersEventsName, callbackfn: (this: this, eventName: string, animation: this) => unknown): this;
-    off(eventName: ListenersEventsName, callbackfnOrIndex: Function | number): this;
+    on(eventName: ListenersEventsName | AllAnimableProperties | string, callbackfn: (this: PerformerFn, item: unknown, performerFn: PerformerFn) => unknown): this;
+    off(eventName: ListenersEventsName | AllAnimableProperties | string, callbackfnUsed: Function): this;
+    remove(...names: (AllAnimableProperties | string)[]): this;
+    removeTarget(targets: AnimationOptions['targets']): this;
 }
 export default AnimationWS;

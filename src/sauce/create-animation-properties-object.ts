@@ -25,6 +25,8 @@ export const ANIMATION_PERFORMER_PROPERTIES = [
   'pauseDocHidden',
   'round',
   'progress',
+  'reset',
+  'skip',
 ];
 
 function parametersToAnimateShortcuts(v: unknown) {
@@ -70,9 +72,9 @@ export default function createAnimationPropertiesObject(
     | AnimationOptions
     | AnimationOptions['dur']
     | true
-) {
+): AnimationInstanceProperties {
   let parametersToAnimationProperties = parametersToAnimateOrPropertyValue;
-  let animateProperties: PropertiesToAnimateObject | Keyframes;
+  let propertiesToBeAnimate: PropertiesToAnimateObject | Keyframes;
 
   if (typeof animate === 'string' || typeof animate === 'number') {
     parametersToAnimationProperties =
@@ -80,7 +82,7 @@ export default function createAnimationPropertiesObject(
         ? parametersToAnimateOrDurOrAutoDestroy
         : parametersToAnimateShortcuts(parametersToAnimateOrDurOrAutoDestroy);
 
-    animateProperties = (() => {
+    propertiesToBeAnimate = (() => {
       const o: PropertiesToAnimateObject = {};
       o[
         animate
@@ -93,7 +95,7 @@ export default function createAnimationPropertiesObject(
         ? parametersToAnimationProperties
         : parametersToAnimateShortcuts(parametersToAnimateOrPropertyValue);
 
-    animateProperties = animate as PropertiesToAnimateObject | Keyframes;
+    propertiesToBeAnimate = animate as PropertiesToAnimateObject | Keyframes;
   }
 
   const targets = ((parametersToAnimationProperties as UserAnimationOptions)
@@ -101,7 +103,7 @@ export default function createAnimationPropertiesObject(
 
   const length = targets.length;
 
-  const t: AnimationOptions['targets'] = targets.map((target, i) => {
+  const t = targets.map((target, i) => {
     return {
       originalArrayLength: length,
       target,
@@ -109,7 +111,7 @@ export default function createAnimationPropertiesObject(
     };
   });
   const animationProperties = {
-    keyframes: animateProperties,
+    keyframes: propertiesToBeAnimate,
     ...(parametersToAnimationProperties as AnimationInstanceProperties),
     targets: t,
     performer: animationPerformer,
@@ -129,8 +131,8 @@ export default function createAnimationPropertiesObject(
     animationProperties.loop === DEFAULTS_ANIMATION_PROPERTIES_VALUES.loop
   ) {
     if (Array.isArray(animationProperties.drive)) {
-      const l = animationProperties.drive.length - 1;
-      if (typeof animationProperties.drive[l] === 'string') {
+      const l = animationProperties.drive.length;
+      if (typeof animationProperties.drive[l - 1] === 'string') {
         animationProperties.loop = true;
       } else {
         animationProperties.loop = l;
@@ -139,6 +141,7 @@ export default function createAnimationPropertiesObject(
       animationProperties.loop = true;
     }
   }
+
   if (
     animationProperties.dir &&
     animationProperties.loop === DEFAULTS_ANIMATION_PROPERTIES_VALUES.loop
@@ -148,5 +151,5 @@ export default function createAnimationPropertiesObject(
     }
   }
 
-  return animationProperties;
+  return animationProperties as AnimationInstanceProperties;
 }

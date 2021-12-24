@@ -33,17 +33,24 @@
     <script src="../wide-smile.min.js"></script>
   </head>
   <body>
-    <section><strong></strong></section>
+    <section>
+      <strong>Diogo Neves</strong>
+    </section>
     <script>
       wS().newObservedProperty('text', (v, p, e) => {
-        e.textContent = v.toString().substring(0, (v.length / 100) * p);
+        if (!v) {
+          return e.textContent;
+        }
+        return (e.textContent = v
+          .toString()
+          .substring(0, (v.length / 100) * p));
       });
 
       wS(
         'strong',
         2.5,
         'easeOutInExpo'
-      )('text', ['...', 'Hello world... Master!!!']);
+      )('text', ['...', 'Hello world... Master!!!'])('color', 'yellow');
     </script>
   </body>
 </html>

@@ -1,4 +1,7 @@
+import AllAnimableProperties from '../contracts/animable-properties';
+import AnimationAuxiliaryObject from '../contracts/animation-auxiliary-object';
 import { AnimationInstance } from '../contracts/animation-inter';
+import CurrentPropertyValue from '../contracts/current-property-value';
 import toCSSKebabCase from '../utilities-style/to-css-kebab-case';
 import { toCamelCase, trimString } from '../utilities/handle-string';
 
@@ -16,8 +19,7 @@ export const LISTENERS_NAMES: [
   'ready',
   'change',
   'loopStart',
-  '$-end-animation-in-cycle',
-  'progressValue'
+  '$-end-animation-in-cycle'
 ] = [
   'start',
   'loopEnd',
@@ -31,52 +33,46 @@ export const LISTENERS_NAMES: [
   'change',
   'loopStart',
   '$-end-animation-in-cycle',
-  'progressValue',
 ];
 
 export function addAnimationEventListener(
-  name: string,
-  callbackfn: Function,
+  name: string | AllAnimableProperties,
+  callback: Function,
   animation: AnimationInstance
 ): void {
   const { animationId } = animation;
   if (!EVENTS_IN_OBSERVATION[animationId]) {
     EVENTS_IN_OBSERVATION[animationId] = {};
   }
+
   const animationObjectBuket = EVENTS_IN_OBSERVATION[animationId];
-  const eName = trimString(name);
+  const eName = trimString(name as string);
   if (eName) {
     if (animationObjectBuket[eName]) {
-      animationObjectBuket[eName].push(callbackfn);
+      animationObjectBuket[eName].push(callback);
     } else {
-      animationObjectBuket[eName] = [callbackfn];
+      animationObjectBuket[eName] = [callback];
     }
   }
 }
 
 export function removeAnimationEventListener(
-  name: string,
-  callbackfnOrIndex: Function | number,
+  name: typeof LISTENERS_NAMES[number] | AllAnimableProperties | string,
+  callbackfnUsed: Function,
   animation: AnimationInstance
 ): void {
   const animationId = animation.animationId;
-
   if (!EVENTS_IN_OBSERVATION[animationId]) {
     return;
   }
 
   const animationObjectBuket = EVENTS_IN_OBSERVATION[animationId];
 
-  const eName = trimString(name);
+  const eName = trimString(name as string);
   if (eName && animationObjectBuket[eName]) {
-    if (typeof callbackfnOrIndex === 'number') {
-      animationObjectBuket[eName].splice(callbackfnOrIndex, 1);
-    } else {
-      const index = animationObjectBuket[eName].indexOf(callbackfnOrIndex);
-
-      if (index >= 0) {
-        animationObjectBuket[eName].splice(index, 1);
-      }
+    const index = animationObjectBuket[eName].indexOf(callbackfnUsed);
+    if (index >= 0) {
+      animationObjectBuket[eName].splice(index, 1);
     }
   }
 }
@@ -85,16 +81,12 @@ export function removeAllAnimationEventListeners(animationId: number): void {
   delete EVENTS_IN_OBSERVATION[animationId];
 }
 
-export function propagateAnimationEventListener(
-  name: string,
-  animation: AnimationInstance,
-  callbackfn?: (callbackfn: Function, animation: AnimationInstance) => void
-): void {
+function getBucket(name: string, animationId: number) {
   let eventName = trimString(name);
   let eventBucket: typeof EVENTS_IN_OBSERVATION[string][string];
-  const { animationId } = animation;
+
   if (!EVENTS_IN_OBSERVATION[animationId]) {
-    return;
+    return false;
   }
   const animationObjectBuket = EVENTS_IN_OBSERVATION[animationId];
 
@@ -108,24 +100,56 @@ export function propagateAnimationEventListener(
     eventBucket = animationObjectBuket[eventName];
   }
 
-  if (eventBucket) {
+  return { eventBucket, eventName };
+}
+export function propagateAnimationPropertyEventListener(
+  name: string,
+  animation: AnimationInstance,
+  propertyObject: AnimationAuxiliaryObject['propertiesToBeAnimate'][number]
+): boolean {
+  const bucket = getBucket(name, animation.animationId);
+  let allowedToApplyStyle: boolean | undefined;
+
+  if (bucket && bucket.eventBucket) {
+    const eventBucket = bucket.eventBucket;
+
     // Copy the array to avoid side effects of the methods.
-    eventBucket.slice().forEach((v) => {
-      if (callbackfn) {
-        callbackfn(v, animation);
+    eventBucket.slice().forEach((eventCallback) => {
+      allowedToApplyStyle = eventCallback.call(
+        animation.performer,
+        {
+          propertyName: propertyObject.propertyName,
+          value: propertyObject.newPropertyValue,
+          target: propertyObject.target,
+        } as CurrentPropertyValue,
+        animation.performer
+      ) as boolean | undefined;
+    });
+  }
+  if (allowedToApplyStyle !== false) {
+    allowedToApplyStyle = true;
+  }
+  return allowedToApplyStyle;
+}
+export function propagateAnimationEventListener(
+  name: typeof LISTENERS_NAMES[number],
+  animation: AnimationInstance,
+  useSpecialCallback?: (
+    eventCallback: Function,
+    animation: AnimationInstance
+  ) => unknown
+): void {
+  const bucket = getBucket(name, animation.animationId);
+  if (bucket && bucket.eventBucket) {
+    const { eventBucket, eventName } = bucket;
+
+    // Copy the array to avoid side effects of the methods.
+    eventBucket.slice().forEach((eventCallback) => {
+      if (useSpecialCallback) {
+        useSpecialCallback(eventCallback, animation);
       } else {
-        v.call(animation.performer, animation.performer);
+        eventCallback.call(animation.performer, eventName, animation.performer);
       }
     });
   }
-}
-
-export function updateListenersAnimationId(
-  lastAnimationId: number,
-  newAnimationId: number
-): void {
-  const animationObjectBuket = EVENTS_IN_OBSERVATION[lastAnimationId];
-  EVENTS_IN_OBSERVATION[newAnimationId] = animationObjectBuket;
-
-  delete EVENTS_IN_OBSERVATION[lastAnimationId];
 }

@@ -1,3 +1,4 @@
+import HACK_CSS_PROPERTY_VALUES from './hack-to-set-css-property-value';
 import toCSSKebabCase from './to-css-kebab-case';
 
 const DIV_ELEMENT_STYLE = document.createElement('div').style;
@@ -9,6 +10,7 @@ export default function getLinkedCSSProperties(
   if (KNOWN_PROPERTIES[propertyName]) {
     return KNOWN_PROPERTIES[propertyName];
   }
+
   DIV_ELEMENT_STYLE.cssText = '';
 
   const propertyNameCSS = toCSSKebabCase(propertyName);
@@ -17,7 +19,7 @@ export default function getLinkedCSSProperties(
 
   let counting = 0;
 
-  const values = [propertyValue, 'inherit', 'initial'];
+  const values = [propertyValue, ...HACK_CSS_PROPERTY_VALUES];
   const l = values.length;
   let property = '';
   for (let index = 0; index < l; index += 1) {
@@ -39,6 +41,5 @@ export default function getLinkedCSSProperties(
   }
 
   KNOWN_PROPERTIES[propertyName] = linkedCSSPropertiesList;
-
   return KNOWN_PROPERTIES[propertyName];
 }

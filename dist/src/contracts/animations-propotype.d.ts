@@ -1,4 +1,7 @@
+import AllAnimableProperties from './animable-properties';
 import { ListenersEventsName } from './listeners-events-name';
+import PerformerFn from './performer-fn';
+import { AnimationOptions } from './animation-inter';
 export default interface AnimationsPropotype {
     /**
      * Load the animation.
@@ -33,15 +36,15 @@ export default interface AnimationsPropotype {
      */
     end(): this;
     /**
-     * Makes the animation return its current progress to a given point and terminates the iteration.
+     * Do the animation return its current progress to a given point and terminates the iteration.
      */
     go(part: number): this;
     /**
-     * Makes the animation return its current progress to a certain point and continues the iteration from it.
+     * Do the animation return its current progress to a certain point and continues the iteration from it.
      */
     back(part: number): this;
     /**
-     * Makes the animation jump its progress to a determined point.
+     * Do the animation jump its progress to a determined point.
      */
     jump(part: number): this;
     /**
@@ -59,21 +62,35 @@ export default interface AnimationsPropotype {
     /**
      * Adds the listener to animation.
      *
-     * @param typeOfListener
+     * @param eventName
      * The name of the listener.
      *
      * @param callbackfn
      * The call-back
      */
-    on(typeOfListener: ListenersEventsName, callbackfn: (this: this, typeOfListener: string, animation: this) => unknown): this;
+    on(this: PerformerFn, eventName: string, callbackfn: (this: PerformerFn, item: unknown, performerFn: PerformerFn) => true | void | undefined | false): this;
+    on(this: PerformerFn, eventName: AllAnimableProperties, callbackfn: (this: PerformerFn, item: unknown, performerFn: PerformerFn) => true | void | undefined | false): this;
+    on(item: unknown, callbackfn: (this: PerformerFn, item: unknown, performerFn: PerformerFn) => unknown): this;
     /**
      * Remove animation listener.
      *
-     * @param typeOfListener
+     * @param eventName
      * The name of the listener.
      *
-     * @param callbackfnOrIndex
+     * @param callbackfnUsed
      * The call-back or index
      */
-    off(typeOfListener: ListenersEventsName, callbackfnOrIndex: Function | number): this;
+    off(eventName: ListenersEventsName, callbackfn: Function): this;
+    off(eventName: string, callbackfn: Function | number): this;
+    off(eventName: AllAnimableProperties, callbackfn: Function | number): this;
+    /**
+     * Removes the property of the animations.
+     */
+    remove(...names: (AllAnimableProperties | string)[]): this;
+    remove(...names: AllAnimableProperties[]): this;
+    remove(...names: string[]): this;
+    /**
+     * Removes the target of the animations.
+     */
+    removeTarget(targets: AnimationOptions['targets']): this;
 }

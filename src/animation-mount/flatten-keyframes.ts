@@ -2,10 +2,31 @@ import Keyframes from '../contracts/key-frames';
 import { PerformerFnProperties } from '../contracts/performer-fn';
 import PropertiesToAnimateObject from '../contracts/properties-to-animate-object';
 import PropertiesToAnimateObjectKeyframes from '../contracts/properties-to-animate-object-keyframes';
+import ValuesToAnimateProperty from '../contracts/values-to-animate-property';
 import customForIn from '../utilities/custom-for-in';
 import hasOwnProperty from '../utilities/has-own-property';
 import normalizePastedAnimationProperties from './normalize-animation-object-properties';
 
+function flattenOffsetProperty(
+  offset: number[],
+  keyframe: PropertiesToAnimateObject
+) {
+  const newKeyframes: Keyframes = [];
+  offset.forEach((value) => {
+    const newKeyframe = (() => {
+      const k: typeof keyframe = {};
+      customForIn(keyframe, (propertyValue, propertyName) => {
+        if (propertyName !== 'offset') {
+          k[propertyName] = propertyValue as never;
+        }
+      });
+      return k;
+    })();
+    newKeyframe.offset = value as number;
+    newKeyframes.push(newKeyframe);
+  });
+  return newKeyframes;
+}
 function arrayKeyframesToObject(keyframes: Keyframes) {
   const keyframesObject: Record<string, Keyframes[number]> = {};
   const keyframesArray = keyframes.slice();
@@ -14,22 +35,13 @@ function arrayKeyframesToObject(keyframes: Keyframes) {
   const keyframesArrayLength = keyframes.length;
   let leftoversIndexs = keyframesArrayLength;
   const newKeyframesArray: typeof keyframesArray = [];
+
   keyframesArray.slice().forEach((keyframe, index) => {
     if (hasOwnProperty(keyframe, 'offset') && Array.isArray(keyframe.offset)) {
       keyframesArray.splice(index, 1);
-      keyframe.offset.forEach((value) => {
-        const newKeyframe = (() => {
-          const k: typeof keyframe = {};
-          customForIn(keyframe, (propertyValue, propertyName) => {
-            if (propertyName !== 'offset') {
-              k[propertyName] = propertyValue as never;
-            }
-          });
-          return k;
-        })();
-        newKeyframe.offset = value as number;
-        newKeyframesArray.push(newKeyframe);
-      });
+      newKeyframesArray.push(
+        ...flattenOffsetProperty(keyframe.offset as number[], keyframe)
+      );
     } else {
       newKeyframesArray.push(keyframe);
     }
@@ -64,11 +76,17 @@ function arrayKeyframesToObject(keyframes: Keyframes) {
 }
 export default function flattenKeyframes(
   keyframes: Keyframes | PropertiesToAnimateObject,
-  propertiesUsed: PerformerFnProperties['propertiesUsed']
-): PropertiesToAnimateObjectKeyframes {
+  orderOfThePropertiesUsed?: PerformerFnProperties['orderOfThePropertiesUsed']
+): {
+  keyframes: Record<string, Record<string, ValuesToAnimateProperty>>;
+  orderOfThePropertiesUsed: string[];
+} {
   let kframes = keyframes;
   let newKeyframes: Record<string, Keyframes[number]> = {};
   const propertiesToAnimate: PropertiesToAnimateObjectKeyframes = {};
+  const propertiesUsed = orderOfThePropertiesUsed
+    ? orderOfThePropertiesUsed.slice()
+    : [];
   const propertiesUsedForThis: string[] = [];
 
   if (Array.isArray(kframes)) {
@@ -92,7 +110,7 @@ export default function flattenKeyframes(
       });
       return keyframe;
     })();
-    newKeyframes[100] = kframes as never;
+    newKeyframes[100] = kframes;
   }
 
   customForIn(newKeyframes, (keyframe, key) => {
@@ -153,6 +171,8 @@ export default function flattenKeyframes(
       }
     });
   });
-
-  return propertiesToAnimate;
+  return {
+    keyframes: propertiesToAnimate,
+    orderOfThePropertiesUsed: propertiesUsed,
+  };
 }

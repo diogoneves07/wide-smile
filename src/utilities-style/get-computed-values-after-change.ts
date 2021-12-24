@@ -3,7 +3,7 @@ import propertyInStyleObject from './property-in-style-object';
 import removesImportantString from './removes-important-string';
 import CSSPropertiesImportant from './css-properties-important';
 import { customForIn, toCamelCase } from '../utilities/index';
-import { useElementCanche } from '../sauce/elements-canche';
+import { useElementCanche } from '../animation-mount/elements-canche';
 import CSSStringRulesToObject from './css-string-rules-to-object';
 import getLinkedCSSProperties from './get-linked-css-properties';
 import reduceCSSStringRules from './reduce-css-string-rules';

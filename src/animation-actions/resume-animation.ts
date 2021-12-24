@@ -1,5 +1,5 @@
 import { ANIMATION_STATES } from '../sauce/constants';
-import startAnimationExecutionCycle from '../animation-engine/animation-execution-cycle';
+import startAnimationExecutionCycle from '../animation-engine/start-animation-execution-cycle';
 import { AnimationInstance } from '../contracts/animation-inter';
 import { getAnimationAuxiliaryObject } from '../animation-mount/crud-animation-objects';
 

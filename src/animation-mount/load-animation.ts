@@ -1,5 +1,5 @@
 import { ANIMATION_STATES } from '../sauce/constants';
-import setAnimationProgress from '../animation-engine/set-animation-progress';
+import getNewAnimationProgress from '../animation-engine/get-new-animation-progress';
 import {
   addAnimationAuxiliaryObject,
   getAnimationAuxiliaryObject,
@@ -14,12 +14,27 @@ import {
   propagateAnimationEventListener,
   LISTENERS_NAMES,
 } from '../animation-listeners/animations-listeners-handlers';
-import startAnimationExecutionCycle from '../animation-engine/animation-execution-cycle';
+import startAnimationExecutionCycle from '../animation-engine/start-animation-execution-cycle';
 import loadPropertiesToAnimate from './load-properties-to-animate';
 import flattenKeyframes from './flatten-keyframes';
 import { AnimationInstance } from '../contracts/animation-inter';
 import AnimationAuxiliaryObject from '../contracts/animation-auxiliary-object';
+import resetAnimationProgress from '../animation-engine/reset-animation-progress';
 
+function getKeyframesKeys(
+  keyframes: ReturnType<typeof flattenKeyframes>['keyframes']
+) {
+  const keys: string[] = [];
+  customForIn(keyframes, (propertyKeyframes) => {
+    customForIn(propertyKeyframes, (_v, key) => {
+      if (keys.indexOf(key) === -1) {
+        keys.push(key);
+      }
+    });
+  });
+
+  return ordernateByGrowingValues(keys);
+}
 function forwardAnimation(
   animationAuxiliaryObject: AnimationAuxiliaryObject,
   animationArrivalTime: number,
@@ -27,50 +42,34 @@ function forwardAnimation(
 ) {
   const aAuxiliaryObject = animationAuxiliaryObject;
   const { animation } = aAuxiliaryObject;
-  const startAnimationLoadingTime = getTimeNow();
 
-  const keyframes = flattenKeyframes(
+  const fKeyframes = flattenKeyframes(
     animation.keyframes,
-    animation.performer.$hidden.propertiesUsed
+    animation.performer.$hidden.orderOfThePropertiesUsed
   );
 
-  const keyframesKeys = (() => {
-    const keys: string[] = [];
-    customForIn(keyframes, (propertyKeyframes) => {
-      customForIn(propertyKeyframes, (_v, key) => {
-        if (keys.indexOf(key) === -1) {
-          keys.push(key);
-        }
-      });
-    });
+  animation.performer.$hidden.orderOfThePropertiesUsed =
+    fKeyframes.orderOfThePropertiesUsed;
+  const keyframes = fKeyframes.keyframes;
 
-    return ordernateByGrowingValues(keys);
-  })();
-
-  aAuxiliaryObject.keyframesKeys = keyframesKeys;
-
-  const animationProgressObject = setAnimationProgress(aAuxiliaryObject);
+  aAuxiliaryObject.keyframesKeys = getKeyframesKeys(keyframes);
+  const animationProgressObject = getNewAnimationProgress(aAuxiliaryObject);
 
   aAuxiliaryObject.lastStartProgress = animationProgressObject.progress;
-  aAuxiliaryObject.countDriveloop = animationProgressObject.countDriveloop;
-
+  aAuxiliaryObject.countDriveLoops = animationProgressObject.countDriveLoops;
   animation.progressValue = animationProgressObject.progress;
   animation.max = animationProgressObject.maxProgress;
+
   loadPropertiesToAnimate(
     aAuxiliaryObject,
     keyframes,
     (result, propertiesToAnimate) => {
       const currentTime = getTimeNow();
       const animationLoadingTime = currentTime - animationArrivalTime;
-      const waitingTime = animationLoadingTime;
-      const loadingTime = currentTime - startAnimationLoadingTime;
 
-      /* console.log(
-        `AnimationWS "${animation.animationId}" - Times: [ \n\r\n\r waitingTime: ${waitingTime}ms, \n\r\n\r loadingTime: ${loadingTime}ms,\n\r\n\r elementLenght: ${animation.targets.length}\n\r\n\r]`
-      ); */
       aAuxiliaryObject.dataLoadingState = result ? 'load' : 'stoped';
       aAuxiliaryObject.animationLoadingTime = animationLoadingTime;
-      aAuxiliaryObject.animateProperties = propertiesToAnimate;
+      aAuxiliaryObject.propertiesToBeAnimate = propertiesToAnimate;
 
       callbackLoaded(aAuxiliaryObject);
 
@@ -93,6 +92,10 @@ export default function LoadAnimation(
     animation.animationId
   );
 
+  if (!hasAnimationAuxiliaryObject) {
+    propagateAnimationEventListener(LISTENERS_NAMES[6], animation);
+  }
+
   if (animation.state !== ANIMATION_STATES[0] || hasAnimationAuxiliaryObject) {
     if (hasAnimationAuxiliaryObject) {
       if (hasAnimationAuxiliaryObject.dataLoadingState === 'loading') {
@@ -110,8 +113,7 @@ export default function LoadAnimation(
         startAnimationExecutionCycle(hasAnimationAuxiliaryObject);
       } else {
         startAnimationExecutionCycle(
-          /* eslint-disable-next-line @typescript-eslint/no-use-before-define */
-          restartAnimationProperties(hasAnimationAuxiliaryObject),
+          resetAnimationProgress(hasAnimationAuxiliaryObject),
           true
         );
       }
@@ -134,7 +136,7 @@ export default function LoadAnimation(
   forwardAnimation(animationAuxiliaryObject, currentTime, callbackLoaded);
 }
 
-export function startAnimation(
+export function startAnimationIfItIsLoaded(
   animationAuxiliaryObject: AnimationAuxiliaryObject
 ): void {
   if (
@@ -146,43 +148,4 @@ export function startAnimation(
 
     startAnimationExecutionCycle(animationAuxiliaryObject);
   }
-}
-export function loadedAnimation(
-  animationAuxiliaryObject: AnimationAuxiliaryObject
-): void {
-  const a = animationAuxiliaryObject;
-  if (
-    a.dataLoadingState === 'load' &&
-    a.animation.state !== ANIMATION_STATES[3]
-  ) {
-    a.animation.state = ANIMATION_STATES[5];
-  }
-}
-
-export function restartAnimationProperties(
-  animationAuxiliaryObject: AnimationAuxiliaryObject
-): AnimationAuxiliaryObject {
-  Object.assign(animationAuxiliaryObject, {
-    countDriveloop: 0,
-    progress: animationAuxiliaryObject.initialProgress,
-    animationAlreadyStarted: false,
-  });
-  const animationProgressObject = setAnimationProgress(
-    animationAuxiliaryObject
-  );
-
-  Object.assign(animationAuxiliaryObject, {
-    lastStartProgress: animationProgressObject.progress,
-    countDriveloop: animationProgressObject.countDriveloop,
-    progress: animationProgressObject.progress,
-  });
-
-  Object.assign(animationAuxiliaryObject.animation, {
-    progress: animationProgressObject.progress,
-    max: animationProgressObject.maxProgress,
-    state: ANIMATION_STATES[1],
-    count: 0,
-  });
-
-  return animationAuxiliaryObject;
 }

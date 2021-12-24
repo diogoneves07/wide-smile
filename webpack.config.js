@@ -1,3 +1,5 @@
+/* wide-smile(0.1.0) (C) 2021, Diogo Neves<ndiogo778@gmail.com>. Licensed under the MIT license */
+
 const path = require('path'); // eslint-disable-line
 
 const defaults = {

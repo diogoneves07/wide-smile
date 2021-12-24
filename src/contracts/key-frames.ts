@@ -1,4 +1,4 @@
 import PropertiesToAnimateObject from './properties-to-animate-object';
 
-type Keyframes = (PropertiesToAnimateObject & { offset?: number | number[] })[];
+type Keyframes = PropertiesToAnimateObject[];
 export default Keyframes;

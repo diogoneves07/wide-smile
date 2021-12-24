@@ -1,7 +1,6 @@
 import { removeAnimationFromStack } from '../animation-engine/mount-animations-stack';
-import startAnimationExecutionCycle, {
-  resetIterationRelatedProperties,
-} from '../animation-engine/animation-execution-cycle';
+import resetAnimationTimeProperties from '../animation-engine/reset-animation-time-properties';
+import startAnimationExecutionCycle from '../animation-engine/start-animation-execution-cycle';
 import { getAnimationAuxiliaryObject } from '../animation-mount/crud-animation-objects';
 
 export default function progressAnimationGoTo(
@@ -24,11 +23,11 @@ export default function progressAnimationGoTo(
     }
     if (applyDelay) {
       startAnimationExecutionCycle(
-        resetIterationRelatedProperties(animationAuxiliaryObject)
+        resetAnimationTimeProperties(animationAuxiliaryObject)
       );
     } else {
       startAnimationExecutionCycle(
-        resetIterationRelatedProperties(animationAuxiliaryObject),
+        resetAnimationTimeProperties(animationAuxiliaryObject),
         true
       );
     }

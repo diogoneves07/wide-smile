@@ -35,7 +35,7 @@
     <section id="hello"><strong></strong></section>
 
     <script>
-      wS().newObservedProperty('text', (v, p, e) => {
+      wS().newObservedProperty('text', function (v, p, e) {
         e.textContent = v.toString().substring(0, (v.length / 100) * p);
       });
 
@@ -45,10 +45,11 @@
         'easeOutInExpo'
       )('text', ['...', 'Hello world... Master!!!']);
 
-      wS('#hello', 2.5, 'easeOutInExpo')._('boxShadow', [
-        '#000 0px 0px',
-        '#555 10px 10px 200px 30px',
-      ]);
+      wS(
+        '#hello',
+        2.5,
+        'easeOutInExpo'
+      )('boxShadow', ['#000 0px 0px', '#555 10px 10px 200px 30px']);
     </script>
   </body>
 </html>

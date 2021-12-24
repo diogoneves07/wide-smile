@@ -5,48 +5,62 @@ import EasingsFunctionsList from './easings-functions-list';
 import Keyframes from './key-frames';
 import PropertiesToAnimateObject from './properties-to-animate-object';
 import { AnimationInstance, AnimationOptions } from './animation-inter';
+import CurrentPropertyValue from './current-property-value';
+/**
+ * Structure, execute, and control animations.
+ */
 declare type PerformerFn = OverloadsForAnimationCreation & PerformerFnMethods & {
     $hidden: Required<PerformerFnProperties> & {
+        ignorePerformer?: boolean;
         currentAfterIterations?: number;
+        eventsCallbacks?: {
+            [key: string]: [callbackPassed: Function, callbackEvent: Function][];
+        };
     };
     /**
      * The function that created the animation instance.
      * @readonly
      */
     readonly creator: AnimationInstance['creator'];
+    /**
+     * @readonly
+     */
+    readonly id: number;
 };
 export interface OverloadsForAnimationCreation {
-    (iterations: number): this;
-    (propertyName: AllAnimableProperties, propertyValue: ValuesToAnimateProperty, parametersToAnimate?: AnimationOptions): this;
-    (propertyName: AllAnimableProperties, propertyValue: ValuesToAnimateProperty, dur?: AnimationOptions['dur']): this;
-    (propertyName: AllAnimableProperties, propertyValue: ValuesToAnimateProperty, autoDestroy?: true): this;
-    (propertyName: AllAnimableProperties, propertyValue: ValuesToAnimateProperty[], autoDestroy?: true): this;
-    (propertyName: string, propertyValue: ValuesToAnimateProperty[], parametersToAnimate?: AnimationOptions): this;
-    (propertyName: string, propertyValue: ValuesToAnimateProperty, parametersToAnimate?: AnimationOptions): this;
-    (propertyName: string, propertyValue: ValuesToAnimateProperty, dur?: AnimationOptions['dur']): this;
-    (propertyName: string, propertyValue: ValuesToAnimateProperty, autoDestroy?: true): this;
-    (propertyName: string, propertyValue: ValuesToAnimateProperty[], parametersToAnimate?: EasingsFunctionsList | AnimationOptions['dir']): this;
-    (propertyName: string, propertyValue: ValuesToAnimateProperty, dirOrEasing?: EasingsFunctionsList | AnimationOptions['dir']): this;
-    (animate: PropertiesToAnimateObject, parametersToAnimateOrDurOrAutoDestroy?: AnimationOptions): this;
-    (animate: ValuesToAnimateProperty[], parametersToAnimateOrDurOrAutoDestroy?: AnimationOptions): this;
-    (animate: Keyframes, parametersToAnimateOrDurOrAutoDestroy?: AnimationOptions | AnimationOptions['dur'] | true | EasingsFunctionsList | AnimationOptions['dir']): this;
+    (propertyName: AllAnimableProperties, propertyValue: ValuesToAnimateProperty, parametersToAnimate?: AnimationOptions): PerformerFn;
+    (propertyName: AllAnimableProperties, propertyValue: ValuesToAnimateProperty, dur?: AnimationOptions['dur']): PerformerFn;
+    (propertyName: AllAnimableProperties, propertyValue: ValuesToAnimateProperty, autoDestroy?: true): PerformerFn;
+    (propertyName: AllAnimableProperties, propertyValue: ValuesToAnimateProperty[], autoDestroy?: true): PerformerFn;
+    (propertyName: AllAnimableProperties, propertyValue: ValuesToAnimateProperty[], parametersToAnimate?: AnimationOptions): PerformerFn;
+    (propertyName: string, propertyValue: ValuesToAnimateProperty[], parametersToAnimate?: AnimationOptions): PerformerFn;
+    (propertyName: string, propertyValue: ValuesToAnimateProperty[], autoDestroy?: true): PerformerFn;
+    (propertyName: string, propertyValue: ValuesToAnimateProperty, parametersToAnimate?: AnimationOptions): PerformerFn;
+    (propertyName: string, propertyValue: ValuesToAnimateProperty, dur?: AnimationOptions['dur']): PerformerFn;
+    (propertyName: string, propertyValue: ValuesToAnimateProperty, autoDestroy?: true): PerformerFn;
+    (propertyName: string, propertyValue: ValuesToAnimateProperty[], parametersToAnimate?: EasingsFunctionsList | AnimationOptions['dir']): PerformerFn;
+    (propertyName: string, propertyValue: ValuesToAnimateProperty, dirOrEasing?: EasingsFunctionsList | AnimationOptions['dir']): PerformerFn;
+    (animate: PropertiesToAnimateObject, parametersToAnimateOrDurOrAutoDestroy?: AnimationOptions): PerformerFn;
+    (animate: ValuesToAnimateProperty[], parametersToAnimateOrDurOrAutoDestroy?: AnimationOptions): PerformerFn;
+    (animate: Keyframes, parametersToAnimateOrDurOrAutoDestroy?: AnimationOptions | AnimationOptions['dur'] | true | EasingsFunctionsList | AnimationOptions['dir']): PerformerFn;
 }
 export interface PerformerFnProperties extends AnimationOptions {
     animationInstances: AnimationInstance[];
     independentAnimations: AnimationInstance[];
     lastInstanceAdded?: AnimationOptions;
-    index?: number;
-    propertiesUsed: string[];
+    orderOfThePropertiesUsed: string[];
     cycleOptions?: {
         loop: PerformerFnProperties['loop'];
         dir?: 'normal' | 'alternate';
         sequence?: AnimationInstance[][];
+        sequenceRunning?: AnimationInstance[][];
         animationInstancesInCycle?: AnimationInstance[];
         loopDirection: 'normal' | 'reverse';
-        countCompleteAnimations: number;
+        countCompletedAnimations: number;
         numberOfAnimationsToComplete: number;
         countLoops: number;
     };
+    removedFromTheCreator?: boolean;
 }
 export interface PerformerFnMethods {
     /**
@@ -68,7 +82,7 @@ export interface PerformerFnMethods {
     /**
      * Declars that instantly-created animations started to run after a certain number of interactions.
      */
-    after(iteratios: number): PerformerFn;
+    after(amountIterations?: number): PerformerFn;
     /**
      * Declars the creation of a cycle of animations.
      */
@@ -78,7 +92,24 @@ export interface PerformerFnMethods {
      */
     ready(): PerformerFn;
     /**
-     * Play all animations(created by this) that have not yet been played.
+     * Sends the animations to the loading queue with high priority.
+     */
+    now(): PerformerFn;
+    /**
+     * Sets the value for the property immediately.
+     */
+    set(properties: PropertiesToAnimateObject): PerformerFn;
+    set(propertyName: AllAnimableProperties, propertyValue: ValuesToAnimateProperty): PerformerFn;
+    set(propertyName: string, propertyValue: ValuesToAnimateProperty): PerformerFn;
+    set(propertyName: AllAnimableProperties, propertyValue: ValuesToAnimateProperty[]): PerformerFn;
+    set(propertyName: string, propertyValue: ValuesToAnimateProperty[]): PerformerFn;
+    /**
+     * Gets the current value of the property.
+     */
+    get(propertyName: AllAnimableProperties): CurrentPropertyValue | undefined;
+    get(propertyName: string): CurrentPropertyValue | undefined;
+    /**
+     * Load all animations(created by this) that have not yet been loaded.
      */
     load(): PerformerFn;
     /**
@@ -104,7 +135,7 @@ export interface PerformerFnMethods {
     /**
      * Destroys all animations(created by this).
      */
-    destroy(): boolean;
+    destroy(removeChanges?: true): PerformerFn;
     /**
      * Advances all the values of all animations(created by this) to your completion moment.
      */
@@ -136,22 +167,35 @@ export interface PerformerFnMethods {
     /**
      * Adds the listener to all animations(created by this).
      *
-     * @param typeOfListener
+     * @param eventName
      * The name of the listener.
      *
      * @param callbackfn
      * The call-back
      */
-    on(this: PerformerFn, eventName: ListenersEventsName, callbackfn: (this: AnimationInstance, eventName: string, animation: AnimationInstance) => unknown): PerformerFn;
+    on(this: PerformerFn, eventName: string, callbackfn: (this: PerformerFn, item: unknown, performerFn: PerformerFn) => true | void | undefined | false): PerformerFn;
+    on(this: PerformerFn, eventName: AllAnimableProperties, callbackfn: (this: PerformerFn, item: unknown, performerFn: PerformerFn) => true | void | undefined | false): PerformerFn;
+    on(this: PerformerFn, item: unknown, callbackfn: (this: PerformerFn, item: unknown, performerFn: PerformerFn) => unknown): PerformerFn;
     /**
      * Remove the listener from all animations(created by this).
      *
-     * @param typeOfListener
+     * @param eventName
      * The name of the listener.
      *
-     * @param callbackfnOrIndex
+     * @param callbackfn
      * The call-back or index
      */
-    off(typeOfListener: ListenersEventsName, callbackfnOrIndex: Function | number): PerformerFn;
+    off(eventName: ListenersEventsName, callbackfn: Function): PerformerFn;
+    off(eventName: string, callbackfn: Function | number): PerformerFn;
+    off(eventName: AllAnimableProperties, callbackfn: Function | number): PerformerFn;
+    /**
+     * Removes the property of the animations.
+     */
+    remove(...names: AllAnimableProperties[]): PerformerFn;
+    remove(...names: string[]): PerformerFn;
+    /**
+     * Removes the target of the animations.
+     */
+    removeTarget(targets: AnimationOptions['targets']): PerformerFn;
 }
 export default PerformerFn;

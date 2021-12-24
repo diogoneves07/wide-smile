@@ -1,215 +1,37 @@
-import customForIn from '../utilities/custom-for-in';
 import { ANIMATION_STATES } from './constants';
-import {
-  addInStackForConstruction,
-  useAnimationObjectExpectingSideEffects,
-  runCallbacksAtTheRightTime,
-} from './organize-animation-creations';
-import { debugNormal } from './wide-smile-debug';
-import AllAnimableProperties from '../contracts/animable-properties';
-import createAnimationPropertiesObject from './create-animation-properties-object';
 import PerformerFn, {
-  OverloadsForAnimationCreation,
   PerformerFnMethods,
   PerformerFnProperties,
 } from '../contracts/performer-fn';
-import PropertiesToAnimateObject from '../contracts/properties-to-animate-object';
-import Keyframes from '../contracts/key-frames';
-import ValuesToAnimateProperty from '../contracts/values-to-animate-property';
 import {
   AnimationInstance,
   AnimationOptions,
 } from '../contracts/animation-inter';
 import { ListenersEventsName } from '../contracts/listeners-events-name';
+import getAnimationsRunning from './get-performer-animations-running';
+import amountOfAnimationsInterestedInEvent from '../animation-listeners/amount-of-animations-interested-in-event';
+import { toCamelCase } from '../utilities/handle-string';
+import {
+  addFinalKeyframeInTheAnimation,
+  createDependentAnimations,
+  createIndependentAnimations,
+} from './fns-to-create-animations';
+import applyCallbackForFutureAnimations from './apply-callback-for-future-animations';
+import { removeLastAnimationObjectAddedToPerformer } from './last-added-animation-object';
+import AllAnimableProperties from '../contracts/animable-properties';
+import ValuesToAnimateProperty from '../contracts/values-to-animate-property';
+import PropertiesToAnimateObject from '../contracts/properties-to-animate-object';
+import { buildAnimationsForSpecificPerformer } from './organize-animation-creations';
+import getCurrentPropertiesValue from '../animation-actions/get-current-properties-value';
+import getPropertyName from './get-property-name';
+import setPropertyValue from '../animation-actions/set-property-value';
+import loadAnimationsAndPlayWhenReady from '../animation-actions/load-animations-and-play-when-ready';
 
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/no-this-alias  */
 
-const createIndependentAnimations: OverloadsForAnimationCreation = function a(
-  this: PerformerFn,
-  animate:
-    | PropertiesToAnimateObject
-    | Keyframes
-    | AllAnimableProperties
-    | string
-    | ValuesToAnimateProperty[],
-  parametersToAnimateOrPropertyValue?:
-    | AnimationOptions
-    | ValuesToAnimateProperty
-    | ValuesToAnimateProperty[]
-    | true,
-  parametersToAnimate?: AnimationOptions | AnimationOptions['dur'] | true
-): PerformerFn {
-  /* important!, removes the numeric value stored in the property. */
-  this.$hidden.currentAfterIterations = undefined;
-
-  const animationProperties = createAnimationPropertiesObject(
-    this,
-    animate as never,
-    parametersToAnimateOrPropertyValue as never,
-    parametersToAnimate as never
-  );
-
-  useAnimationObjectExpectingSideEffects(this, animationProperties);
-  addInStackForConstruction(animationProperties, this);
-
-  return this;
-};
-
-function getAnimationsRunning(performerFn: PerformerFn) {
-  const $hidden = performerFn.$hidden;
-  const animations = $hidden.animationInstances;
-  if ($hidden.cycleOptions) {
-    return [
-      ...($hidden.cycleOptions
-        .animationInstancesInCycle as AnimationInstance[]).filter(
-        (a) => a.state === ANIMATION_STATES[1]
-      ),
-      ...animations.filter((a) => !a.isInCycle),
-    ];
-  }
-  return animations;
-}
-
-const createDependentAnimations: OverloadsForAnimationCreation = function a(
-  this: PerformerFn,
-  animate:
-    | PropertiesToAnimateObject
-    | Keyframes
-    | AllAnimableProperties
-    | string
-    | ValuesToAnimateProperty[],
-  parametersToAnimateOrPropertyValue?:
-    | AnimationOptions
-    | ValuesToAnimateProperty
-    | ValuesToAnimateProperty[]
-    | true,
-  parametersToAnimate?: AnimationOptions | AnimationOptions['dur'] | true
-): PerformerFn {
-  /* important!, removes the numeric value stored in the property. */
-  this.$hidden.currentAfterIterations = undefined;
-
-  const animationProperties = createAnimationPropertiesObject(
-    this,
-    animate as never,
-    parametersToAnimateOrPropertyValue as never,
-    parametersToAnimate as never
-  );
-
-  const lastAnimationParametersAdded = useAnimationObjectExpectingSideEffects(
-    this
-  );
-
-  useAnimationObjectExpectingSideEffects(this, animationProperties);
-  if (lastAnimationParametersAdded) {
-    addInStackForConstruction(
-      animationProperties,
-      this,
-      lastAnimationParametersAdded,
-      'afterAnimation'
-    );
-  } else {
-    const lastAnimationCreated = this.$hidden.animationInstances[
-      this.$hidden.animationInstances.length - 1
-    ];
-    if (lastAnimationCreated) {
-      addInStackForConstruction(
-        animationProperties,
-        this,
-        lastAnimationCreated,
-        'afterAnimation'
-      );
-    } else {
-      addInStackForConstruction(animationProperties, this);
-    }
-  }
-
-  return this;
-};
-
-function addFinalKeyframeInTheAnimation(
-  this: PerformerFn,
-
-  animate:
-    | PropertiesToAnimateObject
-    | Keyframes
-    | AllAnimableProperties
-    | ValuesToAnimateProperty[]
-    | ValuesToAnimateProperty,
-  parametersToAnimateOrPropertyValue?:
-    | AnimationOptions
-    | ValuesToAnimateProperty
-    | ValuesToAnimateProperty[]
-    | true,
-  parametersToAnimateOrDurOrAutoDestroy?:
-    | AnimationOptions
-    | AnimationOptions['dur']
-    | true
-) {
-  /* important!, removes the numeric value stored in the property. */
-  this.$hidden.currentAfterIterations = undefined;
-
-  const objectExpectingSideEffects = useAnimationObjectExpectingSideEffects(
-    this
-  );
-  if (objectExpectingSideEffects) {
-    const lastAnimationParametersAdded = objectExpectingSideEffects;
-    let initialKeyframe: PropertiesToAnimateObject | false = false;
-
-    let animateProps = animate;
-
-    if (
-      typeof animate !== 'object' &&
-      parametersToAnimateOrPropertyValue === undefined
-    ) {
-      animateProps = [animateProps] as ValuesToAnimateProperty[];
-    }
-    if (Array.isArray(animateProps)) {
-      initialKeyframe = {};
-      let count = 0;
-      customForIn(
-        lastAnimationParametersAdded.keyframes as PropertiesToAnimateObject,
-        (_propertyValue, propertyName) => {
-          const array = animateProps as ValuesToAnimateProperty[];
-          const v = array[count];
-
-          (initialKeyframe as PropertiesToAnimateObject)[propertyName] = v;
-          if (typeof array[count + 1] !== 'undefined') {
-            count += 1;
-          }
-        }
-      );
-    }
-    const animationProperties = createAnimationPropertiesObject(
-      this,
-      (initialKeyframe || animateProps) as PropertiesToAnimateObject,
-      parametersToAnimateOrPropertyValue,
-      parametersToAnimateOrDurOrAutoDestroy
-    );
-
-    customForIn(animationProperties, (propertyValue, propertyName) => {
-      const v = propertyValue as never;
-      if (propertyName === 'keyframes') {
-        lastAnimationParametersAdded.keyframes = [
-          lastAnimationParametersAdded.keyframes as PropertiesToAnimateObject,
-          v,
-        ];
-      } else {
-        lastAnimationParametersAdded[propertyName as never] = v;
-      }
-    });
-  } else {
-    debugNormal(
-      'Call at an improper moment.',
-      'To use the "to" method you should call it right after the animation call to which it will be applied.'
-    );
-  }
-  return this;
-}
-
 function playAnimations(animationPerformer: PerformerFn) {
-  animationPerformer.$hidden.animationInstances.forEach((a) => {
-    const i = a;
+  animationPerformer.$hidden.animationInstances.forEach((animation) => {
+    const i = animation;
 
     if (i.state === ANIMATION_STATES[0] || i.state === ANIMATION_STATES[5]) {
       if (
@@ -222,6 +44,19 @@ function playAnimations(animationPerformer: PerformerFn) {
       }
     }
   });
+}
+function applyWhenTheAnimationIsRunning(
+  animation: AnimationInstance,
+  callback: () => void
+) {
+  if (animation.state === ANIMATION_STATES[1]) {
+    callback();
+  } else {
+    animation.on('loopStart', function fn() {
+      callback();
+      animation.off('loopStart', fn);
+    });
+  }
 }
 
 const PERFORMER_FNS_METHODS: PerformerFnMethods = {
@@ -236,10 +71,11 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
     loopOrDir: PerformerFnProperties['loop'] | 'normal' | 'alternate',
     dir: 'normal' | 'alternate' = 'normal'
   ) {
+    removeLastAnimationObjectAddedToPerformer(this);
     let loop;
     let d: typeof dir;
     if (typeof loopOrDir === 'string') {
-      loop = loopOrDir === 'alternate' ? 2 : 1;
+      loop = 2;
       d = loopOrDir as typeof dir;
     } else {
       loop = loopOrDir;
@@ -248,169 +84,340 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
     this.$hidden.cycleOptions = {
       loop: loop || 2,
       dir: d,
-      countCompleteAnimations: 0,
+      countCompletedAnimations: 0,
       numberOfAnimationsToComplete: 0,
-      countLoops: 1,
+      countLoops: 0,
       loopDirection: 'normal',
     };
     return this;
   },
 
-  after(this: PerformerFn, iterations: number) {
-    this.$hidden.currentAfterIterations = iterations;
+  after(this: PerformerFn, amountIterations = 1) {
+    this.$hidden.currentAfterIterations = amountIterations;
     return this;
   },
 
-  load(this: PerformerFn) {
-    runCallbacksAtTheRightTime(() => {
-      this.$hidden.animationInstances.forEach((a) => a.load());
+  now(this: PerformerFn) {
+    removeLastAnimationObjectAddedToPerformer(this);
+
+    buildAnimationsForSpecificPerformer(this, {
+      skip: true,
+      firstRunImmediately: true,
     });
     return this;
   },
 
   ready(this: PerformerFn) {
-    runCallbacksAtTheRightTime(() => {
-      let count = 0;
-      const animationPerformer = this;
-
-      const animationInstances = animationPerformer.$hidden.animationInstances;
-      const length = animationInstances.length;
-
-      animationInstances.forEach((a) => {
-        a.on('load', function f() {
-          count += 1;
-
-          if (count >= length) {
-            playAnimations(animationPerformer);
-          }
-          a.off('load', f);
-        }).load();
-      });
-    });
+    loadAnimationsAndPlayWhenReady(this);
 
     return this;
   },
 
+  set(
+    this: PerformerFn,
+    properties: AllAnimableProperties | string | PropertiesToAnimateObject,
+    propertyValue?: ValuesToAnimateProperty | ValuesToAnimateProperty[]
+  ) {
+    const userPerformer = this;
+
+    setPropertyValue(this, properties, propertyValue);
+    return userPerformer;
+  },
+
+  get(this: PerformerFn, name: AllAnimableProperties | string) {
+    return getCurrentPropertiesValue(this, name);
+  },
+
+  load(this: PerformerFn) {
+    this.$hidden.animationInstances.forEach((animation) => {
+      animation.load();
+    });
+    applyCallbackForFutureAnimations(this, (animation) => {
+      animation.load();
+    });
+    return this;
+  },
   play(this: PerformerFn) {
-    runCallbacksAtTheRightTime(() => {
-      playAnimations(this);
+    playAnimations(this);
+    applyCallbackForFutureAnimations(this, (animation) => {
+      const a = animation;
+      if (a.state === ANIMATION_STATES[0] || a.state === ANIMATION_STATES[5]) {
+        if (
+          this.$hidden.independentAnimations &&
+          this.$hidden.independentAnimations.indexOf(a) > -1
+        ) {
+          a.play();
+        } else {
+          a.autoPlay = true;
+        }
+      }
     });
     return this;
   },
 
   pause(this: PerformerFn) {
-    runCallbacksAtTheRightTime(() => {
-      getAnimationsRunning(this).forEach((a) => a.pause());
+    getAnimationsRunning(this).forEach((animation) => animation.pause());
+    applyCallbackForFutureAnimations(this, (animation) => {
+      applyWhenTheAnimationIsRunning(animation, () => {
+        animation.pause();
+      });
     });
     return this;
   },
 
   resume(this: PerformerFn) {
-    runCallbacksAtTheRightTime(() => {
-      getAnimationsRunning(this).forEach((a) => a.resume());
+    getAnimationsRunning(this).forEach((animation) => animation.resume());
+    applyCallbackForFutureAnimations(this, (animation) => {
+      applyWhenTheAnimationIsRunning(animation, () => {
+        animation.resume();
+      });
     });
     return this;
   },
 
   restart(this: PerformerFn) {
-    runCallbacksAtTheRightTime(() => {
-      getAnimationsRunning(this).forEach((a) => a.restart());
+    getAnimationsRunning(this).forEach((animation) => animation.restart());
+    applyCallbackForFutureAnimations(this, (animation) => {
+      applyWhenTheAnimationIsRunning(animation, () => {
+        animation.restart();
+      });
     });
     return this;
   },
 
   end(this: PerformerFn) {
-    runCallbacksAtTheRightTime(() => {
-      getAnimationsRunning(this).forEach((a) => a.end());
+    getAnimationsRunning(this).forEach((animation) => animation.end());
+
+    applyCallbackForFutureAnimations(this, (animation) => {
+      applyWhenTheAnimationIsRunning(animation, () => {
+        animation.end();
+      });
     });
     return this;
   },
 
   go(this: PerformerFn, part: number) {
-    runCallbacksAtTheRightTime(() => {
-      getAnimationsRunning(this).forEach((a) => a.go(part));
+    getAnimationsRunning(this).forEach((animation) => animation.go(part));
+    applyCallbackForFutureAnimations(this, (animation) => {
+      applyWhenTheAnimationIsRunning(animation, () => {
+        animation.go(part);
+      });
     });
     return this;
   },
 
   back(this: PerformerFn, part: number) {
-    runCallbacksAtTheRightTime(() => {
-      getAnimationsRunning(this).forEach((a) => a.back(part));
+    getAnimationsRunning(this).forEach((animation) => animation.back(part));
+    applyCallbackForFutureAnimations(this, (animation) => {
+      applyWhenTheAnimationIsRunning(animation, () => {
+        animation.back(part);
+      });
     });
     return this;
   },
 
   jump(this: PerformerFn, part: number) {
-    runCallbacksAtTheRightTime(() => {
-      getAnimationsRunning(this).forEach((a) => a.jump(part));
+    getAnimationsRunning(this).forEach((animation) => animation.jump(part));
+    applyCallbackForFutureAnimations(this, (animation) => {
+      applyWhenTheAnimationIsRunning(animation, () => {
+        animation.jump(part);
+      });
     });
     return this;
   },
 
   speed(this: PerformerFn, multiply: number) {
-    runCallbacksAtTheRightTime(() => {
-      getAnimationsRunning(this).forEach((a) => a.speed(multiply));
+    removeLastAnimationObjectAddedToPerformer(this);
+
+    getAnimationsRunning(this).forEach((animation) =>
+      animation.speed(multiply)
+    );
+    applyCallbackForFutureAnimations(this, (animation) => {
+      applyWhenTheAnimationIsRunning(animation, () => {
+        animation.speed(multiply);
+      });
     });
     return this;
   },
 
   revert(this: PerformerFn, endIteration: boolean) {
-    runCallbacksAtTheRightTime(() => {
-      getAnimationsRunning(this).forEach((a) => a.revert(endIteration));
+    getAnimationsRunning(this).forEach((animation) =>
+      animation.revert(endIteration)
+    );
+    applyCallbackForFutureAnimations(this, (animation) => {
+      applyWhenTheAnimationIsRunning(animation, () => {
+        animation.revert(endIteration);
+      });
     });
     return this;
   },
 
   dirTo(this: PerformerFn, dir: Parameters<AnimationInstance['dirTo']>['0']) {
-    runCallbacksAtTheRightTime(() => {
-      getAnimationsRunning(this).forEach((a) => a.dirTo(dir));
+    getAnimationsRunning(this).forEach((animation) => animation.dirTo(dir));
+
+    applyCallbackForFutureAnimations(this, (animation) => {
+      animation.dirTo(dir);
     });
     return this;
   },
 
   cancel(this: PerformerFn) {
-    runCallbacksAtTheRightTime(() => {
-      this.$hidden.animationInstances.forEach((a) => a.cancel());
+    removeLastAnimationObjectAddedToPerformer(this);
+
+    this.$hidden.animationInstances.forEach((animation) => {
+      animation.cancel();
+    });
+
+    applyCallbackForFutureAnimations(this, (animation) => {
+      animation.cancel();
     });
     return this;
   },
 
-  destroy(this: PerformerFn): boolean {
-    runCallbacksAtTheRightTime(() => {
-      this.$hidden.animationInstances.forEach((a) => a.destroy());
+  destroy(this: PerformerFn, removeChanges?: true) {
+    removeLastAnimationObjectAddedToPerformer(this);
+
+    this.$hidden.animationInstances.forEach((animation) => {
+      animation.destroy(removeChanges);
     });
-    return true;
+
+    applyCallbackForFutureAnimations(this, (animation) => {
+      animation.destroy(removeChanges);
+    });
+
+    return this;
   },
 
   on(
     this: PerformerFn,
-    eventName: ListenersEventsName,
+    eventName: ListenersEventsName | string | AllAnimableProperties,
     callbackfn: (
-      this: AnimationInstance,
-      eventName: string,
-      animation: AnimationInstance
+      this: PerformerFn,
+      item: unknown,
+      performerFn: PerformerFn
     ) => unknown
   ) {
-    runCallbacksAtTheRightTime(() => {
-      this.$hidden.animationInstances.forEach((a) =>
-        a.on(eventName, callbackfn)
+    const eName = getPropertyName(this, toCamelCase(eventName as string));
+
+    const performer = this;
+    let countingEventShots = 0;
+    let countAnimationsInterestedInEvent = 0;
+    let animationInstances = performer.$hidden.animationInstances.slice();
+    const eventCallback = (item: unknown) => {
+      countingEventShots += 1;
+
+      countAnimationsInterestedInEvent = amountOfAnimationsInterestedInEvent(
+        animationInstances
       );
+
+      if (countingEventShots >= countAnimationsInterestedInEvent) {
+        countAnimationsInterestedInEvent = 0;
+        countingEventShots = 0;
+        switch (eName) {
+          case 'load':
+          case 'ready':
+          case 'play':
+            performer.off(eName, callbackfn);
+            break;
+          default:
+            break;
+        }
+        return callbackfn.call(performer, item, performer);
+      }
+      return undefined;
+    };
+
+    animationInstances = performer.$hidden.animationInstances.slice();
+
+    animationInstances.forEach((animation) => {
+      countAnimationsInterestedInEvent += 1;
+      animation.on(eventName, eventCallback);
     });
+
+    applyCallbackForFutureAnimations(this, (animation) => {
+      animationInstances.push(animation);
+
+      animation.on(eventName, eventCallback);
+    });
+
+    if (!this.$hidden.eventsCallbacks) {
+      this.$hidden.eventsCallbacks = {};
+    }
+    const eventBucket = this.$hidden.eventsCallbacks[eName] || [];
+
+    if (!this.$hidden.eventsCallbacks[eName]) {
+      this.$hidden.eventsCallbacks[eName] = eventBucket;
+    }
+
+    eventBucket.push([callbackfn, eventCallback]);
+
     return this;
   },
 
   off(
     this: PerformerFn,
-    eventName: ListenersEventsName,
-    callbackfnOrIndex: Function | number
+    eventName: ListenersEventsName | string | AllAnimableProperties,
+    callbackfnUsed: Function
   ) {
-    runCallbacksAtTheRightTime(() => {
-      this.$hidden.animationInstances.forEach((a) =>
-        a.off(eventName, callbackfnOrIndex)
-      );
+    const eName = getPropertyName(this, toCamelCase(eventName as string));
+
+    if (this.$hidden.eventsCallbacks && this.$hidden.eventsCallbacks[eName]) {
+      const eventBucket = this.$hidden.eventsCallbacks[eName] as [
+        Function,
+        Function
+      ][];
+
+      let eventCallback: Function | false = false;
+      this.$hidden.eventsCallbacks[eName] = eventBucket.filter((fns) => {
+        if (fns[0] !== callbackfnUsed) {
+          return true;
+        }
+        eventCallback = fns[1];
+        return false;
+      });
+
+      if (eventCallback) {
+        this.$hidden.animationInstances.forEach((animation) =>
+          animation.off(eName, eventCallback as Function)
+        );
+
+        applyCallbackForFutureAnimations(this, (animation) => {
+          animation.off(eName, eventCallback as Function);
+        });
+      }
+    }
+
+    return this;
+  },
+
+  remove(this: PerformerFn, ...names: (AllAnimableProperties | string)[]) {
+    const propertiesNames = names.map((name) => {
+      const n = parseFloat(name.toString());
+      if (this.$hidden.orderOfThePropertiesUsed[n]) {
+        return this.$hidden.orderOfThePropertiesUsed[n];
+      }
+      return name;
+    }) as string[];
+
+    this.$hidden.animationInstances.forEach((animation) => {
+      animation.remove(...propertiesNames);
+    });
+
+    applyCallbackForFutureAnimations(this, (animation) => {
+      animation.remove(...propertiesNames);
+    });
+    return this;
+  },
+
+  removeTarget(this: PerformerFn, targets: AnimationOptions['targets']) {
+    this.$hidden.animationInstances.forEach((animation) => {
+      animation.removeTarget(targets);
+    });
+
+    applyCallbackForFutureAnimations(this, (animation) => {
+      animation.removeTarget(targets);
     });
     return this;
   },
 };
-
 export default PERFORMER_FNS_METHODS;

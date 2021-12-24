@@ -5,6 +5,6 @@ type CreateObserverPropertyCallbackfn = (
   percentageCompleted: number,
   target: HTMLElement | AllNormalObject,
   index: number
-) => void;
+) => unknown;
 
 export default CreateObserverPropertyCallbackfn;

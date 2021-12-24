@@ -5,13 +5,14 @@ import FunctionForPropertyValueInKeyframe from '../contracts/function-for-proper
 import { StaggerParams } from '../contracts/stagger-params';
 import { getCustomEasing } from '../sauce/custom-easings';
 import getUnit from '../utilities/get-unit';
-import { parseEasings } from './easings';
+import { parserEasings } from './easings';
 
 export default function stagger(
-  value: string | number | (string | number)[],
-  params?: StaggerParams
+  params: StaggerParams
 ): FunctionForPropertyValueInKeyframe {
-  const p: StaggerParams = params === undefined ? {} : params;
+  const value = params.value;
+
+  const p: StaggerParams = params;
 
   const val = (typeof value === 'number' ? value.toString() : value) as
     | string
@@ -37,7 +38,7 @@ export default function stagger(
   let unit: string;
 
   if (params && params.easing && typeof params.easing === 'string') {
-    easing = getCustomEasing(params.easing) || parseEasings(params.easing);
+    easing = getCustomEasing(params.easing) || parserEasings(params.easing);
   } else {
     easing = null;
   }
@@ -54,7 +55,7 @@ export default function stagger(
     unit = getUnit(val) || '';
   }
 
-  const start = p.start || 0 + (isRange ? val1 : 0);
+  const start = parseFloat(p.start as string) || 0 + (isRange ? val1 : 0);
   let values: number[] = [];
   let maxValue = 0;
   return (el: object, i: number, t: number) => {

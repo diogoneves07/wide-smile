@@ -10,7 +10,7 @@
   * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 */
 
-import wideSmile from './src/index';
+import wideSmile from './src/creator-fn';
 
 declare global {
   interface Window {

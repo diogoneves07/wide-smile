@@ -1,6 +1,6 @@
 import AnimationAuxiliaryObject from '../contracts/animation-auxiliary-object';
 import { toMs } from '../utilities/index';
-import { parseEasings } from '../based-implementations/easings';
+import { parserEasings } from '../based-implementations/easings';
 import { getCustomEasing } from '../sauce/custom-easings';
 import { AnimationInstance } from '../contracts/animation-inter';
 import EasingFunction from '../contracts/easing-function';
@@ -18,7 +18,7 @@ export function propertiesForAnimationAuxiliaryObject(
   ) {
     easing = getCustomEasing(animation.easing) as EasingFunction;
   } else {
-    easing = parseEasings(animation.easing, toMs(animation.dur));
+    easing = parserEasings(animation.easing, toMs(animation.dur));
   }
   return {
     easing,
@@ -41,7 +41,7 @@ export default function CreateAnimationAuxiliaryObject(
   animation: AnimationInstance
 ): AnimationAuxiliaryObject {
   return {
-    animateProperties: [],
+    propertiesToBeAnimate: [],
 
     keyframesKeys: [],
 
@@ -53,7 +53,7 @@ export default function CreateAnimationAuxiliaryObject(
 
     animationId: animation.animationId,
 
-    countDriveloop: 0,
+    countDriveLoops: 0,
 
     dataLoadingState: 'loading',
 
@@ -73,6 +73,8 @@ export default function CreateAnimationAuxiliaryObject(
       leftovers: 0,
     },
     animationLoadingTime: 0,
+
+    dateLastIntercalation: 0,
 
     animation,
     ...propertiesForAnimationAuxiliaryObject(animation),

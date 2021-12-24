@@ -1,102 +1,108 @@
 import AnimationWS from './animation';
 import { ANIMATION_STATES } from './constants';
-import { organizeCycleSequence } from './organize-cycle';
+import organizeTheExecutionOfCycleAnimations from '../animation-engine/organize-the-execution-of-cycle-animations';
 
-export default function logicToPlayAnimations(
-  animation: AnimationWS,
-  animationsThatPerformTogether?: AnimationWS[],
-  animationsThatWaitIterations?: {
+function runTogetherAnimations(
+  animationToLink: AnimationWS,
+  playTogether: AnimationWS[]
+) {
+  const performerFn = animationToLink.performer;
+  animationToLink.on('ready', function g() {
+    playTogether.forEach((a) => {
+      organizeTheExecutionOfCycleAnimations(
+        performerFn,
+        a,
+        animationToLink,
+        'together'
+      );
+      a.play();
+    });
+    animationToLink.off('ready', g);
+  });
+  if (animationToLink.autoPlay) {
+    animationToLink.play();
+  }
+}
+export function playAnimationsTogether(
+  animationToLink: AnimationWS,
+  playTogether?: AnimationWS[]
+): void {
+  if (!playTogether) {
+    return;
+  }
+  const performerFn = animationToLink.performer;
+  const length = playTogether.length;
+  let countLoadedAnimations = 0;
+  if (animationToLink.state === ANIMATION_STATES[0]) {
+    animationToLink.on('load', function f() {
+      playTogether.forEach((animation) => {
+        animation.on('load', function d() {
+          countLoadedAnimations += 1;
+          if (countLoadedAnimations >= length) {
+            runTogetherAnimations(animationToLink, playTogether);
+          }
+          animation.off('load', d);
+        });
+        animation.load();
+      });
+      animationToLink.off('load', f);
+    });
+    if (animationToLink.autoPlay) {
+      animationToLink.load();
+    }
+  } else {
+    animationToLink.on('ready', function g() {
+      playTogether.forEach((animation) => {
+        organizeTheExecutionOfCycleAnimations(
+          performerFn,
+          animation,
+          animationToLink,
+          'together'
+        );
+        animation.play();
+      });
+      animationToLink.off('ready', g);
+    });
+    if (animationToLink.autoPlay) {
+      animationToLink.play();
+    }
+  }
+}
+export function playAnimationsAfterIterations(
+  animationToLink: AnimationWS,
+  playAfterIterations?: {
     animations: AnimationWS[];
     amountOfIterations: number;
   }
 ): void {
-  const performerFn = animation.performer;
-  if (
-    (!animationsThatPerformTogether || !animationsThatPerformTogether[0]) &&
-    (!animationsThatWaitIterations ||
-      !animationsThatWaitIterations.animations[0])
-  ) {
-    if (animation.autoPlay && animation.state === ANIMATION_STATES[0]) {
-      animation.play();
-    }
-  } else {
-    if (
-      animationsThatWaitIterations &&
-      animationsThatWaitIterations.animations[0]
-    ) {
-      const amountOfIterations =
-        animationsThatWaitIterations.amountOfIterations;
-      animationsThatWaitIterations.animations.forEach((o) => {
-        const i = o;
-        let count = 1;
+  if (!playAfterIterations) {
+    return;
+  }
+  const performerFn = animationToLink.performer;
 
-        animation.on('loopEnd', function f() {
-          if (count >= amountOfIterations) {
-            animation.off('loopEnd', f);
+  const amountOfIterations = playAfterIterations.amountOfIterations;
+  playAfterIterations.animations.forEach((a) => {
+    const animation = a;
+    let countCompletedIterations = 1;
 
-            if (performerFn.$hidden.cycleOptions) {
-              organizeCycleSequence(performerFn, i, animation, 'together');
-              performerFn.$hidden.animationInstances.push(i);
+    animationToLink.on('loopEnd', function f() {
+      if (countCompletedIterations >= amountOfIterations) {
+        animationToLink.off('loopEnd', f);
 
-              i.play();
-            } else {
-              i.play();
-            }
-          }
-          count += 1;
-        });
-      });
-    }
-    if (animationsThatPerformTogether && animationsThatPerformTogether[0]) {
-      const length = animationsThatPerformTogether.length;
-      let count = 0;
-      if (animation.state === ANIMATION_STATES[0]) {
-        animation.on('load', function f() {
-          animationsThatPerformTogether.forEach((i) => {
-            i.on('load', function d() {
-              count += 1;
+        if (performerFn.$hidden.cycleOptions) {
+          organizeTheExecutionOfCycleAnimations(
+            performerFn,
+            animation,
+            animationToLink,
+            'together'
+          );
 
-              if (count >= length) {
-                animation.on('ready', function g() {
-                  animationsThatPerformTogether.forEach((a) => {
-                    organizeCycleSequence(
-                      performerFn,
-                      a,
-                      animation,
-                      'together'
-                    );
-                    performerFn.$hidden.animationInstances.push(a);
-                    a.play();
-                  });
-                  animation.off('ready', g);
-                });
-                if (animation.autoPlay) {
-                  animation.play();
-                }
-              }
-              i.off('load', d);
-            });
-            i.load();
-          });
-          animation.off('load', f);
-        });
-        animation.load();
-      } else {
-        animation.on('ready', function g() {
-          animationsThatPerformTogether.forEach((a) => {
-            organizeCycleSequence(performerFn, a, animation, 'together');
-            performerFn.$hidden.animationInstances.push(a);
-            a.play();
-          });
-          animation.off('ready', g);
-        });
-        if (animation.autoPlay) {
+          animation.play();
+        } else {
           animation.play();
         }
       }
-    }
-    if (animation.autoPlay && animation.state === ANIMATION_STATES[0]) {
-      animation.play();
-    }
-  }
+      countCompletedIterations += 1;
+    });
+  });
 }
