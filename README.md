@@ -1,5 +1,5 @@
 ﻿<p align='center'>
-  <img src='https://github.com/diogoneves07/wide-smile/blob/main/other/img/small-wide-smile.png' alt='WideSmile - logo'  height='170px' />
+  <img src='https://github.com/diogoneves07/wide-smile/blob/main/other/img/small-wide-smile.png' alt='WideSmile - logo'  width='380px' />
 </p>
 
 <p align='center'><strong>“Abstraia a complexidade, apenas faça.”</strong></p>
