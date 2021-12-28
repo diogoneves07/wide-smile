@@ -3,10 +3,14 @@ import ValuesToAnimateProperty from './values-to-animate-property';
 
 type PropertiesToAnimateObject =
   | Record<
-      (AllAnimableProperties & string) | 'offset',
+      (AllAnimableProperties & string) | 'offset' | '_',
       ValuesToAnimateProperty | ValuesToAnimateProperty[]
     >
   | Record<string, ValuesToAnimateProperty | ValuesToAnimateProperty[]>
-  | { [key: string]: unknown; offset?: number | number[] };
+  | {
+      [key: string]: unknown;
+      offset?: number | number[];
+      _?: number | number[];
+    };
 
 export default PropertiesToAnimateObject;

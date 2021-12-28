@@ -68,19 +68,12 @@ export default function getNewValuesForAnimationIntercalation(
     durationOfTheInterlacation = 0;
   }
 
-  durationOfTheInterlacation += iterationInterlacations.leftovers;
-
   iterationInterlacations.timeConsumed += durationOfTheInterlacation;
 
   const averageDurationForIntercalation =
     iterationInterlacations.completed > 0
       ? iterationInterlacations.timeConsumed / iterationInterlacations.completed
       : 0;
-
-  iterationInterlacations.leftovers = Math.max(
-    0,
-    durationOfTheInterlacation - averageDurationForIntercalation
-  );
 
   iterationInterlacations.completed += 1;
 

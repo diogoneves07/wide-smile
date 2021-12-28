@@ -28,9 +28,9 @@ Instale a `wide-smile` a partir do yarn:
 yarn add wide-smile
 ```
 
-## Adicionando
+### Adicionando
 
-### ES6 modules
+#### ES6 modules
 
 Importando via módulo:
 
@@ -38,7 +38,7 @@ Importando via módulo:
 import wS from 'wide-smile';
 ```
 
-### CommonJS
+#### CommonJS
 
 Exigi-lo como você faria com qualquer outro módulo:
 
@@ -46,12 +46,26 @@ Exigi-lo como você faria com qualquer outro módulo:
 const wS = require('wide-smile');
 ```
 
-### `<script>`
+#### `<script>`
 
 Inclua-o através de uma tag script.
 
 ```html
 <script src="wide-smile/wide-smile.min.js"></script>
+```
+
+## Usando CDNs:
+
+### Usando jsDelivr CDN:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/wide-smile/wide-smile.min.js"></script>
+```
+
+### Usando unpkg CDN:
+
+```html
+<script src="https://unpkg.com/wide-smile/wide-smile.min.js"></script>
 ```
 
 ## Primeiros passos
@@ -100,6 +114,12 @@ wS('div', 1, 'easeOutInSine', {
 
 ---
 
+### Demos e exemplos
+
+- [CodePen wide-smile collection](https://codepen.io/collection/jbzpzE)
+
+---
+
 ### Novidades(versão - `0.1.0`):
 
 Esta nova versão conta com novidades importantes:
@@ -127,7 +147,7 @@ Esta nova versão conta com novidades importantes:
 
 Nossa biblioteca está nas suas versões iniciais, mas verá que ela possui um grande potencial de crescimento([Documentação](https://github.com/diogoneves07/wide-smile/wiki)). Por isso, esse é o melhor momento para você contribuir! E o melhor, você pode escolher como:
 
-- Participe do desenvolvimento do código, criando [propriedades customizados](https://github.com/diogoneves07/wide-smile/wiki/Propriedades-customizadas-%7C-Hooks) e animações e compartilhando com comunidade, sugerindo novas futures ou desenvolvendo diretamente conosco.
+- Participe do desenvolvimento do código, criando [propriedades customizadas](https://github.com/diogoneves07/wide-smile/wiki/Propriedades-customizadas-%7C-Hooks) e animações e compartilhando com comunidade, sugerindo novas futures ou desenvolvendo diretamente conosco.
 
 - Feedback, sua opinião é importantíssima, afinal estamos desenvolvendo para você.
 

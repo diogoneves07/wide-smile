@@ -19,11 +19,11 @@ test('Restart animation action.', async () => {
      */
     setTimeout(() => {
       topValueAfterRestart = getComputedStyle(element).getPropertyValue('top');
-    }, 0);
+    }, 100);
   }, 500);
 
   await new Promise((resolve) => {
-    return setTimeout(resolve, 1000);
+    return setTimeout(resolve, 1300);
   });
 
   expect(parseFloat(topValueBeforeRestart)).toBeGreaterThan(

@@ -1,6 +1,7 @@
 var numberOfElements = 12;
 for (var index = 0; index < numberOfElements; index += 1) {
-  document.body.appendChild(document.createElement('div'));
+  var element = document.createElement('div');
+  document.body.appendChild(element);
 }
 var section = document.createElement('section');
 

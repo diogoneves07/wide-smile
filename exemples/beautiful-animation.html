@@ -28,8 +28,6 @@
       var midScreenY = window.innerHeight / 2;
       var radius = Math.sqrt(midScreenX * midScreenX + midScreenY * midScreenY);
 
-      wS().asyncLoading = true;
-
       for (var i = 0; i < numberOfEls; i++) {
         var hue = 150 + Math.round((40 / numberOfEls) * i);
         var el = document.createElement('span');
@@ -49,7 +47,7 @@
           backgroundColor: function () {
             return 'hsl(' + v() + ', ' + v() + '%, ' + v() + '%)';
           },
-        }).now();
+        });
       }
     </script>
   </body>

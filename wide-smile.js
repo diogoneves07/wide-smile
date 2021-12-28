@@ -1069,10 +1069,8 @@ function getNewValuesForAnimationIntercalation(requiredAnimationProperties) {
     durationOfTheInterlacation = 0;
   }
 
-  durationOfTheInterlacation += iterationInterlacations.leftovers;
   iterationInterlacations.timeConsumed += durationOfTheInterlacation;
   var averageDurationForIntercalation = iterationInterlacations.completed > 0 ? iterationInterlacations.timeConsumed / iterationInterlacations.completed : 0;
-  iterationInterlacations.leftovers = Math.max(0, durationOfTheInterlacation - averageDurationForIntercalation);
   iterationInterlacations.completed += 1;
   var timeBasedProgress = _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.MAX_KEYFRAME / duration * averageDurationForIntercalation;
   var newProgress;
@@ -1734,8 +1732,7 @@ function resetAnimationTimeProperties(animationAuxiliaryObject) {
   var a = animationAuxiliaryObject;
   a.iterationInterlacations = {
     timeConsumed: 0,
-    completed: 0,
-    leftovers: 0
+    completed: 0
   };
   a.startTimeOfTheIteration = 0;
   a.timeRunningIteration = 0;
@@ -1960,8 +1957,7 @@ function updateAnimation(animationAuxiliaryObject) {
     timeRunningIteration: timeRunningIteration,
     iterationInterlacations: {
       timeConsumed: timeRunningIteration,
-      completed: Math.floor(timeRunningIteration / _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.INTERCALATION_TIME),
-      leftovers: 0
+      completed: Math.floor(timeRunningIteration / _sauce_constants__WEBPACK_IMPORTED_MODULE_0__.INTERCALATION_TIME)
     }
   });
   var animationProgressObject = (0,_get_new_animation_progress__WEBPACK_IMPORTED_MODULE_3__.default)(animationAuxiliaryObject);
@@ -2206,8 +2202,7 @@ function CreateAnimationAuxiliaryObject(animation) {
     animationAlreadyStarted: false,
     iterationInterlacations: {
       timeConsumed: 0,
-      completed: 0,
-      leftovers: 0
+      completed: 0
     },
     animationLoadingTime: 0,
     dateLastIntercalation: 0,
@@ -2448,23 +2443,27 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
 
 
-function flattenOffsetProperty(offset, keyframe) {
+function flattenOffsetProperty(propertyName, keyframe) {
   var newKeyframes = [];
-  offset.forEach(function (value) {
+  keyframe[propertyName].forEach(function (value) {
     var newKeyframe = function () {
       var k = {};
-      (0,_utilities_custom_for_in__WEBPACK_IMPORTED_MODULE_0__.default)(keyframe, function (propertyValue, propertyName) {
-        if (propertyName !== 'offset') {
-          k[propertyName] = propertyValue;
+      (0,_utilities_custom_for_in__WEBPACK_IMPORTED_MODULE_0__.default)(keyframe, function (propertyValue, name) {
+        if (name !== propertyName) {
+          k[name] = propertyValue;
         }
       });
       return k;
     }();
 
-    newKeyframe.offset = value;
+    newKeyframe[propertyName] = value;
     newKeyframes.push(newKeyframe);
   });
   return newKeyframes;
+}
+
+function offsetToPercent(value) {
+  return Math.max(Math.min(100 / 1 * value, 100), 0);
 }
 
 function arrayKeyframesToObject(keyframes) {
@@ -2478,7 +2477,10 @@ function arrayKeyframesToObject(keyframes) {
   keyframesArray.slice().forEach(function (keyframe, index) {
     if ((0,_utilities_has_own_property__WEBPACK_IMPORTED_MODULE_1__.default)(keyframe, 'offset') && Array.isArray(keyframe.offset)) {
       keyframesArray.splice(index, 1);
-      newKeyframesArray.push.apply(newKeyframesArray, _toConsumableArray(flattenOffsetProperty(keyframe.offset, keyframe)));
+      newKeyframesArray.push.apply(newKeyframesArray, _toConsumableArray(flattenOffsetProperty('offset', keyframe)));
+    } else if ((0,_utilities_has_own_property__WEBPACK_IMPORTED_MODULE_1__.default)(keyframe, '_') && Array.isArray(keyframe._)) {
+      keyframesArray.splice(index, 1);
+      newKeyframesArray.push.apply(newKeyframesArray, _toConsumableArray(flattenOffsetProperty('_', keyframe)));
     } else {
       newKeyframesArray.push(keyframe);
     }
@@ -2487,8 +2489,11 @@ function arrayKeyframesToObject(keyframes) {
     var kf = keyframe;
 
     if ((0,_utilities_has_own_property__WEBPACK_IMPORTED_MODULE_1__.default)(keyframe, 'offset')) {
-      lastKey = Math.max(Math.min(100 / 1 * kf.offset, 100), 0);
+      lastKey = offsetToPercent(kf.offset);
       delete kf.offset;
+    } else if ((0,_utilities_has_own_property__WEBPACK_IMPORTED_MODULE_1__.default)(keyframe, '_')) {
+      lastKey = Math.max(kf._, 0);
+      delete kf._;
     } else {
       lastKey = index > 0 ? leftovers / leftoversIndexs + lastKey : 0;
     }
@@ -5021,7 +5026,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 var ANIMATION_STATES = ['waiting', 'running', 'completed', 'paused', 'destroyed', 'loaded', 'loading', 'canceled'];
 var ANIMATION_DIRECTIONS = ['normal', 'reverse', 'alternate', 'alternate-reverse', 'random-keys', 'random-offset', 'fluid-random-keys', 'fluid-random-offset'];
-var WIDE_SMILE_VERSION = '0.1.0';
+var WIDE_SMILE_VERSION = '0.1.2';
 var CSS_VENDORS = ['moz', 'ms', 'o', 'webkit'];
 var CSS_VENDORS_LENGTH = CSS_VENDORS.length;
 var MAX_KEYFRAME = 100;

@@ -28,8 +28,6 @@ export default function updateAnimation(
       timeConsumed: timeRunningIteration,
 
       completed: Math.floor(timeRunningIteration / INTERCALATION_TIME),
-
-      leftovers: 0,
     },
   });
 

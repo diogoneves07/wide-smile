@@ -70,7 +70,6 @@ export default function CreateAnimationAuxiliaryObject(
     iterationInterlacations: {
       timeConsumed: 0,
       completed: 0,
-      leftovers: 0,
     },
     animationLoadingTime: 0,
 

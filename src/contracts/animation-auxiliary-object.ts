@@ -41,7 +41,6 @@ export default interface AnimationAuxiliaryObject {
   iterationInterlacations: {
     timeConsumed: number;
     completed: number;
-    leftovers: number;
   };
 
   animationLoadingTime: number;

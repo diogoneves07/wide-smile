@@ -28,8 +28,9 @@
       }
       #logo {
         position: relative;
-        top: 50%;
+        top: 60%;
         z-index: 999;
+        height: 180px;
       }
     </style>
   </head>
@@ -37,8 +38,6 @@
     <img id="logo" src="../other/img/small-wide-smile.png" />
     <script>
       var numberOfEls = 300;
-      var innerWidth = window.innerWidth;
-      var innerHeight = window.innerHeight;
 
       for (var i = 0; i < numberOfEls; i++) {
         var hue = 180 + Math.round((20 / numberOfEls) * i);
@@ -54,7 +53,7 @@
       wS('span', 2, {
         delay: '0.1 <random>',
         loop: true,
-      })('top', innerHeight, 'easeInSine');
+      })('top', window.innerHeight + 300, 'easeInSine');
     </script>
   </body>
 </html>

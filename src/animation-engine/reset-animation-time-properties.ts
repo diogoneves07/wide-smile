@@ -7,7 +7,6 @@ export default function resetAnimationTimeProperties(
   a.iterationInterlacations = {
     timeConsumed: 0,
     completed: 0,
-    leftovers: 0,
   };
   a.startTimeOfTheIteration = 0;
   a.timeRunningIteration = 0;

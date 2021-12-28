@@ -8,24 +8,27 @@ import hasOwnProperty from '../utilities/has-own-property';
 import normalizePastedAnimationProperties from './normalize-animation-object-properties';
 
 function flattenOffsetProperty(
-  offset: number[],
+  propertyName: 'offset' | '_',
   keyframe: PropertiesToAnimateObject
 ) {
   const newKeyframes: Keyframes = [];
-  offset.forEach((value) => {
+  (keyframe[propertyName] as number[]).forEach((value) => {
     const newKeyframe = (() => {
       const k: typeof keyframe = {};
-      customForIn(keyframe, (propertyValue, propertyName) => {
-        if (propertyName !== 'offset') {
-          k[propertyName] = propertyValue as never;
+      customForIn(keyframe, (propertyValue, name) => {
+        if (name !== propertyName) {
+          k[name] = propertyValue as never;
         }
       });
       return k;
     })();
-    newKeyframe.offset = value as number;
+    newKeyframe[propertyName] = value as number;
     newKeyframes.push(newKeyframe);
   });
   return newKeyframes;
+}
+function offsetToPercent(value: number) {
+  return Math.max(Math.min((100 / 1) * value, 100), 0);
 }
 function arrayKeyframesToObject(keyframes: Keyframes) {
   const keyframesObject: Record<string, Keyframes[number]> = {};
@@ -39,9 +42,10 @@ function arrayKeyframesToObject(keyframes: Keyframes) {
   keyframesArray.slice().forEach((keyframe, index) => {
     if (hasOwnProperty(keyframe, 'offset') && Array.isArray(keyframe.offset)) {
       keyframesArray.splice(index, 1);
-      newKeyframesArray.push(
-        ...flattenOffsetProperty(keyframe.offset as number[], keyframe)
-      );
+      newKeyframesArray.push(...flattenOffsetProperty('offset', keyframe));
+    } else if (hasOwnProperty(keyframe, '_') && Array.isArray(keyframe._)) {
+      keyframesArray.splice(index, 1);
+      newKeyframesArray.push(...flattenOffsetProperty('_', keyframe));
     } else {
       newKeyframesArray.push(keyframe);
     }
@@ -50,8 +54,11 @@ function arrayKeyframesToObject(keyframes: Keyframes) {
   newKeyframesArray.forEach((keyframe, index) => {
     const kf = keyframe;
     if (hasOwnProperty(keyframe, 'offset')) {
-      lastKey = Math.max(Math.min((100 / 1) * (kf.offset as number), 100), 0);
+      lastKey = offsetToPercent(kf.offset as number);
       delete kf.offset;
+    } else if (hasOwnProperty(keyframe, '_')) {
+      lastKey = Math.max(kf._ as number, 0);
+      delete kf._;
     } else {
       lastKey = index > 0 ? leftovers / leftoversIndexs + lastKey : 0;
     }
