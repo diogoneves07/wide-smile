@@ -49,7 +49,7 @@ export const ANIMATION_DIRECTIONS: Readonly<
   'fluid-random-offset',
 ];
 
-export const WIDE_SMILE_VERSION = '0.1.2';
+export const WIDE_SMILE_VERSION = '0.1.3';
 
 export const CSS_VENDORS: Readonly<string[]> = ['moz', 'ms', 'o', 'webkit'];
 

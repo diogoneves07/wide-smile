@@ -10,6 +10,7 @@ import AnimationInstanceProperties, {
   UserAnimationOptions,
 } from '../contracts/animation-inter';
 import DEFAULTS_ANIMATION_PROPERTIES_VALUES from './defaults-animation-properties-values';
+import getElementsInTheDOM from '../animation-mount/get-elements-in-the-dom';
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const ANIMATION_PERFORMER_PROPERTIES = [
@@ -99,7 +100,11 @@ export default function createAnimationPropertiesObject(
   }
 
   const targets = ((parametersToAnimationProperties as UserAnimationOptions)
-    .targets || animationPerformer.$hidden.targets) as HTMLElement[];
+    .targets
+    ? getElementsInTheDOM(
+        (parametersToAnimationProperties as UserAnimationOptions).targets
+      )
+    : animationPerformer.$hidden.targets) as HTMLElement[];
 
   const length = targets.length;
 
@@ -150,6 +155,5 @@ export default function createAnimationPropertiesObject(
       animationProperties.loop = 2;
     }
   }
-
   return animationProperties as AnimationInstanceProperties;
 }

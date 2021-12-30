@@ -2825,7 +2825,7 @@ function getElementsInTheDOM(targets) {
   if (targets) {
     var targetForElements = targets;
 
-    if (typeof targetForElements === 'string' || _typeof(targetForElements) === 'object' && !Array.isArray(targetForElements)) {
+    if (typeof targetForElements === 'string' || _typeof(targetForElements) === 'object' && !targetForElements[0]) {
       targetForElements = [targetForElements];
     } else {
       targetForElements = [].slice.call(targetForElements);
@@ -5026,7 +5026,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 var ANIMATION_STATES = ['waiting', 'running', 'completed', 'paused', 'destroyed', 'loaded', 'loading', 'canceled'];
 var ANIMATION_DIRECTIONS = ['normal', 'reverse', 'alternate', 'alternate-reverse', 'random-keys', 'random-offset', 'fluid-random-keys', 'fluid-random-offset'];
-var WIDE_SMILE_VERSION = '0.1.2';
+var WIDE_SMILE_VERSION = '0.1.3';
 var CSS_VENDORS = ['moz', 'ms', 'o', 'webkit'];
 var CSS_VENDORS_LENGTH = CSS_VENDORS.length;
 var MAX_KEYFRAME = 100;
@@ -5150,6 +5150,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _utilities_has_own_property__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../utilities/has-own-property */ "./src/utilities/has-own-property.ts");
 /* harmony import */ var _animation_mount_is_dir_value__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../animation-mount/is-dir-value */ "./src/animation-mount/is-dir-value.ts");
 /* harmony import */ var _defaults_animation_properties_values__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./defaults-animation-properties-values */ "./src/sauce/defaults-animation-properties-values.ts");
+/* harmony import */ var _animation_mount_get_elements_in_the_dom__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../animation-mount/get-elements-in-the-dom */ "./src/animation-mount/get-elements-in-the-dom.ts");
 function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
 
 function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
@@ -5157,6 +5158,7 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
 function _typeof(obj) { "@babel/helpers - typeof"; if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+
 
 
 
@@ -5214,7 +5216,7 @@ function createAnimationPropertiesObject(animationPerformer, animate, parameters
     propertiesToBeAnimate = animate;
   }
 
-  var targets = parametersToAnimationProperties.targets || animationPerformer.$hidden.targets;
+  var targets = parametersToAnimationProperties.targets ? (0,_animation_mount_get_elements_in_the_dom__WEBPACK_IMPORTED_MODULE_3__.default)(parametersToAnimationProperties.targets) : animationPerformer.$hidden.targets;
   var length = targets.length;
   var t = targets.map(function (target, i) {
     return {

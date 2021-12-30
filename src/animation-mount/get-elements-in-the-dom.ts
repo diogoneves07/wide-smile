@@ -6,11 +6,10 @@ export default function getElementsInTheDOM(
   const elements: object[] = [];
   if (targets) {
     let targetForElements = targets;
-
     if (
       typeof targetForElements === 'string' ||
       (typeof targetForElements === 'object' &&
-        !Array.isArray(targetForElements))
+        !(targetForElements as unknown[])[0])
     ) {
       targetForElements = [targetForElements as never];
     } else {
