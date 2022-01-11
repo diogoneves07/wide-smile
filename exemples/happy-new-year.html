@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Happy new year</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="../wide-smile.min.js"></script>
+
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        float: left;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        background-color: #000;
+        text-align: center;
+        align-items: center;
+        vertical-align: center;
+      }
+
+      .particule {
+        width: 2px;
+        height: 100px;
+        margin: 10px;
+        margin-top: 150px;
+        display: inline-block;
+        font-size: 50px;
+        color: white;
+      }
+      .happy-new-year-message {
+        position: fixed;
+        text-align: center;
+        height: 100%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .happy-new-year-message h1 {
+        font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+        font-weight: normal;
+        font-size: 80px;
+        color: white;
+        margin-top: 200px;
+      }
+      .happy-new-year-message div {
+        display: inline-block;
+        margin: 10px;
+      }
+      .happy-new-year-message span {
+        position: relative;
+        float: left;
+      }
+
+      .fireworks {
+        height: 20px;
+        width: 2px;
+        position: absolute;
+        top: 98%;
+        left: 45%;
+
+        border-radius: 100% 100% 25% 25%;
+        display: inline-block;
+        box-shadow: 1px 1px 5px white;
+      }
+      .fireworks span {
+        display: inline-block;
+        width: 4px;
+        height: 2px;
+        position: absolute;
+        background-color: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <header class="happy-new-year-message">
+      <h1>
+        <div>
+          <span>H</span>
+          <span>a</span>
+          <span>p</span>
+          <span>p</span>
+          <span>y</span>
+        </div>
+        <div>
+          <span>N</span>
+          <span>e</span>
+          <span>w</span>
+        </div>
+        <div>
+          <span>Y</span>
+          <span>e</span>
+          <span>a</span>
+          <span>r</span>
+          <span>!</span>
+        </div>
+      </h1>
+    </header>
+    <script>
+      var numberOfEls = window.innerWidth / 23; /* .particule size*/
+
+      for (var i = 0; i < numberOfEls; i++) {
+        var hue = i * 30 + Math.round((40 / numberOfEls) * i);
+        var el = document.createElement('span');
+        var style = el.style;
+        el.className = 'particule';
+        style.backgroundColor = 'hsl(' + hue + ', 100%, 50%)';
+        style.transform = 'rotate(' + i * 5 + 'deg) translateY(100px)';
+
+        document.body.appendChild(el);
+      }
+
+      wS('.particule', 5, Infinity)('rotate', '+=360');
+      wS('.happy-new-year-message span', 0.5, 'easeOutQuad').set('opacity', 0)(
+        {
+          bottom: [-window.innerHeight, '?'],
+          opacity: 1,
+        },
+
+        {
+          delay: '0.1 <random>',
+        }
+      );
+
+      (function () {
+        var numberOfEls = 10;
+        var innerWidth = window.innerWidth;
+        var innerHeight = window.innerHeight;
+        var maxFragments = 50;
+        var distance = 100;
+
+        function fireworks(el) {
+          var translateYValue = -(innerHeight / (Math.random() * 4 + 1));
+          var translateXValue = Math.random() * 300;
+
+          var positiveOrNegative = Math.random() > 0.5 ? true : false;
+          var hue =
+            Math.random() * 260 +
+            Math.round((50 / numberOfEls) * Math.random() * numberOfEls);
+          el.style.backgroundColor = 'hsl(' + hue + ', 100%, 50%)';
+          var backgroundColor = el.style.backgroundColor;
+
+          [].slice.call(el.children).forEach((child, i) => {
+            child.style.left = i + '%';
+            wS(child, 'easeInSine', {
+              delay: Math.random(),
+              dur: 2,
+              autoPlay: false,
+            })({
+              left: Math.sin(i) * distance + 'px',
+              top: Math.cos(i) * distance + 'px',
+            })
+              .on('ready', function () {
+                child.style.backgroundColor = backgroundColor;
+              })
+              ._('opacity', 0, 0.2)
+
+              .load();
+          });
+          var performer = wS(el, 1)(
+            'translateY',
+            translateYValue,
+            'easeOutSine'
+          )(
+            'translateX',
+            positiveOrNegative ? translateXValue : -translateXValue,
+            'easeInQuad'
+          )('rotate', positiveOrNegative ? 80 : -80).on('end', function () {
+            el.style.backgroundColor = 'transparent';
+            el.style.boxShadow = 'none';
+            performer.set('rotate', 0);
+            wS.play();
+          });
+        }
+
+        function getElementsToExplosion(el) {
+          for (var i = 0; i < maxFragments; i++) {
+            var span = document.createElement('span');
+            el.appendChild(span);
+          }
+          return el;
+        }
+
+        function newRocket() {
+          var el = document.createElement('div');
+          document.body.appendChild(el);
+
+          el.className = 'fireworks';
+
+          return el;
+        }
+        var recyclingElements = [];
+        for (let index = 0; index < numberOfEls; index++) {
+          recyclingElements.push(getElementsToExplosion(newRocket()));
+        }
+
+        recyclingElements.forEach((element) => {
+          fireworks(element);
+        });
+      })();
+    </script>
+  </body>
+</html>

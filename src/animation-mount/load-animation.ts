@@ -106,11 +106,6 @@ export default function LoadAnimation(
             LoadAnimation(animation, callbackLoaded);
           }
         });
-      } else if (
-        hasAnimationAuxiliaryObject.dataLoadingState === 'load' &&
-        hasAnimationAuxiliaryObject.animation.state === ANIMATION_STATES[5]
-      ) {
-        startAnimationExecutionCycle(hasAnimationAuxiliaryObject);
       } else {
         startAnimationExecutionCycle(
           resetAnimationProgress(hasAnimationAuxiliaryObject),

@@ -25,7 +25,7 @@ export default function setPropertyValue(
     dur: 0,
   };
 
-  if (typeof properties === 'string' && propertyValue) {
+  if (typeof properties === 'string') {
     newPerformer.$(
       properties,
       propertyValue as ValuesToAnimateProperty,
@@ -40,6 +40,7 @@ export default function setPropertyValue(
       const animationAuxiliaryObject = getAnimationAuxiliaryObject(
         animation.animationId
       );
+
       if (animationAuxiliaryObject) {
         animation.progressValue = 100;
         animation.max = 100;

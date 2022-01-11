@@ -52,7 +52,7 @@ module.exports = [
   {
     ...defaults,
     // bundling mode
-    mode: 'production',
+    // mode: 'production',
 
     // output bundles (location)
     output: {
@@ -67,7 +67,7 @@ module.exports = [
   },
   {
     ...defaults,
-    mode: 'production',
+    // mode: 'production',
 
     experiments: {
       outputModule: true,

@@ -32,7 +32,6 @@ import loadAnimationsAndPlayWhenReady from '../animation-actions/load-animations
 function playAnimations(animationPerformer: PerformerFn) {
   animationPerformer.$hidden.animationInstances.forEach((animation) => {
     const i = animation;
-
     if (i.state === ANIMATION_STATES[0] || i.state === ANIMATION_STATES[5]) {
       if (
         animationPerformer.$hidden.independentAnimations &&
@@ -45,17 +44,19 @@ function playAnimations(animationPerformer: PerformerFn) {
     }
   });
 }
-function applyWhenTheAnimationIsRunning(
+function applyWhenTheAnimationIsLoaded(
   animation: AnimationInstance,
   callback: () => void
 ) {
-  if (animation.state === ANIMATION_STATES[1]) {
-    callback();
+  if (animation.state === ANIMATION_STATES[0]) {
+    animation
+      .on('load', function fn() {
+        callback();
+        animation.off('load', fn);
+      })
+      .load();
   } else {
-    animation.on('loopStart', function fn() {
-      callback();
-      animation.off('loopStart', fn);
-    });
+    callback();
   }
 }
 
@@ -94,6 +95,11 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
 
   after(this: PerformerFn, amountIterations = 1) {
     this.$hidden.currentAfterIterations = amountIterations;
+    return this;
+  },
+
+  wait(this: PerformerFn, seconds?: string) {
+    this.$hidden.currentWaitExecutionTime = seconds;
     return this;
   },
 
@@ -137,6 +143,7 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
     });
     return this;
   },
+
   play(this: PerformerFn) {
     playAnimations(this);
     applyCallbackForFutureAnimations(this, (animation) => {
@@ -158,7 +165,7 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
   pause(this: PerformerFn) {
     getAnimationsRunning(this).forEach((animation) => animation.pause());
     applyCallbackForFutureAnimations(this, (animation) => {
-      applyWhenTheAnimationIsRunning(animation, () => {
+      applyWhenTheAnimationIsLoaded(animation, () => {
         animation.pause();
       });
     });
@@ -168,7 +175,7 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
   resume(this: PerformerFn) {
     getAnimationsRunning(this).forEach((animation) => animation.resume());
     applyCallbackForFutureAnimations(this, (animation) => {
-      applyWhenTheAnimationIsRunning(animation, () => {
+      applyWhenTheAnimationIsLoaded(animation, () => {
         animation.resume();
       });
     });
@@ -178,7 +185,7 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
   restart(this: PerformerFn) {
     getAnimationsRunning(this).forEach((animation) => animation.restart());
     applyCallbackForFutureAnimations(this, (animation) => {
-      applyWhenTheAnimationIsRunning(animation, () => {
+      applyWhenTheAnimationIsLoaded(animation, () => {
         animation.restart();
       });
     });
@@ -189,7 +196,7 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
     getAnimationsRunning(this).forEach((animation) => animation.end());
 
     applyCallbackForFutureAnimations(this, (animation) => {
-      applyWhenTheAnimationIsRunning(animation, () => {
+      applyWhenTheAnimationIsLoaded(animation, () => {
         animation.end();
       });
     });
@@ -199,7 +206,7 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
   go(this: PerformerFn, part: number) {
     getAnimationsRunning(this).forEach((animation) => animation.go(part));
     applyCallbackForFutureAnimations(this, (animation) => {
-      applyWhenTheAnimationIsRunning(animation, () => {
+      applyWhenTheAnimationIsLoaded(animation, () => {
         animation.go(part);
       });
     });
@@ -209,7 +216,7 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
   back(this: PerformerFn, part: number) {
     getAnimationsRunning(this).forEach((animation) => animation.back(part));
     applyCallbackForFutureAnimations(this, (animation) => {
-      applyWhenTheAnimationIsRunning(animation, () => {
+      applyWhenTheAnimationIsLoaded(animation, () => {
         animation.back(part);
       });
     });
@@ -219,7 +226,7 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
   jump(this: PerformerFn, part: number) {
     getAnimationsRunning(this).forEach((animation) => animation.jump(part));
     applyCallbackForFutureAnimations(this, (animation) => {
-      applyWhenTheAnimationIsRunning(animation, () => {
+      applyWhenTheAnimationIsLoaded(animation, () => {
         animation.jump(part);
       });
     });
@@ -233,7 +240,7 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
       animation.speed(multiply)
     );
     applyCallbackForFutureAnimations(this, (animation) => {
-      applyWhenTheAnimationIsRunning(animation, () => {
+      applyWhenTheAnimationIsLoaded(animation, () => {
         animation.speed(multiply);
       });
     });
@@ -245,7 +252,7 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
       animation.revert(endIteration)
     );
     applyCallbackForFutureAnimations(this, (animation) => {
-      applyWhenTheAnimationIsRunning(animation, () => {
+      applyWhenTheAnimationIsLoaded(animation, () => {
         animation.revert(endIteration);
       });
     });
@@ -297,9 +304,9 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
       performerFn: PerformerFn
     ) => unknown
   ) {
-    const eName = getPropertyName(this, toCamelCase(eventName as string));
-
+    const eName = getPropertyName(this, toCamelCase(eventName.toString()));
     const performer = this;
+
     let countingEventShots = 0;
     let countAnimationsInterestedInEvent = 0;
     let animationInstances = performer.$hidden.animationInstances.slice();
@@ -324,6 +331,7 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
         }
         return callbackfn.call(performer, item, performer);
       }
+
       return undefined;
     };
 
@@ -359,7 +367,7 @@ const PERFORMER_FNS_METHODS: PerformerFnMethods = {
     eventName: ListenersEventsName | string | AllAnimableProperties,
     callbackfnUsed: Function
   ) {
-    const eName = getPropertyName(this, toCamelCase(eventName as string));
+    const eName = getPropertyName(this, toCamelCase(eventName.toString()));
 
     if (this.$hidden.eventsCallbacks && this.$hidden.eventsCallbacks[eName]) {
       const eventBucket = this.$hidden.eventsCallbacks[eName] as [

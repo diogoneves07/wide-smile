@@ -63,6 +63,8 @@ export default function CreateAnimationAuxiliaryObject(
 
     timeRunningIteration: 0,
 
+    animationExecutionTime: 0,
+
     valuesOfThePropertiesBeforeAnimating: [],
 
     animationAlreadyStarted: false,

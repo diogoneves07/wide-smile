@@ -92,7 +92,7 @@ export interface CreatorFnMethods {
   /**
    * Destroys all animations(created by this).
    */
-  destroy(): this;
+  destroy(removeChanges?: true): this;
 
   /**
    * Adds the listener to  all animations(created by this).

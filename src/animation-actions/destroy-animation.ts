@@ -7,6 +7,7 @@ import {
 } from '../animation-mount/crud-animation-objects';
 import removeAnimationStyle from '../animation-engine/remove-animation-style';
 import removeReferenceInCreatorToPerformer from '../sauce/remove-reference-in-creator-to-performer';
+import { recyclePropertyObjectsToAnimate } from '../animation-mount/property-object-to-animate';
 
 function removeInstance<T>(array: T, animation: AnimationInstance) {
   return (((array as unknown) as unknown[]).filter(
@@ -28,9 +29,14 @@ export default function destroyAnimation(a: AnimationInstance): void {
   const animationAuxiliaryObject = getAnimationAuxiliaryObject(
     animation.animationId
   );
+
   if (animationAuxiliaryObject) {
     removeAnimationStyle(animationAuxiliaryObject);
     removeAnimationAuxiliaryObject(animation.animationId);
+
+    recyclePropertyObjectsToAnimate(
+      animationAuxiliaryObject.propertiesToBeAnimate
+    );
   }
   performerProperties.animationInstances = removeInstance(
     performerProperties.animationInstances,

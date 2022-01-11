@@ -3,7 +3,9 @@ import AnimationAuxiliaryObject from '../contracts/animation-auxiliary-object';
 import { AnimationInstance } from '../contracts/animation-inter';
 import CurrentPropertyValue from '../contracts/current-property-value';
 import toCSSKebabCase from '../utilities-style/to-css-kebab-case';
+import customForIn from '../utilities/custom-for-in';
 import { toCamelCase, trimString } from '../utilities/handle-string';
+import toMs from '../utilities/to-ms';
 
 const EVENTS_IN_OBSERVATION: Record<string, Record<string, Function[]>> = {};
 
@@ -46,7 +48,7 @@ export function addAnimationEventListener(
   }
 
   const animationObjectBuket = EVENTS_IN_OBSERVATION[animationId];
-  const eName = trimString(name as string);
+  const eName = trimString(name.toString());
   if (eName) {
     if (animationObjectBuket[eName]) {
       animationObjectBuket[eName].push(callback);
@@ -68,7 +70,7 @@ export function removeAnimationEventListener(
 
   const animationObjectBuket = EVENTS_IN_OBSERVATION[animationId];
 
-  const eName = trimString(name as string);
+  const eName = trimString(name.toString());
   if (eName && animationObjectBuket[eName]) {
     const index = animationObjectBuket[eName].indexOf(callbackfnUsed);
     if (index >= 0) {
@@ -131,15 +133,42 @@ export function propagateAnimationPropertyEventListener(
   }
   return allowedToApplyStyle;
 }
+
+export function propagateAnimationExecutionTimeEventListener(
+  animationExecutionTime: number,
+  animation: AnimationInstance
+): void {
+  const animationId = animation.animationId;
+  if (!EVENTS_IN_OBSERVATION[animationId]) {
+    return;
+  }
+  const animationObjectBuket = EVENTS_IN_OBSERVATION[animationId];
+  customForIn(animationObjectBuket, (eventBucket, eventName) => {
+    const check = parseFloat(eventName);
+    if (!Number.isNaN(check)) {
+      if (animationExecutionTime >= toMs(check)) {
+        eventBucket.slice().forEach((eventCallback) => {
+          eventCallback.call(
+            animation.performer,
+            eventName,
+            animation.performer
+          );
+          removeAnimationEventListener(eventName, eventCallback, animation);
+        });
+      }
+    }
+  });
+}
 export function propagateAnimationEventListener(
-  name: typeof LISTENERS_NAMES[number],
+  name: typeof LISTENERS_NAMES[number] | number,
   animation: AnimationInstance,
   useSpecialCallback?: (
     eventCallback: Function,
     animation: AnimationInstance
   ) => unknown
 ): void {
-  const bucket = getBucket(name, animation.animationId);
+  const bucket = getBucket(name.toString(), animation.animationId);
+
   if (bucket && bucket.eventBucket) {
     const { eventBucket, eventName } = bucket;
 

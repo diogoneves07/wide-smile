@@ -16,6 +16,7 @@ import getPropertyObjectToAnimate from './property-object-to-animate';
 import { getRealPropertyValue } from './get-real-property-value';
 import { getUnitOfMeasureForPropertyValue } from './get-unit-of-measure-properties';
 import treatPropertyCurrentValue from './treat-property-current-value';
+import getUnit from '../utilities/get-unit';
 
 export default function getCSSPropertiesToBeAnimated(
   CSSProperties: Record<string, Record<string, ValuesToAnimateProperty>>,
@@ -100,7 +101,8 @@ export default function getCSSPropertiesToBeAnimated(
       if (
         isColor(propertiesKeyframes[propertyName][key]) &&
         propertiesKeyframes[propertyName][key] !== kf[propertyName] &&
-        trimString(kf[propertyName]).split(' ').length === 1
+        trimString(kf[propertyName]).split(' ').length === 1 &&
+        getUnit(kf[propertyName]) === ''
       ) {
         addToCancheColorValue(
           kf[propertyName],

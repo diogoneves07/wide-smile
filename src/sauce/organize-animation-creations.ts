@@ -6,6 +6,7 @@ import AnimationWS from './animation';
 import {
   playAnimationsTogether,
   playAnimationsAfterIterations,
+  playAnimationsWaitExecutionTime,
 } from './logic-to-play-animations';
 import organizeTheExecutionOfCycleAnimations from '../animation-engine/organize-the-execution-of-cycle-animations';
 import createAnimationObjectsFromStaggers from './create-animation-objects-from-staggers';
@@ -16,6 +17,12 @@ import isEmptyObject from '../utilities/is-empty-object';
 
 /* eslint-disable @typescript-eslint/no-use-before-define  */
 
+type AnimationsTypeOfLink =
+  | 'afterAnimation'
+  | 'together'
+  | 'afterIterations'
+  | 'waitExecutionTime';
+
 type AnimationObjectSketche = {
   animationOptions: AnimationInstanceProperties;
 
@@ -25,8 +32,9 @@ type AnimationObjectSketche = {
   originalAnimationOptions?: AnimationInstanceProperties;
 
   indexOrAnimation?: number | AnimationWS;
-  typeOfLink?: 'afterAnimation' | 'together' | 'afterIterations';
+  typeOfLink?: AnimationsTypeOfLink;
   amountOfIterations?: number;
+  executionTime?: string;
 };
 
 let STACK_OF_ANIMATIONS_SKETCHES: Record<
@@ -104,13 +112,17 @@ export function getCurrentAnimationSketches(
 }
 
 type OrganizedAnimations = {
-  typeOfLink: 'afterAnimation' | 'together' | 'afterIterations';
+  typeOfLink: AnimationsTypeOfLink;
   linkedAnimation: AnimationWS | undefined;
   animation: AnimationWS;
   playTogether?: AnimationWS[];
   afterIterations?: {
     animations: AnimationWS[];
     amountOfIterations: number;
+  };
+  waitExecutionTime?: {
+    animations: AnimationWS[];
+    executionTime: string;
   };
 }[];
 
@@ -162,6 +174,7 @@ function organizeAnimationInstances(
       !linkedAnimation ||
       o.typeOfLink === 'afterAnimation' ||
       o.typeOfLink === 'afterIterations' ||
+      o.typeOfLink === 'waitExecutionTime' ||
       (linkedAnimation &&
         !addToLinkedAnimationObject(
           organizedAnimations,
@@ -177,6 +190,16 @@ function organizeAnimationInstances(
           afterIterations: {
             animations: [o.animation],
             amountOfIterations: o.amountOfIterations as number,
+          },
+        });
+      } else if (o.typeOfLink === 'waitExecutionTime') {
+        organizedAnimations.push({
+          typeOfLink: o.typeOfLink,
+          linkedAnimation,
+          animation: o.animation,
+          waitExecutionTime: {
+            animations: [o.animation],
+            executionTime: o.executionTime as string,
           },
         });
       } else {
@@ -201,6 +224,7 @@ function applyRulesForTheExecutionOfAnimations(
       typeOfLink,
       playTogether,
       afterIterations,
+      waitExecutionTime,
     } = o;
 
     const performerFn = animation.performer;
@@ -211,6 +235,13 @@ function applyRulesForTheExecutionOfAnimations(
         );
       }
       playAnimationsAfterIterations(linkedAnimation, afterIterations);
+    } else if (typeOfLink === 'waitExecutionTime' && linkedAnimation) {
+      if (playTogether && waitExecutionTime) {
+        waitExecutionTime.animations = waitExecutionTime.animations.concat(
+          playTogether
+        );
+      }
+      playAnimationsWaitExecutionTime(linkedAnimation, waitExecutionTime);
     } else if (typeOfLink === 'afterAnimation' && linkedAnimation) {
       linkedAnimation.on('end', function f() {
         organizeTheExecutionOfCycleAnimations(performerFn, animation);
@@ -382,8 +413,8 @@ export function addAnimationObjectToTheConstructionStack(
     | AnimationInstanceProperties
     | AnimationInstanceProperties
     | AnimationWS,
-  typeOfLink?: 'afterAnimation' | 'together' | 'afterIterations',
-  amountOfIterations?: number
+  typeOfLink?: AnimationsTypeOfLink,
+  amountOfIterationsOrexecutionTime?: number | string
 ): void {
   if (performerFn.$hidden.ignorePerformer) {
     performerFn.$hidden.animationInstances.push(
@@ -412,12 +443,23 @@ export function addAnimationObjectToTheConstructionStack(
       : getlinkedAnimationIndex(performerFn, lAnimation);
 
     if (indexOrAnimation !== null) {
-      pushSketcheInPerformerBucket(performerFn, {
+      const o: AnimationObjectSketche = {
         indexOrAnimation,
         typeOfLink,
-        amountOfIterations,
         animationOptions,
-      });
+      };
+      switch (typeOfLink) {
+        case 'afterIterations':
+          o.amountOfIterations = amountOfIterationsOrexecutionTime as number;
+          break;
+
+        case 'waitExecutionTime':
+          o.executionTime = amountOfIterationsOrexecutionTime as string;
+          break;
+        default:
+          break;
+      }
+      pushSketcheInPerformerBucket(performerFn, o);
       return;
     }
   }

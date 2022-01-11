@@ -2,7 +2,6 @@ import {
   LISTENERS_NAMES,
   propagateAnimationEventListener,
 } from '../animation-listeners/animations-listeners-handlers';
-import { recyclePropertyObjectsToAnimate } from '../animation-mount/property-object-to-animate';
 import AnimationAuxiliaryObject from '../contracts/animation-auxiliary-object';
 import { ANIMATION_STATES } from '../sauce/constants';
 import removeAnimationStyle from './remove-animation-style';
@@ -22,7 +21,6 @@ export default function animationCompleted(
   }
 
   if (animation.autoDestroy) {
-    recyclePropertyObjectsToAnimate(aAuxiliaryObject.propertiesToBeAnimate);
     animation.destroy();
   } else if (animation.reset) {
     const removeChanges = animation.removeChanges;

@@ -102,6 +102,16 @@ export default interface AnimationsPropotype {
 
   on(
     this: PerformerFn,
+    eventName: ListenersEventsName,
+    callbackfn: (
+      this: PerformerFn,
+      item: unknown,
+      performerFn: PerformerFn
+    ) => true | void | undefined | false
+  ): this;
+
+  on(
+    this: PerformerFn,
     eventName: AllAnimableProperties,
     callbackfn: (
       this: PerformerFn,

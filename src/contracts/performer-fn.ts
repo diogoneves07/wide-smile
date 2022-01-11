@@ -19,6 +19,7 @@ type PerformerFn = OverloadsForAnimationCreation &
       ignorePerformer?: boolean;
 
       currentAfterIterations?: number;
+      currentWaitExecutionTime?: string;
       eventsCallbacks?: {
         [key: string]: [callbackPassed: Function, callbackEvent: Function][];
       };
@@ -174,7 +175,7 @@ export interface PerformerFnMethods {
   _: OverloadsForAnimationCreation;
 
   /**
-   * Declars the values to be achieved by the animation.
+   * Set the values to be achieved by the animation.
    */
   to: OverloadsForAnimationCreation & {
     (
@@ -189,12 +190,22 @@ export interface PerformerFnMethods {
   };
 
   /**
-   * Declars that instantly-created animations started to run after a certain number of interactions.
+   * Performs animations(created immediately)after the previous animation has completed a certain number of executions.
    */
   after(amountIterations?: number): PerformerFn;
 
   /**
-   * Declars the creation of a cycle of animations.
+   * Performs animations(created immediately) after the previous animation has completed a certain number of executions.
+   */
+  after(amountIterations?: number): PerformerFn;
+
+  /**
+   * Performs animations (created immediately) after the previous animation reaches a certain runtime.
+   */
+  wait(seconds?: string): PerformerFn;
+
+  /**
+   * Declares the creation of a cycle of animations.
    */
   cycle(
     loopOrDir?: PerformerFnProperties['loop'] | 'normal' | 'alternate',

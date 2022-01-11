@@ -22,7 +22,6 @@ export default function restartAnimation(animation: AnimationInstance): void {
   } else {
     u.state = ANIMATION_STATES[0];
     u.count = 0;
-
     LoadAnimation(animation, startAnimationIfItIsLoaded);
   }
 }

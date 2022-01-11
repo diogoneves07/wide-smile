@@ -34,6 +34,7 @@ export const createIndependentAnimations: OverloadsForAnimationCreation = functi
 ): PerformerFn {
   /* important!, removes the numeric value stored in the property. */
   this.$hidden.currentAfterIterations = undefined;
+  this.$hidden.currentWaitExecutionTime = undefined;
 
   const animationProperties = createAnimationPropertiesObject(
     this,
@@ -65,6 +66,7 @@ export const createDependentAnimations: OverloadsForAnimationCreation = function
 ): PerformerFn {
   /* important!, removes the numeric value stored in the property. */
   this.$hidden.currentAfterIterations = undefined;
+  this.$hidden.currentWaitExecutionTime = undefined;
 
   const animationProperties = createAnimationPropertiesObject(
     this,
@@ -124,6 +126,7 @@ export function addFinalKeyframeInTheAnimation(
 ) {
   /* important!, removes the numeric value stored in the property. */
   this.$hidden.currentAfterIterations = undefined;
+  this.$hidden.currentWaitExecutionTime = undefined;
 
   const objectExpectingSideEffects = getLastAnimationObjectAddedToPerformer(
     this

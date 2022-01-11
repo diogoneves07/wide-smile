@@ -60,6 +60,15 @@ function getNewPerformerFn(
         performerFn.$hidden.currentAfterIterations
       );
       performerFn.$hidden.currentAfterIterations = undefined;
+    } else if (performerFn.$hidden.currentWaitExecutionTime) {
+      addAnimationObjectToTheConstructionStack(
+        performerFn,
+        animationProperties,
+        lastAnimationParametersAdded,
+        'waitExecutionTime',
+        performerFn.$hidden.currentWaitExecutionTime
+      );
+      performerFn.$hidden.currentWaitExecutionTime = undefined;
     } else if (lastAnimationParametersAdded) {
       addAnimationObjectToTheConstructionStack(
         performerFn,
@@ -113,6 +122,7 @@ const NewPerformerFn = (
   } as Required<PerformerFnProperties>);
 
   creator.performers.push(performerFn);
+
   return performerFn;
 };
 

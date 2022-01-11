@@ -77,6 +77,7 @@ export default function getPropertyObjectToAnimate(
       o.propertyName = propertyName;
       o.type = type;
       o.originalArrayLength = originalArrayLength;
+
       propertiesToBeAnimate.push(o);
     }
   });

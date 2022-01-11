@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Fireworks</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="../wide-smile.min.js"></script>
+
+    <style>
+      body,
+      html {
+        margin: 0;
+        padding: 0;
+        float: left;
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+      }
+      body {
+        background-color: #000;
+        text-align: center;
+      }
+
+      .fireworks {
+        height: 20px;
+        width: 5px;
+        position: absolute;
+        top: 98%;
+        left: 45%;
+        border-radius: 100% 100% 25% 25%;
+        display: inline-block;
+        box-shadow: 1px 1px 5px white;
+        background-color: #333333;
+        z-index: -9;
+      }
+      .fireworks span {
+        display: inline-block;
+        width: 4px;
+        height: 3px;
+        position: absolute;
+      }
+
+      #fireworks-base {
+        width: 100px;
+        height: 30px;
+        background-color: #333333;
+        position: relative;
+        display: inline-block;
+        top: 98%;
+        text-align: center;
+      }
+      .fireworks-base-shooter {
+        background-color: #333333;
+        width: 25px;
+        height: 20px;
+        display: inline-block;
+        position: relative;
+        top: -20px;
+        border-radius: 2px 2px 0 0;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="fireworks-base"><div class="fireworks-base-shooter"></div></div>
+    <script>
+      var explosions = 2;
+      var maxFragmentsExplosion = 60;
+      var distanceBetweenFragments = 250;
+      var rocketReachY = window.innerHeight;
+      var rocketReachX = 250;
+      var fireworksBase = document.getElementById('fireworks-base');
+      var fireworksBaseShooter = fireworksBase.getElementsByClassName(
+        'fireworks-base-shooter'
+      )[0];
+      var animateShooter = wS(fireworksBaseShooter, 0.5, false)(
+        'translateY',
+        [0, 20, 0],
+        'easeOutCubic'
+      );
+
+      function getFragmentColor() {
+        var hue = Math.round(Math.random() * 255);
+
+        return 'hsl(' + hue + ', 100%, 50%)';
+      }
+
+      function animateRocket(animationCreator, el, index) {
+        var translateYValue = -(rocketReachY / (Math.random() * 2 + 1));
+        var translateXValue = Math.random() * rocketReachX;
+        var positiveOrNegative = Math.random() > 0.5 ? true : false;
+
+        animationCreator(el, {
+          delay: index === 0 ? 0 : index / 2,
+        })('translateY', translateYValue, 'easeOutSine')(
+          'translateX',
+          positiveOrNegative ? translateXValue : -translateXValue,
+          'easeInQuad'
+        )('rotate', positiveOrNegative ? 80 : -80)
+          .on('start', function () {
+            animateShooter.restart();
+          })
+          .on('end', function () {
+            this.set({
+              backgroundColor: 'transparent',
+              boxShadow: 'none',
+              rotate: 0,
+            });
+            animationCreator.play();
+          });
+      }
+
+      function animateFragmentExplosion(
+        animationCreator,
+        el,
+        index,
+        backgroundColor,
+        callback
+      ) {
+        animationCreator(el, 'easeInSine', {
+          delay: Math.random(),
+          dur: 2,
+          autoPlay: false,
+        })({
+          translateY: Math.cos(index) * distanceBetweenFragments,
+          translateX: Math.sin(index) * distanceBetweenFragments,
+          opacity: 0,
+        })
+          .on('end', function () {
+            el.style.cssText = '';
+            callback.call(this);
+          })
+          .on('ready', function () {
+            this.set('backgroundColor', backgroundColor);
+          })
+          .load();
+      }
+
+      function fireworks(el, index) {
+        var animationCreator = wS().new();
+        var countEndAnimations = 0;
+        var backgroundColor = getFragmentColor();
+
+        [].slice.call(el.children).forEach(function (child, i) {
+          animateFragmentExplosion(
+            animationCreator,
+            child,
+            i,
+            backgroundColor,
+            function () {
+              countEndAnimations += 1;
+
+              if (maxFragmentsExplosion === countEndAnimations) {
+                el.style.cssText = '';
+
+                animationCreator.destroy(true);
+                fireworks(el, index);
+              }
+            }
+          );
+        });
+
+        animateRocket(animationCreator, el, index);
+      }
+
+      var elements = [];
+      for (var index = 0; index < explosions; index++) {
+        var el = document.createElement('div');
+        el.className = 'fireworks';
+
+        for (var i = 0; i < maxFragmentsExplosion; i++) {
+          var span = document.createElement('span');
+          el.appendChild(span);
+        }
+        elements.push(el);
+
+        fireworksBase.appendChild(el);
+      }
+
+      elements.forEach(function (el, index) {
+        fireworks(el, index);
+      });
+    </script>
+  </body>
+</html>

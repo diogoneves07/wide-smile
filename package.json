@@ -1,6 +1,6 @@
 {
   "name": "wide-smile",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "author": "Diogo neves",
   "main": "wide-smile.min.js",
   "umd:main": "wide-smile.min.js",
@@ -8,7 +8,7 @@
   "umd:name": "wS",
   "types": "./dist/wide-smile.d.ts",
   "license": "MIT",
-  "description": "JavaScript animation engine",
+  "description": "The easiest way to structure and make JavaScript animations.",
   "keywords": [
     "wide-smile",
     "animation",

@@ -24,6 +24,8 @@ export default interface AnimationAuxiliaryObject {
 
   timeRunningIteration: number;
 
+  animationExecutionTime: number;
+
   backRunning: boolean;
 
   countDriveLoops: number;

@@ -59,14 +59,26 @@ Inclua-o através de uma tag script.
 ### Usando jsDelivr CDN:
 
 ```html
+<script src="https://cdn.jsdelivr.net/wide-smile@0.1.4/wide-smile.min.js"></script>
+
+<!-- Ou -->
+<!-- Sempre baixará a verção mais recente. -->
+
 <script src="https://cdn.jsdelivr.net/npm/wide-smile/wide-smile.min.js"></script>
 ```
 
 ### Usando unpkg CDN:
 
 ```html
+<script src="https://unpkg.com/wide-smile@0.1.4/wide-smile.min.js"></script>
+
+<!-- Ou -->
+<!-- Sempre baixará a verção mais recente. -->
+
 <script src="https://unpkg.com/wide-smile/wide-smile.min.js"></script>
 ```
+
+>
 
 ## Primeiros passos
 
@@ -120,6 +132,19 @@ wS('div', 1, 'easeOutInSine', {
 
 ---
 
+### Novidades(versão - `0.1.4`):
+
+- Podemos adicionar ouvintes para serem chamados quando a animação alcançar um determinado tempo em execução.
+
+  ```javascript
+  wS('div')('height', 50).on('0.5s', (o) => {
+    /*...*/
+  });
+  ```
+
+  - Nova método:
+    [`wait()`](<https://github.com/diogoneves07/wide-smile/wiki/M%C3%A9todo-wait()>).
+
 ### Novidades(versão - `0.1.0`):
 
 Esta nova versão conta com novidades importantes:
@@ -133,7 +158,7 @@ Esta nova versão conta com novidades importantes:
 - Nova propriedade:
   [`reset`](https://github.com/diogoneves07/wide-smile/wiki/Propriedade-reset).
 
-- Agora podemos adicionar ouvintes em propriedades de animação (top, height, color...). Com isso, podemos obter o valor que será aplicado à determinada propriedade a cada intercalação da animação (nós também podemos impedi-lo de ser aplicado).
+- Podemos adicionar ouvintes em propriedades de animação (top, height, color...). Com isso, podemos obter o valor que será aplicado à determinada propriedade a cada intercalação da animação (nós também podemos impedi-lo de ser aplicado).
   ```javascript
   wS('div')('height', 50).on('height', (o) => {
     /*...*/

@@ -39,6 +39,9 @@
         e.textContent = v.toString().substring(0, (v.length / 100) * p);
       });
 
+      const d = { diogo: 5 };
+      wS(d).$('diogo', [0, 100]);
+      console.log(d);
       wS(
         'strong',
         2.5,

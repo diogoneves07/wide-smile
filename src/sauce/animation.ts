@@ -36,6 +36,7 @@ import {
   removeTargetFromAnimation,
 } from '../animation-actions/remove-from-animation';
 import AllAnimableProperties from '../contracts/animable-properties';
+import startAnimationExecutionCycle from '../animation-engine/start-animation-execution-cycle';
 
 interface AnimationWS extends AnimationInstance {
   [key: string]: unknown;
@@ -80,9 +81,18 @@ class AnimationWS implements AnimationInstance {
   }
 
   play(): this {
+    const hasAnimationAuxiliaryObject = getAnimationAuxiliaryObject(
+      this.animationId
+    );
+
     if (
+      hasAnimationAuxiliaryObject &&
+      hasAnimationAuxiliaryObject.dataLoadingState === 'load' &&
+      hasAnimationAuxiliaryObject.animation.state === ANIMATION_STATES[5]
+    ) {
+      startAnimationExecutionCycle(hasAnimationAuxiliaryObject);
+    } else if (
       this.state === ANIMATION_STATES[0] ||
-      this.state === ANIMATION_STATES[5] ||
       this.state === ANIMATION_STATES[6]
     ) {
       LoadAnimation(this, startAnimationIfItIsLoaded);
@@ -300,7 +310,7 @@ class AnimationWS implements AnimationInstance {
     destroyAnimation(this);
 
     /**
-     * Important ! Set the property state to avoid side effects of timeouts.
+     * Important! Set the property state to avoid side effects of timeouts.
      */
     this.state = ANIMATION_STATES[4];
 

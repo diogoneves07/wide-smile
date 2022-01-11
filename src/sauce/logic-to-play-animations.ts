@@ -68,6 +68,37 @@ export function playAnimationsTogether(
     }
   }
 }
+
+export function playAnimationsWaitExecutionTime(
+  animationToLink: AnimationWS,
+  waitExecutionTime?: {
+    animations: AnimationWS[];
+    executionTime: string;
+  }
+): void {
+  if (!waitExecutionTime) {
+    return;
+  }
+
+  const performerFn = animationToLink.performer;
+
+  const executionTime = waitExecutionTime.executionTime;
+
+  waitExecutionTime.animations.forEach((a) => {
+    const animation = a;
+    animationToLink.on(executionTime, function f() {
+      if (performerFn.$hidden.cycleOptions) {
+        organizeTheExecutionOfCycleAnimations(
+          performerFn,
+          animation,
+          animationToLink,
+          'together'
+        );
+      }
+      animation.play();
+    });
+  });
+}
 export function playAnimationsAfterIterations(
   animationToLink: AnimationWS,
   playAfterIterations?: {
@@ -96,11 +127,8 @@ export function playAnimationsAfterIterations(
             animationToLink,
             'together'
           );
-
-          animation.play();
-        } else {
-          animation.play();
         }
+        animation.play();
       }
       countCompletedIterations += 1;
     });

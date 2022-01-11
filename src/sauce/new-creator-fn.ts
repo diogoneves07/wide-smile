@@ -94,5 +94,7 @@ function pureCreatorFn() {
   return Creator;
 }
 export default function NewCreatorFn(global: CreatorFn['global']): CreatorFn {
-  return Object.assign(pureCreatorFn(), creatorFnProperties(global));
+  const creator = Object.assign(pureCreatorFn(), creatorFnProperties(global));
+  creator().all.push(creator);
+  return creator;
 }

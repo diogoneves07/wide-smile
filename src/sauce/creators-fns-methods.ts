@@ -115,9 +115,9 @@ const CREATORS_FN_METHODS: CreatorFnMethods = {
     return this;
   },
 
-  destroy(this: AnimationInstance['creator']) {
+  destroy(this: AnimationInstance['creator'], removeChanges?: true) {
     this.performers.forEach((i) => {
-      i.destroy();
+      i.destroy(removeChanges);
     });
     this.performers = [];
     return this;

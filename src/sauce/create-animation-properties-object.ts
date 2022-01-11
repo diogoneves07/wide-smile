@@ -155,5 +155,6 @@ export default function createAnimationPropertiesObject(
       animationProperties.loop = 2;
     }
   }
+
   return animationProperties as AnimationInstanceProperties;
 }
