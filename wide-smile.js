@@ -1,3 +1,4 @@
+/* wide-smile (C) 2021, Diogo Neves<ndiogo778@gmail.com>. Licensed under the MIT license */
 (function webpackUniversalModuleDefinition(root, factory) {
 	if(typeof exports === 'object' && typeof module === 'object')
 		module.exports = factory();

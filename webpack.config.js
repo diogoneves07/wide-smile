@@ -1,5 +1,4 @@
 /* wide-smile (C) 2021, Diogo Neves<ndiogo778@gmail.com>. Licensed under the MIT license */
-
 const path = require('path'); // eslint-disable-line
 
 const defaults = {
@@ -52,7 +51,7 @@ module.exports = [
   {
     ...defaults,
     // bundling mode
-    // mode: 'production',
+    mode: 'production',
 
     // output bundles (location)
     output: {
@@ -67,7 +66,7 @@ module.exports = [
   },
   {
     ...defaults,
-    // mode: 'production',
+    mode: 'production',
 
     experiments: {
       outputModule: true,
