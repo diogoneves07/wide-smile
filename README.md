@@ -1,4 +1,4 @@
-﻿<p align='center'>
+<p align='center'>
   <img src='https://github.com/diogoneves07/wide-smile/blob/main/other/img/small-wide-smile.png' alt='WideSmile - logo'  width='380px' />
 </p>
 
@@ -62,8 +62,8 @@ Inclua-o através de uma tag script.
 <script src="https://cdn.jsdelivr.net/wide-smile@0.1.4/wide-smile.min.js"></script>
 
 <!-- Ou -->
-<!-- Sempre baixará a verção mais recente. -->
 
+<!-- Sempre baixará a versão mais recente. -->
 <script src="https://cdn.jsdelivr.net/npm/wide-smile/wide-smile.min.js"></script>
 ```
 
@@ -73,8 +73,8 @@ Inclua-o através de uma tag script.
 <script src="https://unpkg.com/wide-smile@0.1.4/wide-smile.min.js"></script>
 
 <!-- Ou -->
-<!-- Sempre baixará a verção mais recente. -->
 
+<!-- Sempre baixará a versão mais recente. -->
 <script src="https://unpkg.com/wide-smile/wide-smile.min.js"></script>
 ```
 
@@ -142,8 +142,7 @@ wS('div', 1, 'easeOutInSine', {
   });
   ```
 
-  - Nova método:
-    [`wait()`](<https://github.com/diogoneves07/wide-smile/wiki/M%C3%A9todo-wait()>).
+ - Nova método: [`wait()`](<https://github.com/diogoneves07/wide-smile/wiki/M%C3%A9todo-wait()>).
 
 ### Novidades(versão - `0.1.0`):
 
