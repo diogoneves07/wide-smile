@@ -6,6 +6,9 @@
 
 A WideSmile é uma biblioteca de animação construída em `TypeScript / JavaScript`, seu principal objetivo é entregar um mecanismo moderno de animação que atenda verdadeiramente as necessidades do desenvolvedor. **Sendo uma nova forma de estruturar animações, deixando mais simples, direta e elegante**.
 
+# Atenção
+Em breve nossa biblioteca passará por uma grande mudança (breaking change). Coisas novas e incríveis estão por vir, por favor aguarde e apoie o projeto.
+
 ## Molho secreto
 
 O molho secreto pode ser encontrado no momento em que declaramos nossas primeiras animações, em que praticamente nenhuma complexidade é exposta, mas por de baixo dos panos estamos utilizados técnicas muito interessantes. Há também novos recursos e conceitos simples e poderosos, como por exemplo: **Creators**, **Performers**, **Special properties** , **Observed properties** e outros, além de atalhos que agilizam o processo de criação de animações.
